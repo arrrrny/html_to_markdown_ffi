@@ -1,6 +1,8 @@
 import 'dart:ffi';
 import 'dart:io';
+
 import 'package:ffi/ffi.dart';
+import 'package:http/http.dart' as http;
 
 import 'html_to_markdown_bindings.dart';
 
@@ -13,72 +15,67 @@ class NativeLibrary {
 
   NativeLibrary._(this._lib);
 
-  factory NativeLibrary() {
-    return _instance ??= NativeLibrary._(_load());
-  }
-
-  /// Download the native library from GitHub release (call before first use).
-  /// Returns true if the library is available after download.
   static Future<bool> downloadIfNeeded() async {
     final libName = _platformLibraryName();
     final target = _platformTarget();
-    final ext = Platform.isWindows ? 'dll' : libName.split('.').last;
     final home = Platform.environment['HOME'] ?? '/tmp';
     final cachePath = '$home/.html_to_markdown_ffi/$libName';
-
     if (File(cachePath).existsSync()) return true;
-
     final envPath = Platform.environment['HTML_TO_MARKDOWN_FFI_LIB_PATH'];
     if (envPath != null && File(envPath).existsSync()) return true;
+    final repoRoot = _findRepoRoot();
+    if (repoRoot != null && File('${repoRoot.path}/target/release/$libName').existsSync()) return true;
+    try {
+      DynamicLibrary.open(libName);
+      return true;
+    } catch (_) {}
 
     final version = Platform.environment['HTML_TO_MARKDOWN_FFI_VERSION'] ?? _defaultVersion;
+    final ext = Platform.isWindows ? 'dll' : libName.split('.').last;
     final url = 'https://github.com/$_repo/releases/download/v$version/libhtml_to_markdown_ffi-$target.$ext';
-
     try {
-      final client = http.Client();
-      final response = await client.get(Uri.parse(url));
-      client.close();
-      if (response.statusCode == 200) {
-        final dir = Directory('$home/.html_to_markdown_ffi');
-        await dir.create(recursive: true);
-        await File(cachePath).writeAsBytes(response.bodyBytes);
+      final r = await http.get(Uri.parse(url));
+      if (r.statusCode == 200) {
+        await Directory('$home/.html_to_markdown_ffi').create(recursive: true);
+        await File(cachePath).writeAsBytes(r.bodyBytes);
         return true;
       }
     } catch (_) {}
     return false;
   }
 
+  factory NativeLibrary() {
+    if (_instance == null) {
+      _instance = NativeLibrary._(_load());
+    }
+    return _instance!;
+  }
+
   static DynamicLibrary _load() {
     final libName = _platformLibraryName();
-    final target = _platformTarget();
-    final ext = Platform.isWindows ? 'dll' : libName.split('.').last;
+    final home = Platform.environment['HOME'] ?? '/tmp';
+    final cachePath = '$home/.html_to_markdown_ffi/$libName';
 
     final envPath = Platform.environment['HTML_TO_MARKDOWN_FFI_LIB_PATH'];
     if (envPath != null) {
-      try { return DynamicLibrary.open(envPath); }
-      on ArgumentError { throw StateError('Failed to load $envPath'); }
+      try { return DynamicLibrary.open(envPath); } on ArgumentError {
+        throw StateError('Failed to load from HTML_TO_MARKDOWN_FFI_LIB_PATH=$envPath');
+      }
     }
-
-    final home = Platform.environment['HOME'] ?? '/tmp';
-    final cachePath = '$home/.html_to_markdown_ffi/$libName';
-    try { return DynamicLibrary.open(cachePath); }
-    on ArgumentError {}
-
+    try { return DynamicLibrary.open(cachePath); } on ArgumentError {}
     final repoRoot = _findRepoRoot();
     if (repoRoot != null) {
-      final devPath = '${repoRoot.path}/target/release/$libName';
-      try { return DynamicLibrary.open(devPath); }
-      on ArgumentError {}
+      try { return DynamicLibrary.open('${repoRoot.path}/target/release/$libName'); } on ArgumentError {}
     }
-
-    try { return DynamicLibrary.open(libName); }
-    on ArgumentError {}
+    try { return DynamicLibrary.open(libName); } on ArgumentError {}
+    try { return DynamicLibrary.process(); } on ArgumentError {}
+    try { return DynamicLibrary.executable(); } on ArgumentError {}
 
     throw StateError(
       'Failed to load $libName. Call NativeLibrary.downloadIfNeeded() first, '
       'set HTML_TO_MARKDOWN_FFI_LIB_PATH, or download from:\n'
       '  https://github.com/$_repo/releases/download/v$_defaultVersion/'
-      'libhtml_to_markdown_ffi-$target.$ext',
+      '${_platformTarget()}',
     );
   }
 
@@ -108,3 +105,27 @@ class NativeLibrary {
     }
     return null;
   }
+
+  late final Pointer<HTMConversionResult> Function(Pointer<Utf8> html, Pointer<HTMConversionOptions> options) htmConvert =
+      _lib.lookup<NativeFunction<Pointer<HTMConversionResult> Function(Pointer<Utf8>, Pointer<HTMConversionOptions>)>>('htm_convert').asFunction();
+  late final int Function() htmLastErrorCode =
+      _lib.lookup<NativeFunction<Int32 Function()>>('htm_last_error_code').asFunction();
+  late final Pointer<Utf8> Function() htmLastErrorContext =
+      _lib.lookup<NativeFunction<Pointer<Utf8> Function()>>('htm_last_error_context').asFunction();
+  late final void Function(Pointer<Utf8> ptr) htmFreeString =
+      _lib.lookup<NativeFunction<Void Function(Pointer<Utf8>)>>('htm_free_string').asFunction();
+  late final Pointer<HTMConversionOptions> Function(Pointer<Utf8> json) htmConversionOptionsFromJson =
+      _lib.lookup<NativeFunction<Pointer<HTMConversionOptions> Function(Pointer<Utf8>)>>('htm_conversion_options_from_json').asFunction();
+  late final void Function(Pointer<HTMConversionOptions> ptr) htmConversionOptionsFree =
+      _lib.lookup<NativeFunction<Void Function(Pointer<HTMConversionOptions>)>>('htm_conversion_options_free').asFunction();
+  late final Pointer<Utf8> Function(Pointer<HTMConversionResult> ptr) htmConversionResultToJson =
+      _lib.lookup<NativeFunction<Pointer<Utf8> Function(Pointer<HTMConversionResult>)>>('htm_conversion_result_to_json').asFunction();
+  late final void Function(Pointer<HTMConversionResult> ptr) htmConversionResultFree =
+      _lib.lookup<NativeFunction<Void Function(Pointer<HTMConversionResult>)>>('htm_conversion_result_free').asFunction();
+  late final Pointer<HTMHtmHtmlVisitorBridge> Function(Pointer<HTMHtmHtmlVisitorVTable> vtable, Pointer<Void> userData) htmHtmHtmlVisitorBridgeNew =
+      _lib.lookup<NativeFunction<Pointer<HTMHtmHtmlVisitorBridge> Function(Pointer<HTMHtmHtmlVisitorVTable>, Pointer<Void>)>>('htm_htm_html_visitor_bridge_new').asFunction();
+  late final void Function(Pointer<HTMHtmHtmlVisitorBridge> ptr) htmHtmHtmlVisitorBridgeFree =
+      _lib.lookup<NativeFunction<Void Function(Pointer<HTMHtmHtmlVisitorBridge>)>>('htm_htm_html_visitor_bridge_free').asFunction();
+  late final void Function(Pointer<HTMConversionOptions> options, Pointer<HTMHtmHtmlVisitorBridge> visitor) htmOptionsSetVisitor =
+      _lib.lookup<NativeFunction<Void Function(Pointer<HTMConversionOptions>, Pointer<HTMHtmHtmlVisitorBridge>)>>('htm_options_set_visitor').asFunction();
+}
