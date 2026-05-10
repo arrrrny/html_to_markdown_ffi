@@ -4,6 +4,9 @@ import 'package:ffi/ffi.dart';
 
 import 'html_to_markdown_bindings.dart';
 
+const _repo = 'arrrrny/html-to-markdown';
+const _defaultVersion = '1.0.0';
+
 class NativeLibrary {
   static NativeLibrary? _instance;
   final DynamicLibrary _lib;
@@ -14,137 +17,94 @@ class NativeLibrary {
     return _instance ??= NativeLibrary._(_load());
   }
 
-  static DynamicLibrary _load() {
+  /// Download the native library from GitHub release (call before first use).
+  /// Returns true if the library is available after download.
+  static Future<bool> downloadIfNeeded() async {
     final libName = _platformLibraryName();
+    final target = _platformTarget();
+    final ext = Platform.isWindows ? 'dll' : libName.split('.').last;
+    final home = Platform.environment['HOME'] ?? '/tmp';
+    final cachePath = '$home/.html_to_markdown_ffi/$libName';
 
-    // Search paths
-    final repoRoot = _findRepoRoot();
-    final candidates = <String>[
-      if (repoRoot != null) '${repoRoot.path}/target/release/$libName',
-      libName,
-    ];
+    if (File(cachePath).existsSync()) return true;
 
-    for (final path in candidates) {
-      try {
-        return DynamicLibrary.open(path);
-      } on ArgumentError {
-        continue;
-      }
-    }
+    final envPath = Platform.environment['HTML_TO_MARKDOWN_FFI_LIB_PATH'];
+    if (envPath != null && File(envPath).existsSync()) return true;
+
+    final version = Platform.environment['HTML_TO_MARKDOWN_FFI_VERSION'] ?? _defaultVersion;
+    final url = 'https://github.com/$_repo/releases/download/v$version/libhtml_to_markdown_ffi-$target.$ext';
 
     try {
-      return DynamicLibrary.process();
-    } on ArgumentError {
-      try {
-        return DynamicLibrary.executable();
-      } on ArgumentError {
-        throw StateError(
-            'Failed to load $libName on ${Platform.operatingSystem}. '
-            'Ensure the native library is bundled with your application.');
+      final client = http.Client();
+      final response = await client.get(Uri.parse(url));
+      client.close();
+      if (response.statusCode == 200) {
+        final dir = Directory('$home/.html_to_markdown_ffi');
+        await dir.create(recursive: true);
+        await File(cachePath).writeAsBytes(response.bodyBytes);
+        return true;
       }
+    } catch (_) {}
+    return false;
+  }
+
+  static DynamicLibrary _load() {
+    final libName = _platformLibraryName();
+    final target = _platformTarget();
+    final ext = Platform.isWindows ? 'dll' : libName.split('.').last;
+
+    final envPath = Platform.environment['HTML_TO_MARKDOWN_FFI_LIB_PATH'];
+    if (envPath != null) {
+      try { return DynamicLibrary.open(envPath); }
+      on ArgumentError { throw StateError('Failed to load $envPath'); }
     }
+
+    final home = Platform.environment['HOME'] ?? '/tmp';
+    final cachePath = '$home/.html_to_markdown_ffi/$libName';
+    try { return DynamicLibrary.open(cachePath); }
+    on ArgumentError {}
+
+    final repoRoot = _findRepoRoot();
+    if (repoRoot != null) {
+      final devPath = '${repoRoot.path}/target/release/$libName';
+      try { return DynamicLibrary.open(devPath); }
+      on ArgumentError {}
+    }
+
+    try { return DynamicLibrary.open(libName); }
+    on ArgumentError {}
+
+    throw StateError(
+      'Failed to load $libName. Call NativeLibrary.downloadIfNeeded() first, '
+      'set HTML_TO_MARKDOWN_FFI_LIB_PATH, or download from:\n'
+      '  https://github.com/$_repo/releases/download/v$_defaultVersion/'
+      'libhtml_to_markdown_ffi-$target.$ext',
+    );
+  }
+
+  static String _platformTarget() {
+    if (Platform.isMacOS) {
+      return Platform.version.contains('arm64') ? 'aarch64-apple-darwin' : 'x86_64-apple-darwin';
+    }
+    if (Platform.isLinux) return 'x86_64-unknown-linux-gnu';
+    if (Platform.isWindows) return 'x86_64-pc-windows-msvc';
+    return 'x86_64-apple-darwin';
+  }
+
+  static String _platformLibraryName() {
+    if (Platform.isMacOS || Platform.isIOS) return 'libhtml_to_markdown_ffi.dylib';
+    if (Platform.isLinux || Platform.isAndroid) return 'libhtml_to_markdown_ffi.so';
+    if (Platform.isWindows) return 'html_to_markdown_ffi.dll';
+    return 'libhtml_to_markdown_ffi.dylib';
   }
 
   static Directory? _findRepoRoot() {
     var dir = Directory.current;
     for (var i = 0; i < 10; i++) {
-      if (File('${dir.path}/Cargo.toml').existsSync()) {
-        return dir;
-      }
+      if (File('${dir.path}/Cargo.toml').existsSync()) return dir;
       final parent = dir.parent;
       if (parent.path == dir.path) break;
       dir = parent;
     }
     return null;
   }
-
-  static String _platformLibraryName() {
-    if (Platform.isMacOS || Platform.isIOS) {
-      return 'libhtml_to_markdown_ffi.dylib';
-    } else if (Platform.isLinux || Platform.isAndroid) {
-      return 'libhtml_to_markdown_ffi.so';
-    } else if (Platform.isWindows) {
-      return 'html_to_markdown_ffi.dll';
-    }
-    return 'libhtml_to_markdown_ffi.dylib';
-  }
-
-  // Core conversion
-  late final Pointer<HTMConversionResult> Function(
-          Pointer<Utf8> html, Pointer<HTMConversionOptions> options)
-      htmConvert = _lib
-          .lookup<NativeFunction<
-              Pointer<HTMConversionResult> Function(
-                  Pointer<Utf8>, Pointer<HTMConversionOptions>)>>('htm_convert')
-          .asFunction();
-
-  // Error handling
-  late final int Function() htmLastErrorCode = _lib
-      .lookup<NativeFunction<Int32 Function()>>('htm_last_error_code')
-      .asFunction();
-
-  late final Pointer<Utf8> Function() htmLastErrorContext = _lib
-      .lookup<NativeFunction<Pointer<Utf8> Function()>>(
-          'htm_last_error_context')
-      .asFunction();
-
-  // Memory management
-  late final void Function(Pointer<Utf8> ptr) htmFreeString = _lib
-      .lookup<NativeFunction<Void Function(Pointer<Utf8>)>>('htm_free_string')
-      .asFunction();
-
-  // Conversion options
-  late final Pointer<HTMConversionOptions> Function(Pointer<Utf8> json)
-      htmConversionOptionsFromJson = _lib
-          .lookup<NativeFunction<
-              Pointer<HTMConversionOptions> Function(Pointer<Utf8>)>>(
-              'htm_conversion_options_from_json')
-          .asFunction();
-
-  late final void Function(Pointer<HTMConversionOptions> ptr)
-      htmConversionOptionsFree = _lib
-          .lookup<NativeFunction<
-              Void Function(Pointer<HTMConversionOptions>)>>(
-              'htm_conversion_options_free')
-          .asFunction();
-
-  // Conversion result
-  late final Pointer<Utf8> Function(Pointer<HTMConversionResult> ptr)
-      htmConversionResultToJson = _lib
-          .lookup<NativeFunction<
-              Pointer<Utf8> Function(Pointer<HTMConversionResult>)>>(
-              'htm_conversion_result_to_json')
-          .asFunction();
-
-  late final void Function(Pointer<HTMConversionResult> ptr)
-      htmConversionResultFree = _lib
-          .lookup<NativeFunction<
-              Void Function(Pointer<HTMConversionResult>)>>(
-              'htm_conversion_result_free')
-          .asFunction();
-
-  // Visitor bridge (VTable approach)
-  late final Pointer<HTMHtmHtmlVisitorBridge> Function(
-          Pointer<HTMHtmHtmlVisitorVTable> vtable,
-          Pointer<Void> userData) htmHtmHtmlVisitorBridgeNew = _lib
-      .lookup<NativeFunction<
-          Pointer<HTMHtmHtmlVisitorBridge> Function(
-              Pointer<HTMHtmHtmlVisitorVTable>, Pointer<Void>)>>(
-          'htm_htm_html_visitor_bridge_new')
-      .asFunction();
-
-  late final void Function(Pointer<HTMHtmHtmlVisitorBridge> ptr)
-      htmHtmHtmlVisitorBridgeFree = _lib
-          .lookup<NativeFunction<
-              Void Function(Pointer<HTMHtmHtmlVisitorBridge>)>>(
-              'htm_htm_html_visitor_bridge_free')
-          .asFunction();
-
-  late final void Function(
-          Pointer<HTMConversionOptions> options,
-          Pointer<HTMHtmHtmlVisitorBridge> visitor) htmOptionsSetVisitor = _lib
-      .lookup<NativeFunction<
-          Void Function(Pointer<HTMConversionOptions>,
-              Pointer<HTMHtmHtmlVisitorBridge>)>>('htm_options_set_visitor')
-      .asFunction();
-}
