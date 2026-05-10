@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1
+
+- Add `~/.html_to_markdown_ffi/` to native library search paths
+- Add auto-download from GitHub release when library not found
+- Support `HTML_TO_MARKDOWN_FFI_LIB_PATH` and `HTML_TO_MARKDOWN_FFI_VERSION` env vars
+
 ## 1.0.0 (2026-05-10)
 
 - Initial release of the Dart/Flutter bindings for html-to-markdown.
