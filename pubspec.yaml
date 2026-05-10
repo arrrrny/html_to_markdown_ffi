@@ -1,0 +1,17 @@
+name: html_to_markdown_ffi
+description: A high-performance HTML to Markdown converter for Dart and Flutter, powered by Rust FFI.
+version: 1.0.0
+homepage: https://github.com/kreuzberg-dev/html-to-markdown
+repository: https://github.com/kreuzberg-dev/html-to-markdown/tree/main/packages/dart
+issue_tracker: https://github.com/kreuzberg-dev/html-to-markdown/issues
+
+environment:
+  sdk: ^3.10.0
+
+dependencies:
+  ffi: ^2.1.0
+
+dev_dependencies:
+  ffigen: ^20.0.0
+  lints: ^5.0.0
+  test: ^1.25.0

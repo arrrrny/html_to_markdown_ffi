@@ -1,0 +1,73 @@
+# ffigen config for html_to_markdown Dart FFI bindings
+# Generates lib/html_to_markdown_bindings.dart from the C header
+
+output:
+  dart: lib/html_to_markdown_bindings.dart
+
+headers:
+  entry-points:
+    - src/html_to_markdown.h
+  include-directives:
+    - '**html_to_markdown.h'
+
+name: HtmlToMarkdownFFI
+description: Auto-generated Dart FFI bindings for the html-to-markdown C library.
+compiler-opts: '-I/usr/include -Isrc'
+
+functions:
+  include:
+    - 'htm_convert'
+    - 'htm_convert_with_visitor'
+    - 'htm_last_error_code'
+    - 'htm_last_error_context'
+    - 'htm_free_string'
+    - 'htm_free_bytes'
+    - 'htm_conversion_options_from_json'
+    - 'htm_conversion_options_to_json'
+    - 'htm_conversion_options_free'
+    - 'htm_conversion_result_from_json'
+    - 'htm_conversion_result_to_json'
+    - 'htm_conversion_result_free'
+    - 'htm_visitor_create'
+    - 'htm_visitor_free'
+    - 'htm_options_set_visitor_handle'
+    - 'htm_options_set_visitor'
+
+structs:
+  include:
+    - 'HTMHtmNodeContext'
+    - 'HTMHtmVisitorCallbacks'
+    - 'HTMHtmHtmlVisitorVTable'
+
+typedefs:
+  include:
+    - 'HTMConversionOptions'
+    - 'HTMConversionResult'
+    - 'HTMHtmlMetadata'
+    - 'HTMDocumentStructure'
+    - 'HTMDocumentNode'
+    - 'HTMTableData'
+    - 'HTMTableGrid'
+    - 'HTMGridCell'
+    - 'HTMProcessingWarning'
+    - 'HTMHtmVisitor'
+    - 'HTMVisitorHandle'
+
+enums:
+  include:
+    - 'HTMHTM_VISIT_CONTINUE'
+    - 'HTMHTM_VISIT_SKIP'
+    - 'HTMHTM_VISIT_PRESERVE_HTML'
+    - 'HTMHTM_VISIT_CUSTOM'
+    - 'HTMHTM_VISIT_ERROR'
+
+comments:
+  style: doxygen
+  length: full
+
+sort: true
+use-dart-ffi-native-type: true
+use-dart-native-datatypes: true
+
+preamble: |
+  // ignore_for_file: type=lint, unused_element, non_constant_identifier_names
