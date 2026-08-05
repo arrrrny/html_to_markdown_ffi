@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.1.0 - 2026-08-05
+
+- Bake prebuilt native binaries into the package (`native/`): macOS arm64 + x64
+  dylibs, iOS static libs (device arm64, simulator arm64 + x64), and Android
+  `.so` files (arm64-v8a, armeabi-v7a, x86_64).
+- `NativeLibrary` now loads the bundled binary automatically; the GitHub
+  release download remains as a fallback for platforms without bundled
+  artifacts.
+
 ## 1.0.1
 
 - Add `~/.html_to_markdown_ffi/` to native library search paths

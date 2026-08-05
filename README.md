@@ -85,12 +85,72 @@ final result = convert(html, visitor: ScriptStripper());
 
 | Platform | Arch | Status |
 |----------|------|--------|
-| macOS | arm64, x64 | ✓ |
-| Linux | arm64, x64 | ✓ |
-| Windows | x64 | ✓ |
-| Android | arm64-v8a, armeabi-v7a, x86_64 | ✓ |
-| iOS | arm64 | ✓ |
+| macOS | arm64, x64 | ✓ (binary bundled) |
+| iOS (device) | arm64 | ✓ (static lib bundled) |
+| iOS Simulator | arm64, x64 | ✓ (static lib bundled) |
+| Android | arm64-v8a, armeabi-v7a, x86_64 | ✓ (`.so` bundled) |
+| Linux | arm64, x64 | ✓ (build from source) |
+| Windows | x64 | ✓ (build from source) |
 | Web | — | Not supported (use WASM binding) |
+
+## Native libraries
+
+Prebuilt native binaries are **shipped inside the package** under `native/`, so
+the library is already there when the package is installed — no download step
+or manual toolchain setup is needed on the supported platforms:
+
+```
+native/
+├── include/html_to_markdown.h          # C header (for custom integration)
+├── macos-x64/libhtml_to_markdown_ffi.dylib
+├── macos-arm64/libhtml_to_markdown_ffi.dylib
+├── ios/
+│   ├── ios-arm64.a                     # device
+│   ├── ios-sim-arm64.a                 # Apple Silicon simulator
+│   └── ios-sim-x64.a                   # Intel simulator
+└── android/
+    ├── arm64-v8a/libhtml_to_markdown_ffi.so
+    ├── armeabi-v7a/libhtml_to_markdown_ffi.so
+    └── x86_64/libhtml_to_markdown_ffi.so
+```
+
+- **macOS** — the correct dylib for the host architecture is loaded
+  automatically from the package directory. Nothing to do.
+- **Android** — copy the `.so` file(s) you need into your app's jniLibs; the
+  loader resolves `libhtml_to_markdown_ffi.so` from the Android loader path:
+
+  ```bash
+  cp native/android/arm64-v8a/libhtml_to_markdown_ffi.so \
+     <your-app>/android/app/src/main/jniLibs/arm64-v8a/
+  cp native/android/armeabi-v7a/libhtml_to_markdown_ffi.so \
+     <your-app>/android/app/src/main/jniLibs/armeabi-v7a/
+  cp native/android/x86_64/libhtml_to_markdown_ffi.so \
+     <your-app>/android/app/src/main/jniLibs/x86_64/
+  ```
+
+- **iOS** — iOS uses a static library linked into the app at build time (not
+  dlopen'd). Add the `.a` for your target to the Runner (e.g. `ios/Runner/
+  Frameworks` + the Xcode "Link Binary With Libraries" build phase); the loader
+  then finds the symbols via `DynamicLibrary.process()`:
+  - device: `native/ios/ios-arm64.a`
+  - Apple Silicon simulator: `native/ios/ios-sim-arm64.a`
+  - Intel simulator: `native/ios/ios-sim-x64.a`
+
+### Native library resolution order
+
+`NativeLibrary` tries, in order:
+
+1. `HTML_TO_MARKDOWN_FFI_LIB_PATH` env var (testing / custom paths)
+2. **Bundled binary** — `native/<rid>/libhtml_to_markdown_ffi.*` shipped inside
+   the package (macOS arm64/x64)
+3. `~/.html_to_markdown_ffi/` cache (populated by `downloadIfNeeded()`)
+4. A checked-out Cargo workspace's `target/release/` (development)
+5. Platform default name (`DynamicLibrary.open(libName)` — Android jniLibs)
+6. `DynamicLibrary.process()` / `executable()` (iOS static link)
+
+`NativeLibrary.downloadIfNeeded()` short-circuits when a bundled binary is
+present and is otherwise only needed on platforms without bundled artifacts
+(Linux, Windows).
 
 ## API Reference
 
@@ -118,17 +178,19 @@ final result = convert(html, visitor: ScriptStripper());
 
 ## Development
 
-The native library (`libhtml_to_markdown_ffi`) must be built before running tests:
+Prebuilt binaries for the supported platforms ship with the package
+(`native/`), so tests and examples run out of the box. To rebuild the native
+library (`libhtml_to_markdown_ffi`) from source instead, use the Rust repo:
 
 ```bash
-# Build the Rust FFI library
-cargo build --release -p html-to-markdown-ffi
+git clone https://github.com/arrrrny/html-to-markdown.git
+cd html-to-markdown/crates/html-to-markdown-ffi
+cargo build --release
+```
 
 # Run tests
-cd packages/dart
 dart pub get
 dart test
-```
 
 ## Related
 

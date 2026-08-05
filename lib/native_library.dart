@@ -15,7 +15,14 @@ class NativeLibrary {
 
   NativeLibrary._(this._lib);
 
+  /// Ensures the native library is available before [NativeLibrary] is used.
+  ///
+  /// Returns `true` immediately when a bundled binary ships with the package
+  /// (see `native/`), or when any of the other resolution paths (env var,
+  /// cache, system loader) already provide the library. Otherwise downloads
+  /// the matching GitHub release asset into `~/.html_to_markdown_ffi/`.
   static Future<bool> downloadIfNeeded() async {
+    if (_bundledLibraryPath() != null) return true;
     final libName = _platformLibraryName();
     final target = _platformTarget();
     final home = Platform.environment['HOME'] ?? '/tmp';
@@ -52,21 +59,36 @@ class NativeLibrary {
   }
 
   static DynamicLibrary _load() {
-    final libName = _platformLibraryName();
-    final home = Platform.environment['HOME'] ?? '/tmp';
-    final cachePath = '$home/.html_to_markdown_ffi/$libName';
-
+    // 1. Environment variable (useful for testing / custom paths).
     final envPath = Platform.environment['HTML_TO_MARKDOWN_FFI_LIB_PATH'];
     if (envPath != null) {
       try { return DynamicLibrary.open(envPath); } on ArgumentError {
         throw StateError('Failed to load from HTML_TO_MARKDOWN_FFI_LIB_PATH=$envPath');
       }
     }
+
+    // 2. Bundled native library shipped inside this package
+    //    (`native/<rid>/libhtml_to_markdown_ffi.*`). Resolves the package's
+    //    own directory so the binary "just works" without manual setup on the
+    //    platforms we ship prebuilt artifacts for (macOS arm64 + x64).
+    final bundled = _bundledLibraryPath();
+    if (bundled != null && File(bundled).existsSync()) {
+      try { return DynamicLibrary.open(bundled); } on ArgumentError {}
+    }
+
+    final libName = _platformLibraryName();
+    final home = Platform.environment['HOME'] ?? '/tmp';
+    final cachePath = '$home/.html_to_markdown_ffi/$libName';
     try { return DynamicLibrary.open(cachePath); } on ArgumentError {}
+
+    // Dev fallback: a Cargo workspace checked out next to this package.
     final repoRoot = _findRepoRoot();
     if (repoRoot != null) {
       try { return DynamicLibrary.open('${repoRoot.path}/target/release/$libName'); } on ArgumentError {}
     }
+
+    // Android: resolves `libhtml_to_markdown_ffi.so` from the app's jniLibs
+    // loader path. iOS: resolves symbols statically linked into the app.
     try { return DynamicLibrary.open(libName); } on ArgumentError {}
     try { return DynamicLibrary.process(); } on ArgumentError {}
     try { return DynamicLibrary.executable(); } on ArgumentError {}
@@ -77,6 +99,64 @@ class NativeLibrary {
       '  https://github.com/$_repo/releases/download/v$_defaultVersion/'
       '${_platformTarget()}',
     );
+  }
+
+  /// Resolves the path of the bundled native library for this platform's
+  /// "runtime identifier" (e.g. `native/macos-x64/libhtml_to_markdown_ffi.dylib`).
+  /// Returns null when the package can't be located or the platform has no
+  /// bundled artifact.
+  static String? _bundledLibraryPath() {
+    final rid = _platformRid();
+    if (rid == null) return null;
+    final packageDir = _resolvePackageDir();
+    if (packageDir == null) return null;
+    final libName = _platformLibraryName();
+    return '$packageDir${Platform.pathSeparator}'
+        'native${Platform.pathSeparator}$rid'
+        '${Platform.pathSeparator}$libName';
+  }
+
+  /// Finds this package's root directory. Tries, in order:
+  ///  1. the current working directory (works in `dart test` / `flutter test`,
+  ///     where CWD is the package dir), and
+  ///  2. walking up from the running script (works in `dart run`).
+  /// Stops at the first `pubspec.yaml` declaring `name: html_to_markdown_ffi`.
+  static String? _resolvePackageDir() {
+    final candidates = <String>{
+      Directory.current.path,
+      File(Platform.script.toFilePath()).parent.path,
+    };
+    for (final start in candidates) {
+      var dir = Directory(start);
+      for (var i = 0; i < 12; i++) {
+        final pubspec = File('${dir.path}${Platform.pathSeparator}pubspec.yaml');
+        if (pubspec.existsSync() &&
+            pubspec.readAsStringSync().contains('name: html_to_markdown_ffi')) {
+          return dir.path;
+        }
+        final parent = dir.parent;
+        if (parent.path == dir.path) break;
+        dir = parent;
+      }
+    }
+    return null;
+  }
+
+  /// Platform runtime identifier matching the `native/` subdirectory names
+  /// (e.g. `macos-arm64`, `macos-x64`). Null when unsupported.
+  ///
+  /// Android/iOS intentionally return null here: on those platforms the lib
+  /// is NOT dlopen'd from a bundled path.
+  ///   - Android: the app ships `libhtml_to_markdown_ffi.so` in
+  ///     `android/app/src/main/jniLibs/<abi>/`; `DynamicLibrary.open(name)`
+  ///     resolves it from the jniLibs loader path.
+  ///   - iOS: the `.a` is statically linked into the app; `DynamicLibrary
+  ///     .process()` finds the symbols.
+  static String? _platformRid() {
+    if (Platform.isMacOS) {
+      return Platform.version.contains('arm64') ? 'macos-arm64' : 'macos-x64';
+    }
+    return null;
   }
 
   static String _platformTarget() {
