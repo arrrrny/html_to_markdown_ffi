@@ -9,6 +9,39 @@ import 'html_to_markdown_bindings.dart';
 const _repo = 'arrrrny/html-to-markdown';
 const _defaultVersion = '1.0.0';
 
+/// Returns the absolute path of a native library the resolver provides, or
+/// null when it does not apply to the running platform.
+typedef HtmNativeLibraryResolver = String? Function();
+
+/// Resolver seam (spec 064): federated adapters register the prebuilt
+/// binaries they bundle here so the preserved loading chain below can find
+/// them without the app package shipping binaries itself. Purely additive —
+/// the pre-migration resolution steps are unchanged and keep precedence as
+/// documented in [NativeLibrary].
+abstract final class HtmNativeLibraries {
+  static final List<HtmNativeLibraryResolver> _resolvers = [];
+
+  /// Registers [resolver] at the highest probe priority. Returns a removal
+  /// closure.
+  static void Function() registerResolver(HtmNativeLibraryResolver resolver) {
+    _resolvers.insert(0, resolver);
+    return () => _resolvers.remove(resolver);
+  }
+
+  /// First existing library path among the registered resolvers.
+  static String? resolve() {
+    for (final resolver in List.of(_resolvers)) {
+      try {
+        final path = resolver();
+        if (path != null && File(path).existsSync()) return path;
+      } on StateError {
+        // A resolver probing an unavailable platform must not break the chain.
+      }
+    }
+    return null;
+  }
+}
+
 class NativeLibrary {
   static NativeLibrary? _instance;
   final DynamicLibrary _lib;
@@ -76,6 +109,20 @@ class NativeLibrary {
       try { return DynamicLibrary.open(bundled); } on ArgumentError {}
     }
 
+    // 2b. Resolver seam: adapters (and tests) contribute binary paths.
+    final viaResolver = HtmNativeLibraries.resolve();
+    if (viaResolver != null) {
+      try { return DynamicLibrary.open(viaResolver); } on ArgumentError {}
+    }
+
+    // 2c. Development monorepo probe: sibling federated adapter packages
+    // checked out next to this package (dev checkouts only; a published
+    // consumer's tree does not have these siblings).
+    final viaSibling = _siblingAdapterLibraryPath();
+    if (viaSibling != null) {
+      try { return DynamicLibrary.open(viaSibling); } on ArgumentError {}
+    }
+
     final libName = _platformLibraryName();
     final home = Platform.environment['HOME'] ?? '/tmp';
     final cachePath = '$home/.html_to_markdown_ffi/$libName';
@@ -138,6 +185,30 @@ class NativeLibrary {
         if (parent.path == dir.path) break;
         dir = parent;
       }
+    }
+    return null;
+  }
+
+  /// Development-only probe: a federated adapter package checked out as a
+  /// sibling of this package (monorepo layout) carrying the prebuilt binary
+  /// for the running platform. Returns null everywhere else.
+  static String? _siblingAdapterLibraryPath() {
+    final packageDir = _resolvePackageDir();
+    if (packageDir == null) return null;
+    final libName = _platformLibraryName();
+    final candidates = <String>[
+      if (Platform.isMacOS)
+        'html_to_markdown_ffi_macos/native/'
+            '${Platform.version.contains('arm64') ? 'macos-arm64' : 'macos-x64'}/$libName',
+      if (Platform.isAndroid || Platform.isLinux)
+        ...['arm64-v8a', 'armeabi-v7a', 'x86_64'].map((abi) =>
+            'html_to_markdown_ffi_android/native/android/$abi/'
+                '${Platform.isAndroid ? libName : 'libhtml_to_markdown_ffi.so'}'),
+    ];
+    for (final rel in candidates) {
+      final f = File('${packageDir}${Platform.pathSeparator}..'
+          '${Platform.pathSeparator}$rel');
+      if (f.existsSync()) return f.path;
     }
     return null;
   }

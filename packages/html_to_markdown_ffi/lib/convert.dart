@@ -1,70 +1,43 @@
-import 'dart:convert' as dart_convert;
-import 'dart:ffi';
-
-import 'package:ffi/ffi.dart';
-
+// Preserved public API (FR-006): the top-level synchronous conversion.
+// Since the zuraffa migration (spec 064) the call delegates to the default
+// [HtmlToMarkdownFfiService] — adapter port when one is registered, the
+// in-package datasource wrapping the preserved dart:ffi bridge otherwise
+// (FR-004). Behavior, signature, and exception surface are unchanged.
 import 'exceptions.dart';
-import 'html_to_markdown_bindings.dart';
 import 'models/conversion_options.dart';
 import 'models/conversion_result.dart';
-import 'native_library.dart';
+import 'src/html_to_markdown_ffi_service.dart';
 import 'visitor.dart';
-import 'visitor_bridge.dart';
+
+/// The service instance backing the top-level [convert] function: the
+/// datasource path (in-process native bridge). Federated consumers that
+/// register an adapter port get the adapter path transparently — see
+/// [HtmlToMarkdownFfiService].
+final HtmlToMarkdownFfiService htmlToMarkdownFfi =
+    HtmlToMarkdownFfiService.native();
 
 ConversionResult convert(
   String html, {
   ConversionOptions? options,
   Visitor? visitor,
 }) {
-  final lib = NativeLibrary();
-  final arena = Arena();
-  final bridge = visitor != null ? VisitorBridge(visitor) : null;
-
-  try {
-    final htmlPtr = html.toNativeUtf8(allocator: arena);
-    final optionsPtr = _createOptions(lib, options, arena);
-
-    // Attach visitor bridge if provided
-    if (bridge != null) {
-      bridge.attach(optionsPtr);
-    }
-
-    final resultPtr = lib.htmConvert(htmlPtr, optionsPtr);
-
-    if (resultPtr == nullptr) {
-      checkLastError();
-      throw const ConversionErrorException('Conversion returned null result');
-    }
-
-    final jsonPtr = lib.htmConversionResultToJson(resultPtr);
-    final json = jsonPtr.toDartString();
-    lib.htmFreeString(jsonPtr);
-
-    final map = dart_convert.jsonDecode(json);
-    final result = ConversionResult.fromJson(map as Map<String, dynamic>);
-
-    lib.htmConversionResultFree(resultPtr);
-    return result;
-  } finally {
-    bridge?.close();
-    arena.releaseAll();
-  }
+  return htmlToMarkdownFfi.convert(html, options: options, visitor: visitor);
 }
 
-Pointer<HTMConversionOptions> _createOptions(
-  NativeLibrary lib,
+/// Conversion through the stack without an adapter, surfaced asynchronously.
+Future<ConversionResult> convertAsync(
+  String html, {
   ConversionOptions? options,
-  Arena arena,
-) {
-  final opts = options ?? ConversionOptions();
-  final json = dart_convert.jsonEncode(opts.toJson());
-  final jsonPtr = json.toNativeUtf8(allocator: arena);
-  final handle = lib.htmConversionOptionsFromJson(jsonPtr);
-
-  if (handle == nullptr) {
-    checkLastError();
-    throw const ConversionErrorException('Failed to create conversion options');
-  }
-
-  return handle;
+  Visitor? visitor,
+}) {
+  return htmlToMarkdownFfi.convertAsync(html,
+      options: options, visitor: visitor);
 }
+
+/// Whether the native bridge is loadable on this host right now.
+bool get nativeConverterAvailable => htmlToMarkdownFfi.supportedSync;
+
+/// Surfaces the preserved typed failure helper for callers that drive the
+/// bridge directly; re-exported here for import-path compatibility.
+const ConversionErrorException Function(String message, {int? errorCode})
+    conversionError = ConversionErrorException.new;

@@ -1,12 +1,15 @@
-import 'dart:typed_data';
+import 'dart:io';
 
 import 'package:html_to_markdown_ffi/html_to_markdown_ffi.dart';
 
 import 'android_html_to_markdown_ffi_channel.dart';
 import 'android_html_to_markdown_ffi_exception.dart';
 
-/// Android [HtmlToMarkdownFfiPort] over the typed
-/// [AndroidHtmlToMarkdownFfiChannel].
+/// android [HtmlToMarkdownFfiPort] over the typed
+/// [AndroidHtmlToMarkdownFfiChannel]. [convertSync] requires the running
+/// host to be android (the native library is in-process there); any other
+/// host surfaces the typed `sync_unsupported` failure. The async
+/// [convert] path decodes the channel payload through the envelope.
 class AndroidHtmlToMarkdownFfiPort implements HtmlToMarkdownFfiPort {
   final AndroidHtmlToMarkdownFfiChannel channel;
 
@@ -19,45 +22,64 @@ class AndroidHtmlToMarkdownFfiPort implements HtmlToMarkdownFfiPort {
   }
 
   @override
-  Future<HtmlToMarkdownFfiModule> compile({
+  Future<ConversionResult> convert({
     required String id,
-    required Uint8List bytes,
+    required String html,
+    ConversionOptions? options,
+    Visitor? visitor,
   }) async {
-    final result = await channel.call('compile', {
-      'id': id,
-      'bytes': bytes,
-    });
-    return HtmlToMarkdownFfiModule(
-      id: id,
-      byteLength:
-          (result?['byteLength'] as num?)?.toInt() ?? bytes.lengthInBytes,
-    );
-  }
-
-  @override
-  Future<List<HtmlToMarkdownFfiValue>> invoke({
-    required String id,
-    required String export,
-    List<HtmlToMarkdownFfiValue> args = const [],
-  }) async {
-    final result = await channel.call('invoke', {
-      'id': id,
-      'export': export,
-      'args': [for (final arg in args) arg.encode()],
-    });
-    final values = result?['values'];
-    if (values is! List) {
+    if (visitor != null) {
       throw const AndroidHtmlToMarkdownFfiException(
-        'malformed_response',
-        'The invoke result carried no value list.',
+        'visitor_unsupported',
+        'Visitor callbacks require the synchronous in-process path '
+        '(convertSync) — they cannot cross the envelope payload.',
         recoverable: false,
       );
     }
-    return [for (final raw in values) HtmlToMarkdownFfiValue.decode(raw)];
+    final result = await channel.call('convert', {
+      'id': id,
+      'html': html,
+      'optionsJson': optionsJsonOf(options),
+    });
+    final json = result?['resultJson'];
+    if (json is! String) {
+      throw const AndroidHtmlToMarkdownFfiException(
+        'malformed_response',
+        'The convert result carried no result json.',
+        recoverable: false,
+      );
+    }
+    return conversionResultFromJson(json);
   }
 
   @override
-  Future<void> unload({required String id}) async {
-    await channel.call('unload', {'id': id});
+  ConversionResult convertSync({
+    required String id,
+    required String html,
+    ConversionOptions? options,
+    Visitor? visitor,
+  }) {
+    if (!Platform.isAndroid) {
+      throw const AndroidHtmlToMarkdownFfiException(
+        'sync_unsupported',
+        'Synchronous in-process conversion requires the native library of '
+        'the running platform.',
+        recoverable: false,
+      );
+    }
+    final dataSource = NativeHtmConversionDataSource();
+    return conversionResultFromJson(
+      dataSource
+          .convertNow(
+            HtmConversion(
+              id: id,
+              html: html,
+              optionsJson: optionsJsonOf(options),
+              resultJson: '',
+            ),
+            visitor: visitor,
+          )
+          .resultJson,
+    );
   }
 }

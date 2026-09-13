@@ -1,30 +1,36 @@
-import 'dart:typed_data';
+// html_to_markdown_ffi port — the platform-neutral contract every adapter
+// implements (spec 064; scaffold shape customized to conversion semantics).
+// Pure Dart: the transport is injected behind the platform envelope, so
+// tests run offline with fake channels. [convert] is the canonical async
+// path (envelope-wrapped, transport-agnostic); [convertSync] is the
+// in-process fast path adapters with an in-process native library
+// implement — foreign transports surface the typed `sync_unsupported`
+// failure instead.
+import '../models/conversion_options.dart';
+import '../models/conversion_result.dart';
+import '../visitor.dart';
 
-import 'html_to_markdown_ffi_module.dart';
-import 'html_to_markdown_ffi_value.dart';
-
-/// The platform-neutral port every adapter implements. Pure Dart — the
-/// transport is injected behind the platform envelope, so tests run
-/// offline with fake channels.
 abstract class HtmlToMarkdownFfiPort {
   const HtmlToMarkdownFfiPort();
 
-  /// Whether the host platform can run WebAssembly at all.
+  /// Whether the host platform can run the native converter at all.
   Future<bool> isSupported();
 
-  /// Compiles [bytes] and binds the result to [id].
-  Future<HtmlToMarkdownFfiModule> compile({
+  /// Converts [html] to Markdown. [id] identifies the call in adapters
+  /// that track invocations.
+  Future<ConversionResult> convert({
     required String id,
-    required Uint8List bytes,
+    required String html,
+    ConversionOptions? options,
+    Visitor? visitor,
   });
 
-  /// Invokes [export] on the compiled module [id].
-  Future<List<HtmlToMarkdownFfiValue>> invoke({
+  /// Synchronous in-process conversion (dart:ffi is synchronous). The
+  /// preserved public `convert()` routes through here.
+  ConversionResult convertSync({
     required String id,
-    required String export,
-    List<HtmlToMarkdownFfiValue> args = const [],
+    required String html,
+    ConversionOptions? options,
+    Visitor? visitor,
   });
-
-  /// Releases the compiled module [id].
-  Future<void> unload({required String id});
 }

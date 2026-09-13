@@ -2,16 +2,20 @@
 name: html_to_markdown_ffi
 description: >-
   Typed HTML to Markdown conversion for the Zuraffa ecosystem: a Rust FFI core behind a pure-Dart converter port with federated native adapters.
-version: 0.1.0
+version: 1.1.0
 homepage: https://zuraffa.com
 
 environment:
   sdk: ^3.11.0
 
 dependencies:
+  ffi: ^2.1.0
+  http: ^1.4.0
+  zorphy_annotation: ^2.3.0
   zuraffa: ^6.2.2
 
 dev_dependencies:
+  build_runner: ^2.16.0
   lints: ^4.0.0
   test: ^1.25.0
 

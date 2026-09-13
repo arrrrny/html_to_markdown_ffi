@@ -1,0 +1,26 @@
+{
+  "name": "HtmConversion",
+  "timestamp": "2026-09-13T20:59:07.465181Z",
+  "duration_ms": 0,
+  "success": true,
+  "files": [],
+  "errors": [],
+  "warnings": [],
+  "options": {
+    "repository": true,
+    "datasource": true,
+    "usecase": true,
+    "data": false,
+    "use-service": false,
+    "no-entity": false,
+    "local": false,
+    "remote": true,
+    "cache": false,
+    "type": "usecase",
+    "name": "HtmConversion",
+    "output_dir": "lib/src",
+    "xray": false,
+    "plugin_ids": [],
+    "execution_order": []
+  }
+}

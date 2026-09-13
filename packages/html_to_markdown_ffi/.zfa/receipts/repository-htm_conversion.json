@@ -1,0 +1,40 @@
+{
+  "schema": "repository-contract.v1",
+  "entity": "HtmConversion",
+  "interface": {
+    "class": "HtmConversionRepository",
+    "path": "lib/src/domain/repositories/htm_conversion_repository.dart",
+    "sha256": "3f3e0ed8b8ca658979e59ee74483bb5e417e8c3ec00cfddf6e397be4e6742c38"
+  },
+  "implementation": {
+    "class": "DataHtmConversionRepository",
+    "path": "lib/src/data/repositories/data_htm_conversion_repository.dart",
+    "sha256": "a6eafcfd3f6330bf94d7b685655da0b330311d929ade1ef3125e96874cc537de"
+  },
+  "methods": [
+    {
+      "name": "get",
+      "returns": "Future<HtmConversion>",
+      "params": [
+        "QueryParams<HtmConversion> params"
+      ]
+    },
+    {
+      "name": "update",
+      "returns": "Future<HtmConversion>",
+      "params": [
+        "UpdateParams<String, HtmConversionPatch> params"
+      ]
+    },
+    {
+      "name": "toggle",
+      "returns": "Future<HtmConversion>",
+      "params": [
+        "ToggleParams<String, Field<HtmConversion, dynamic>> params"
+      ]
+    }
+  ],
+  "methods_sha256": "13396d8896709dccb037d528be997d15c45d574e7f9c2d0c500f33c5a5de61df",
+  "generator_version": "6.2.3",
+  "at": "2026-09-13T21:00:46.611785Z"
+}

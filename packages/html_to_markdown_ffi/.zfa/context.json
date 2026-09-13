@@ -1,0 +1,35 @@
+{
+  "version": "5.1",
+  "domain_root": "lib/src/domain",
+  "entity_output": "lib/src/domain/entities",
+  "zorphy_only": true,
+  "workflow": [
+    "zfa entity create",
+    "zfa make",
+    "zfa build"
+  ],
+  "generated_zones": [
+    "lib/src/domain/entities",
+    "lib/src/domain/usecases",
+    "lib/src/data/repositories",
+    "lib/src/data/datasources",
+    "lib/src/data/providers",
+    "lib/src/data/services",
+    "lib/src/presentation/controllers",
+    "lib/src/presentation/presenters",
+    "lib/src/presentation/state",
+    "lib/src/di"
+  ],
+  "manual_zones": [
+    "lib/src/presentation/pages/**/layouts",
+    "lib/src/presentation/pages/**/widgets",
+    "lib/src/presentation/shells",
+    "lib/src/app"
+  ],
+  "notes": [
+    "All entities must be created with `zfa entity create` and use Zorphy annotations.",
+    "Architecture generation uses `zfa make` with presets/plugins.",
+    "Code generation is finalized with `zfa build`.",
+    "Manual UI composition belongs in pages/layouts and widgets."
+  ]
+}
