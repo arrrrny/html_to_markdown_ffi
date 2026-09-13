@@ -208,7 +208,7 @@ class NativeLibrary {
                 '${Platform.isAndroid ? libName : 'libhtml_to_markdown_ffi.so'}'),
     ];
     for (final rel in candidates) {
-      final f = File('${packageDir}${Platform.pathSeparator}..'
+      final f = File('$packageDir${Platform.pathSeparator}..'
           '${Platform.pathSeparator}$rel');
       if (f.existsSync()) return f.path;
     }
