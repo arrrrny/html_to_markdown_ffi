@@ -36,10 +36,13 @@ void main() {
       );
       final service = HtmlToMarkdownFfiService(port: port);
 
-      final result = service.convert('<h1>Title</h1>');
+      final result = service.convert('<h1>Title</h1>',
+          options: ConversionOptions(bullets: '*'));
 
       expect(result.content, '# Title');
       expect(port.calls, contains('convertSync'));
+      expect(port.lastOptions?.bullets, '*',
+          reason: 'the sync path must pass options through to the port');
     });
 
     test('convertAsync routes through the port async path', () async {
