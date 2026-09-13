@@ -35,6 +35,7 @@ abstract final class HtmNativeLibraries {
         final path = resolver();
         if (path != null && File(path).existsSync()) return path;
       } on StateError {
+        // ignore: avoid_catches_without_on_clauses
         // A resolver probing an unavailable platform must not break the chain.
       }
     }
@@ -199,7 +200,8 @@ class NativeLibrary {
     final candidates = <String>[
       if (Platform.isMacOS)
         'html_to_markdown_ffi_macos/native/'
-            '${Platform.version.contains('arm64') ? 'macos-arm64' : 'macos-x64'}/$libName',
+            '${Platform.version.contains('arm64') ? 'macos-arm64' : 'macos-x64'}/'
+          '$libName',
       if (Platform.isAndroid || Platform.isLinux)
         ...['arm64-v8a', 'armeabi-v7a', 'x86_64'].map((abi) =>
             'html_to_markdown_ffi_android/native/android/$abi/'

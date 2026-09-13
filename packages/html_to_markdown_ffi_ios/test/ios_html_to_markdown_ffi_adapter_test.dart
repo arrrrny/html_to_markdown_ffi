@@ -84,16 +84,13 @@ void main() {
       );
     });
 
-    test('convertSync off the native host surfaces sync_unsupported',
-        () {}, skip: 'executed per-platform below');
-
     test('convertSync guard is honest on this host', () {
       final port = IosHtmlToMarkdownFfiPort(
         channel: IosHtmlToMarkdownFfiChannel(
           invoke: (_, __) async => {'supported': true},
         ),
       );
-      const nativeHost = {
+      final nativeHost = {
         'macos': Platform.isMacOS,
         'android': Platform.isAndroid,
         'ios': Platform.isIOS,

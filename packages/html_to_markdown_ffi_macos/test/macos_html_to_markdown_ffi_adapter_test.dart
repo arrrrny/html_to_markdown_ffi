@@ -67,6 +67,27 @@ void main() {
       );
     });
 
+    test('native self-wired channel converts for real on the macOS host',
+        () async {
+      if (!Platform.isMacOS) {
+        markTestSkipped('executes on macOS hosts only');
+        return;
+      }
+      final getIt = GetIt.instance;
+      await getIt.reset();
+      registerMacosHtmlToMarkdownFfiDependencies(
+        getIt,
+        channel: MacosHtmlToMarkdownFfiChannel.native(),
+      );
+      addTearDown(getIt.reset);
+
+      final port = getIt<HtmlToMarkdownFfiPort>();
+      expect(await port.isSupported(), isTrue);
+      final result = await port.convert(id: 'host', html: '<h1>Title</h1>');
+      expect(result.content, isNotNull);
+      expect(result.content, contains('Title'));
+    });
+
     test('without a wired channel registration stays safe and typed',
         () async {
       final getIt = GetIt.instance;
@@ -84,16 +105,13 @@ void main() {
       );
     });
 
-    test('convertSync off the native host surfaces sync_unsupported',
-        () {}, skip: 'executed per-platform below');
-
     test('convertSync guard is honest on this host', () {
       final port = MacosHtmlToMarkdownFfiPort(
         channel: MacosHtmlToMarkdownFfiChannel(
           invoke: (_, __) async => {'supported': true},
         ),
       );
-      const nativeHost = {
+      final nativeHost = {
         'macos': Platform.isMacOS,
         'android': Platform.isAndroid,
         'ios': Platform.isIOS,
