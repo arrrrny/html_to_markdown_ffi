@@ -1,15 +1,10 @@
 # html_to_markdown_ffi_platform
 
-Shared channel-envelope core for the html_to_markdown_ffi platform adapters: decode,
-typed-error plumbing, and timeout policy over an injected platform
-channel. Adapters bring their own typed exception and taxonomy; the core
-never invents one.
+Shared envelope core for the `html_to_markdown_ffi` federated family:
+the transport seam ([PlatformHtmlToMarkdownFfiEnvelope] — payload decode,
+typed error mapping, timeout) and the native-library resolver seam
+([HtmNativeLibraries]) adapters use to contribute their bundled binaries
+to the preserved loading chain.
 
-Part of the [html_to_markdown_ffi](https://github.com/arrrrny/html_to_markdown_ffi) federated monorepo.
-
-## Develop
-
-```bash
-dart pub get
-dart test
-```
+Adapters depend on this package plus the app-facing
+[`html_to_markdown_ffi`](https://pub.dev/packages/html_to_markdown).
