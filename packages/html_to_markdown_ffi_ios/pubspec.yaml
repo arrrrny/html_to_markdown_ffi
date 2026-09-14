@@ -1,0 +1,35 @@
+# Federated plugin monorepo created by `zfa package create-plugin` (issue #1604).
+name: html_to_markdown_ffi_ios
+description: >-
+  Typed HTML to Markdown conversion for the Zuraffa ecosystem: a Rust FFI core behind a pure-Dart converter port with federated native adapters.
+version: 1.2.0
+homepage: https://zuraffa.com
+
+environment:
+  sdk: ^3.11.0
+
+dependencies:
+  zuraffa: ^6.2.2
+  html_to_markdown_ffi: ^1.2.0
+  html_to_markdown_ffi_platform: ^1.2.0
+
+dev_dependencies:
+  lints: ^4.0.0
+  test: ^1.25.0
+
+dependency_overrides:
+  # Local development only — resolve the in-family siblings to this
+  # checkout; stripped on publish.
+  html_to_markdown_ffi:
+    path: ../html_to_markdown_ffi
+  html_to_markdown_ffi_platform:
+    path: ../html_to_markdown_ffi_platform
+
+repository: https://github.com/arrrrny/html_to_markdown_ffi
+issue_tracker: https://github.com/arrrrny/html_to_markdown_ffi/issues
+
+topics:
+  - html-to-markdown-ffi
+  - ios
+  - clean-architecture
+  - zuraffa
