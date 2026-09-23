@@ -12,7 +12,7 @@ dependencies:
   ffi: ^2.1.0
   http: ^1.4.0
   zorphy_annotation: ^2.3.0
-  zuraffa: ^6.2.2
+  zuraffa: ^7.0.0
 
 dev_dependencies:
   build_runner: ^2.16.0
