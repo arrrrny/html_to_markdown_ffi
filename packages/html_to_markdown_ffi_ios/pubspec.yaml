@@ -33,3 +33,5 @@ flutter:
     platforms:
       ios:
         ffiPlugin: true
+
+resolution: workspace

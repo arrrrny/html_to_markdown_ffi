@@ -37,13 +37,3 @@ dependencies:
   html_to_markdown_ffi: ^1.2.3
   html_to_markdown_ffi_platform: ^1.2.3
 
-dependency_overrides:
-  # Local development only — resolve the in-family siblings to this
-  # checkout. A pub workspace takes the in-family siblings from the
-  # workspace itself, so only the out-of-repo family needs an override.
-  # Stripped on publish.
-  zuraffa_ffi:
-    path: ../zuraffa_ffi/packages/zuraffa_ffi
-  zuraffa_ffi_platform:
-    path: ../zuraffa_ffi/packages/zuraffa_ffi_platform
-
