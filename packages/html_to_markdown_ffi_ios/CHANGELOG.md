@@ -1,3 +1,14 @@
+## 1.2.2 - 2026-10-20
+
+- Ships the Rust `libhtml_to_markdown_ffi` archive to iOS apps natively: the
+  package is now a Flutter `ffiPlugin` with an SPM `Package.swift` whose
+  `binaryTarget` carries `libhtml_to_markdown_ffi.xcframework`
+  (device arm64 + simulator arm64/x86_64). Xcode force-loads static-archive
+  binaryTargets, so the `htm_*` symbols reach Dart's
+  `DynamicLibrary.process()` with **zero manual `-force_load` wiring** in the
+  host project — retire any `Runner/Frameworks/libhtml_to_markdown_ffi.a`
+  xcconfig/pbxproj links when adopting this version.
+
 ## 1.2.1 - 2026-09-23
 
 - Widened the `zuraffa` constraint from `^6.2.2` to `^7.0.0` across all five
