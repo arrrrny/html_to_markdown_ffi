@@ -18,17 +18,35 @@ issue [#687](https://github.com/arrrrny/zuraffa/issues/687) under epic #214).
 | [`html_to_markdown_ffi_ios`](https://pub.dev/packages/html_to_markdown_ffi_ios) | iOS adapter — Swift package that ships and links the native slices |
 | [`html_to_markdown_ffi_macos`](https://pub.dev/packages/html_to_markdown_ffi_macos) | macOS adapter — Swift package that ships and links the native slices |
 
-## Zero-touch installation (1.2.3+)
+## Zero-touch installation (1.2.4+)
 
-The native library ships **inside the plugin package**. A consumer adds the
-dependency and changes nothing else — no Podfile entry, no xcconfig, no
+The native library ships **inside the plugin package**, and the app-facing
+package is a real federated plugin. A consumer adds **one** dependency and
+changes nothing else — no second package, no Podfile entry, no xcconfig, no
 `-force_load` flag, no `jniLibs` copy in the app project, no Gradle edit.
 
 ```yaml
 dependencies:
-  html_to_markdown_ffi: ^1.2.3
-  html_to_markdown_ffi_ios: ^1.2.3    # or _macos / _android
+  html_to_markdown_ffi: ^1.2.4
 ```
+
+Flutter resolves the three adapters by itself, through the
+`default_package` declarations in the app-facing package:
+
+```yaml
+flutter:
+  plugin:
+    platforms:
+      android:
+        default_package: html_to_markdown_ffi_android
+      ios:
+        default_package: html_to_markdown_ffi_ios
+      macos:
+        default_package: html_to_markdown_ffi_macos
+```
+
+Before 1.2.4 the app-facing package was a plain Dart package, so a consumer
+had to declare the adapters itself — four dependencies instead of one.
 
 How each platform gets the library in place:
 

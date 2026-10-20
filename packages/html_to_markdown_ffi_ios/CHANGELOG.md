@@ -1,3 +1,13 @@
+## 1.2.4 - 2026-10-21
+
+- The adapter no longer depends on the app-facing package; the shared FFI
+  stack it imports now comes from `html_to_markdown_ffi_platform`. That is
+  what lets the app-facing package declare this adapter through
+  `default_package`, so a consumer needs only `html_to_markdown_ffi`.
+- The native distribution is unchanged: the Swift package still ships the
+  `libhtml_to_markdown_ffi.xcframework` as a dynamic product with a link
+  anchor, and the consumer's project files still need no change.
+
 ## 1.2.3 - 2026-10-20
 
 - **Fixes the zero-touch distribution introduced in 1.2.2.** The 1.2.2

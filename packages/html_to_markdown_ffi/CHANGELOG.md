@@ -1,3 +1,17 @@
+## 1.2.4 - 2026-10-21
+
+- The app-facing package is now a real federated plugin: it declares
+  `default_package` for android, ios and macos and depends on the three
+  adapters, so a consumer needs only `html_to_markdown_ffi: ^1.2.4` and
+  Flutter resolves the implementations itself. Before this release the
+  consumer had to declare the adapters too.
+- The shared FFI stack (native loader, bindings, port contract, models,
+  visitor, typed exceptions) moved to `html_to_markdown_ffi_platform`, which
+  every adapter already depended on — that is what made the one-dependency
+  wiring possible without a pub dependency cycle.
+- `package:html_to_markdown_ffi/html_to_markdown.dart` still exports the same
+  names.
+
 ## 1.2.3 - 2026-10-20
 
 - The platform envelope is now the shared `zuraffa_ffi_platform` envelope:

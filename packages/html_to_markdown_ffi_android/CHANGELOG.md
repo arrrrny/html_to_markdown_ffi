@@ -1,3 +1,14 @@
+## 1.2.4 - 2026-10-21
+
+- The adapter no longer depends on the app-facing package; the shared FFI
+  stack it imports now comes from `html_to_markdown_ffi_platform`. That is
+  what lets the app-facing package declare this adapter through
+  `default_package`, so a consumer needs only `html_to_markdown_ffi`.
+- The native distribution is unchanged: the adapter still ships
+  `libhtml_to_markdown_ffi.so` for `armeabi-v7a`, `arm64-v8a` and `x86_64`
+  in its own `jniLibs`, and the consumer's project files still need no
+  change.
+
 ## 1.2.3 - 2026-10-20
 
 - Zero-touch distribution: the adapter ships `libhtml_to_markdown_ffi.so` for

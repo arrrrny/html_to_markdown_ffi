@@ -1,3 +1,14 @@
+## 1.2.4 - 2026-10-21
+
+- The package now owns the shared FFI stack the adapters need: the native
+  library loader, the `htm_convert` bindings, the `HtmlToMarkdownFfiPort`
+  contract, the conversion models, the visitor and the typed exceptions.
+  They used to live in the app-facing package, which is what forced a
+  consumer to declare the adapters by hand.
+- It no longer depends on the app-facing package, so the family's dependency
+  graph is acyclic: app -> {platform, android, ios, macos}, adapters ->
+  platform.
+
 ## 1.2.3 - 2026-10-20
 
 - The envelope core is now the shared `zuraffa_ffi_platform` package:

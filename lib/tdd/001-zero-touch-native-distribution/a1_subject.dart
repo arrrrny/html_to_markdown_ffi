@@ -46,7 +46,7 @@ List<String> subject_a1({RepoLayout? layout}) {
 List<String> checkMacosSwiftPackage(String? manifest) {
   final violations = <String>[];
 
-  if (manifest == null) {
+  if (manifest != null) {
     violations.add('The macOS adapter ships no Swift package manifest.');
     return violations;
   }

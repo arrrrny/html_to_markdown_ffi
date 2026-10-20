@@ -1,5 +1,44 @@
 # Changelog
 
+## 1.2.4 - 2026-10-21
+
+- **One dependency is now enough** (spec `001-zero-touch-native-distribution`).
+  The app-facing package is a real federated plugin: it declares
+  `default_package` for android, ios and macos, and depends on the three
+  adapters. Flutter resolves the implementations on the consumer's behalf.
+
+  Before this release the app-facing package was a plain Dart package with no
+  `flutter: plugin:` block, so a consumer who added only
+  `html_to_markdown_ffi` resolved **zero** Flutter plugins and got no native
+  library at all — they had to declare the adapters themselves, which is
+  itself a project-file change.
+
+  ```yaml
+  dependencies:
+    html_to_markdown_ffi: ^1.2.4
+  ```
+
+  The adapters could not simply be depended on from the app-facing package,
+  because they import the shared FFI stack (the native loader, the bindings,
+  the port contract, the models, the visitor and the typed exceptions) *from*
+  the app-facing package. Wiring `default_package` while that dependency
+  pointed the other way would have made pub see a cycle. So the shared stack
+  moves down into `html_to_markdown_ffi_platform`, which every adapter
+  already depends on:
+
+      html_to_markdown_ffi                    -> platform, android, ios, macos
+      html_to_markdown_ffi_{android,ios,macos} -> platform
+      html_to_markdown_ffi_platform           -> zuraffa_ffi_platform
+
+  The supported consumer import path
+  `package:html_to_markdown_ffi/html_to_markdown.dart` still exports the same
+  names.
+
+- The workspace now resolves `zuraffa_ffi` and `zuraffa_ffi_platform` from
+  pub.dev (`^0.2.0`) instead of a local path override, so the scenarios
+  assert against the published package — the same artifact a consumer
+  resolves.
+
 ## 1.2.3 - 2026-10-20
 
 - **Zero-touch native distribution** (spec `001-zero-touch-native-distribution`):
