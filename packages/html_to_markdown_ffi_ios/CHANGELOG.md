@@ -1,3 +1,28 @@
+## 1.2.3 - 2026-10-20
+
+- **Fixes the zero-touch distribution introduced in 1.2.2.** The 1.2.2
+  arrangement did not actually put the native library in the app: the Swift
+  package's product was named `html_to_markdown_ffi_ios`, but Flutter's Swift
+  Package Manager integration looks a plugin's product up by the plugin name
+  with underscores turned into dashes (the product name becomes the
+  CFBundleIdentifier, which cannot contain underscores) — and the product was
+  `static`, so SwiftPM copied the binary target's archive into the build but
+  never linked it. Nothing referenced `htm_convert` by name, the linker
+  dead-stripped the archive, and the finished app exported **zero** `htm_*`
+  symbols. The adapter now ships:
+  - a product named `html-to-markdown-ffi-ios`, the way Flutter looks it up;
+  - the product as `type: .dynamic`, so Xcode links the archive and embeds
+    `html-to-markdown-ffi-ios.framework` in the app bundle;
+  - a C target `html_to_markdown_ffi_ios_anchor` holding the reference
+    `void (*const html_to_markdown_ffi_ios_link_anchor)(void) = htm_convert;`,
+    which keeps the archive in the link.
+
+  A consumer app still adds the dependency and changes nothing else — no
+  Podfile entry, no xcconfig, no `-force_load` flag.
+- The family resolves through one pub workspace with one shared lockfile, the
+  platform envelope is the shared `zuraffa_ffi_platform` one, and `zuraffa`
+  is widened to `^7.2.0`.
+
 ## 1.2.2 - 2026-10-20
 
 - Ships the Rust `libhtml_to_markdown_ffi` archive to iOS apps natively: the

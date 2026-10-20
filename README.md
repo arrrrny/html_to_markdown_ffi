@@ -15,8 +15,42 @@ issue [#687](https://github.com/arrrrny/zuraffa/issues/687) under epic #214).
 | [`html_to_markdown_ffi`](https://pub.dev/packages/html_to_markdown) | App-facing: the preserved `convert()` API plus the zuraffa port/service stack |
 | [`html_to_markdown_ffi_platform`](https://pub.dev/packages/html_to_markdown_ffi_platform) | Shared envelope core: transport seam, typed error mapping, resolver seam |
 | [`html_to_markdown_ffi_android`](https://pub.dev/packages/html_to_markdown_ffi_android) | Android adapter — bundled `armeabi-v7a` / `arm64-v8a` / `x86_64` binaries |
-| [`html_to_markdown_ffi_ios`](https://pub.dev/packages/html_to_markdown_ffi_ios) | iOS adapter — statically linked slices |
-| [`html_to_markdown_ffi_macos`](https://pub.dev/packages/html_to_markdown_ffi_macos) | macOS adapter — bundled arm64 / x64 dylibs |
+| [`html_to_markdown_ffi_ios`](https://pub.dev/packages/html_to_markdown_ffi_ios) | iOS adapter — Swift package that ships and links the native slices |
+| [`html_to_markdown_ffi_macos`](https://pub.dev/packages/html_to_markdown_ffi_macos) | macOS adapter — Swift package that ships and links the native slices |
+
+## Zero-touch installation (1.2.3+)
+
+The native library ships **inside the plugin package**. A consumer adds the
+dependency and changes nothing else — no Podfile entry, no xcconfig, no
+`-force_load` flag, no `jniLibs` copy in the app project, no Gradle edit.
+
+```yaml
+dependencies:
+  html_to_markdown_ffi: ^1.2.3
+  html_to_markdown_ffi_ios: ^1.2.3    # or _macos / _android
+```
+
+How each platform gets the library in place:
+
+- **iOS / macOS** — the adapter ships a Swift package with a `binaryTarget`
+  over the bundled `libhtml_to_markdown_ffi.xcframework`. Three details make
+  this work, and all three are load-bearing:
+  1. the product is named the way Flutter looks it up — the plugin name with
+     underscores turned into dashes (`html-to-markdown-ffi-ios`), because the
+     product name becomes the CFBundleIdentifier, which cannot contain
+     underscores;
+  2. the product is `type: .dynamic`, because a static product contributes
+     only the object files it compiles itself and the binary target's archive
+     is dropped from the link;
+  3. a small C target (`html_to_markdown_ffi_ios_anchor`) holds the
+     reference `void (*const html_to_markdown_ffi_ios_link_anchor)(void) =
+     htm_convert;`, so the linker keeps the archive instead of
+     dead-stripping it.
+
+  The `htm_*` symbols then reach Dart through `DynamicLibrary.process()`.
+- **Android** — the adapter ships `libhtml_to_markdown_ffi.so` for
+  `armeabi-v7a`, `arm64-v8a` and `x86_64` under `android/src/main/jniLibs/<abi>/`,
+  and its Gradle module packages those `jniLibs`.
 
 ## Quick start (unchanged public API)
 

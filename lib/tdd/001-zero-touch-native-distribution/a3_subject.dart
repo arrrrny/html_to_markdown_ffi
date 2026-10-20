@@ -11,98 +11,151 @@ import 'dart:io';
 
 import 'family_layout.dart';
 
+/// The iOS adapter package the scenario inspects.
+const String a3Package = 'html_to_markdown_ffi_ios';
+
+/// The macOS adapter package the iOS one must mirror.
+const String a3MacosPackage = 'html_to_markdown_ffi_macos';
+
+/// The markers both Swift packages must carry to distribute the native
+/// library the same way.
+const List<String> a3ParityMarkers = <String>[
+  '.binaryTarget(',
+  'libhtml_to_markdown_ffi',
+  'Frameworks/libhtml_to_markdown_ffi.xcframework',
+  'type: .dynamic',
+  '_anchor',
+];
+
 /// Scenario runner for behavior A3.
 ///
 /// Returns the violations found; an empty list means the scenario holds.
-List<String> subject_a3() {
+List<String> subject_a3({RepoLayout? layout}) {
+  final repo = layout ?? RepoLayout.repository();
+
+  const spmDir = 'packages/$a3Package/ios/$a3Package';
+  const macosSpmDir = 'packages/$a3MacosPackage/macos/$a3MacosPackage';
+  const xcframework =
+      '$spmDir/Frameworks/libhtml_to_markdown_ffi.xcframework';
+
+  final manifest = repo.readText('$spmDir/Package.swift');
+
+  return <String>[
+    ...checkIosSwiftPackage(manifest),
+    ...checkIosXcframework(Directory('${repo.root.path}/$xcframework')),
+    ...checkFfiPluginDeclaration(repo.memberPubspecOrNull(a3Package), 'ios'),
+    ...checkSwiftPackageParity(
+      manifest,
+      repo.readText('$macosSpmDir/Package.swift'),
+      a3ParityMarkers,
+    ),
+  ];
+}
+
+/// The iOS adapter's own Swift package must ship a `binaryTarget` over the
+/// xcframework that carries the Rust archive, in the shape Flutter's Swift
+/// Package Manager integration can actually use: a product named the way
+/// Flutter looks it up, a dynamic product, and a link-anchor target that
+/// keeps the archive in the link.
+List<String> checkIosSwiftPackage(String? manifest) {
   final violations = <String>[];
 
-  const iosPackage = 'html_to_markdown_ffi_ios';
-  const macosPackage = 'html_to_markdown_ffi_macos';
-
-  // 1. The iOS adapter ships its own Swift package with a binaryTarget over
-  //    the xcframework that carries the Rust static archive.
-  final manifest = readText(
-    'packages/$iosPackage/ios/$iosPackage/Package.swift',
-  );
   if (manifest == null) {
     violations.add('The iOS adapter ships no Swift package manifest.');
-  } else {
-    if (!manifest.contains('.binaryTarget(')) {
-      violations.add('The iOS Swift package declares no binaryTarget.');
-    }
-    if (!manifest.contains('libhtml_to_markdown_ffi')) {
-      violations.add(
-        'The iOS Swift package does not reference the native library.',
-      );
-    }
-    if (!manifest.contains('Frameworks/libhtml_to_markdown_ffi.xcframework')) {
-      violations.add(
-        'The iOS Swift package does not point at the shipped xcframework.',
-      );
-    }
+    return violations;
   }
 
-  // 2. The xcframework the binaryTarget points at is actually shipped.
-  const xcframework =
-      'packages/$iosPackage/ios/$iosPackage/Frameworks/'
-      'libhtml_to_markdown_ffi.xcframework';
-  if (!Directory('${repositoryRoot().path}/$xcframework').existsSync()) {
+  if (!manifest.contains('.binaryTarget(')) {
+    violations.add('The iOS Swift package declares no binaryTarget.');
+  }
+  if (!manifest.contains('libhtml_to_markdown_ffi')) {
+    violations.add(
+      'The iOS Swift package does not reference the native library.',
+    );
+  }
+  if (!manifest.contains('Frameworks/libhtml_to_markdown_ffi.xcframework')) {
+    violations.add(
+      'The iOS Swift package does not point at the shipped xcframework.',
+    );
+  }
+
+  final product = swiftProductName(a3Package);
+  if (!manifest.contains('name: "$product"')) {
+    violations.add('The iOS Swift package declares no product named "$product".');
+  }
+  if (!manifest.contains('type: .dynamic')) {
+    violations.add('The iOS Swift package product is not dynamic.');
+  }
+  if (!manifest.contains('${a3Package}_anchor')) {
+    violations.add('The iOS Swift package ships no link anchor target.');
+  }
+
+  return violations;
+}
+
+/// The xcframework the binary target points at must be shipped, and it must
+/// carry a real static archive that exports the C entry point.
+List<String> checkIosXcframework(Directory xcframework) {
+  final violations = <String>[];
+
+  if (!xcframework.existsSync()) {
     violations.add('The iOS adapter ships no xcframework.');
-  } else {
-    final archives = Directory('${repositoryRoot().path}/$xcframework')
-        .listSync(recursive: true)
-        .whereType<File>()
-        .where((file) => file.path.endsWith('.a'))
-        .toList();
-    if (archives.isEmpty) {
-      violations.add('The iOS xcframework carries no static archive.');
+    return violations;
+  }
+
+  final archives = xcframework
+      .listSync(recursive: true)
+      .whereType<File>()
+      .where((file) => file.path.endsWith('.a'))
+      .toList();
+  if (archives.isEmpty) {
+    violations.add('The iOS xcframework carries no static archive.');
+  }
+  for (final archive in archives) {
+    if (!hasMagic(archive, arMagic) && !hasMagic(archive, fatMagic)) {
+      violations.add(
+        'The iOS xcframework archive ${archive.path} is not a static '
+        'archive.',
+      );
     }
-    for (final archive in archives) {
-      if (!hasMagic(archive, arMagic) && !hasMagic(archive, fatMagic)) {
-        violations.add(
-          'The iOS xcframework archive ${archive.path} is not a static '
-          'archive.',
-        );
-      }
-      if (!exportsSymbol(archive, ffiEntryPoint)) {
-        violations.add(
-          'The iOS xcframework archive ${archive.path} does not export '
-          '$ffiEntryPoint.',
-        );
-      }
+    if (!exportsSymbol(archive, ffiEntryPoint)) {
+      violations.add(
+        'The iOS xcframework archive ${archive.path} does not export '
+        '$ffiEntryPoint.',
+      );
     }
   }
 
-  // 3. The plugin declares itself an FFI plugin for iOS.
-  final pubspec = memberPubspec(iosPackage);
-  if (!RegExp('ios:\\s*\n\\s*ffiPlugin:\\s*true').hasMatch(pubspec)) {
-    violations.add('The iOS adapter does not declare `ffiPlugin: true`.');
-  }
+  return violations;
+}
 
-  // 4. The iOS adapter uses the same distribution shape as the macOS one:
-  //    Swift package + binaryTarget + xcframework + `ffiPlugin: true`.
-  final macosManifest = readText(
-    'packages/$macosPackage/macos/$macosPackage/Package.swift',
-  );
+/// The iOS adapter must use the same distribution shape as the macOS one:
+/// Swift package + binaryTarget + xcframework + dynamic product + link
+/// anchor + `ffiPlugin: true`.
+List<String> checkSwiftPackageParity(
+  String? iosManifest,
+  String? macosManifest,
+  List<String> markers,
+) {
+  if (iosManifest == null) {
+    // The missing iOS manifest is already reported by the iOS check.
+    return const <String>[];
+  }
   if (macosManifest == null) {
-    violations.add('The macOS adapter ships no Swift package manifest.');
-  } else if (manifest == null) {
-    // The missing iOS manifest is already reported above.
-  } else {
-    for (final marker in <String>[
-      '.binaryTarget(',
-      'libhtml_to_markdown_ffi',
-      'Frameworks/libhtml_to_markdown_ffi.xcframework',
-    ]) {
-      if (!manifest.contains(marker)) {
-        violations.add(
-          'The iOS Swift package differs from the macOS one: $marker',
-        );
-      }
-      if (!macosManifest.contains(marker)) {
-        violations.add('The macOS Swift package differs from the iOS one: $marker');
-      }
+    return <String>['The macOS adapter ships no Swift package manifest.'];
+  }
+
+  final violations = <String>[];
+  for (final marker in markers) {
+    if (!iosManifest.contains(marker)) {
+      violations.add(
+        'The iOS Swift package differs from the macOS one: $marker',
+      );
+    }
+    if (!macosManifest.contains(marker)) {
+      violations.add(
+        'The macOS Swift package differs from the iOS one: $marker',
+      );
     }
   }
 

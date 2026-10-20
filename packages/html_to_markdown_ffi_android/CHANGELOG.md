@@ -1,3 +1,13 @@
+## 1.2.3 - 2026-10-20
+
+- Zero-touch distribution: the adapter ships `libhtml_to_markdown_ffi.so` for
+  `armeabi-v7a`, `arm64-v8a` and `x86_64` in its own
+  `android/src/main/jniLibs/<abi>/`, and its Gradle module packages those
+  `jniLibs`. The plugin is an `ffiPlugin`, so a consumer app adds the
+  dependency and changes no project file of its own — no `jniLibs` copy, no
+  Gradle edit.
+- `zuraffa` widened to `^7.2.0`.
+
 ## 1.2.1 - 2026-09-23
 
 - Widened the `zuraffa` constraint from `^6.2.2` to `^7.0.0` across all five

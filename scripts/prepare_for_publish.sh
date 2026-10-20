@@ -31,6 +31,12 @@ for pkg in "html_to_markdown_ffi" "html_to_markdown_ffi_platform" "html_to_markd
     sed -i.bak -E "s/^version: .*/version: $VERSION/" "$pubspec" && rm -f "$pubspec.bak"
     sed -i.bak -E "/^( *html_to_markdown_ffi: \^)/s|.*|  html_to_markdown_ffi: ^$VERSION|" "$pubspec" && rm -f "$pubspec.bak"
     sed -i.bak -E "/^( *html_to_markdown_ffi_platform: \^)/s|.*|  html_to_markdown_ffi_platform: ^$VERSION|" "$pubspec" && rm -f "$pubspec.bak"
+    # The repository is a pub workspace, so every member carries
+    # `resolution: workspace`. That field is only meaningful inside the
+    # repository — a published package must not carry it, or a consumer
+    # resolving it outside a workspace fails. `scripts/restore_dev_setup.sh`
+    # puts it back on the development branch.
+    sed -i.bak -E "/^resolution: workspace$/d" "$pubspec" && rm -f "$pubspec.bak"
     echo -e "${BLUE}$pkg -> $VERSION (in-family deps ^$VERSION)${NC}"
 done
 

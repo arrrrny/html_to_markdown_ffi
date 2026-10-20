@@ -3,16 +3,29 @@
 ## 1.2.3 - 2026-10-20
 
 - **Zero-touch native distribution** (spec `001-zero-touch-native-distribution`):
-  the macOS and Android adapters now ship the Rust native library inside the
-  plugin package, so a consumer app adds the dependency and nothing else —
+  the macOS, iOS and Android adapters now ship the Rust native library inside
+  the plugin package, so a consumer app adds the dependency and nothing else —
   no Podfile entry, no xcconfig, no `-force_load` flag, no `jniLibs` copy in
   the app project, no Gradle edit.
-  - **macOS** mirrors the iOS 1.2.2 arrangement: a Swift package
+  - **iOS 1.2.2's zero-touch claim was broken twice over, and is fixed here.**
+    The product was named `html_to_markdown_ffi_ios` with underscores, but
+    Flutter's Swift Package Manager integration looks a plugin's product up by
+    the plugin name with underscores turned into dashes — the product name
+    becomes the CFBundleIdentifier, which cannot contain underscores. And the
+    product was `static`, so SwiftPM copied the binary target's archive into
+    the build but never linked it: nothing referenced `htm_convert` by name,
+    the linker dead-stripped it, and the finished app exported **zero**
+    `htm_*` symbols. The product is now `html-to-markdown-ffi-ios` and
+    `type: .dynamic`, and a small C target (`html_to_markdown_ffi_ios_anchor`)
+    holds the reference `void (*const html_to_markdown_ffi_ios_link_anchor)(void)
+    = htm_convert;` that keeps the archive in the link.
+  - **macOS** now uses the same shape as the fixed iOS adapter: a Swift package
     (`macos/html_to_markdown_ffi_macos/Package.swift`) with a `binaryTarget`
     over `Frameworks/libhtml_to_markdown_ffi.xcframework` (universal
-    `arm64` + `x86_64` static archive exporting the `htm_*` C API), plus
-    `ffiPlugin: true`. The symbols reach Dart through
-    `DynamicLibrary.process()`.
+    `arm64` + `x86_64` static archive exporting the `htm_*` C API), a
+    `html-to-markdown-ffi-macos` dynamic product, a
+    `html_to_markdown_ffi_macos_anchor` C target, plus `ffiPlugin: true`. The
+    symbols reach Dart through `DynamicLibrary.process()`.
   - **Android** ships `libhtml_to_markdown_ffi.so` for `armeabi-v7a`,
     `arm64-v8a` and `x86_64` under `android/src/main/jniLibs/<abi>/`, with a
     Gradle module that packages those `jniLibs`, plus `ffiPlugin: true`.

@@ -1,3 +1,10 @@
+## 1.2.3 - 2026-10-20
+
+- The envelope core is now the shared `zuraffa_ffi_platform` package:
+  `PlatformHtmlToMarkdownFfiEnvelope` is an alias of `PlatformFfiEnvelope`
+  and the duplicated implementation is gone. The public name is unchanged.
+- `zuraffa` widened to `^7.2.0`.
+
 ## 1.2.1 - 2026-09-23
 
 - Widened the `zuraffa` constraint from `^6.2.2` to `^7.0.0` across all five
