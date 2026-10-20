@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "feature": "001-zero-touch-native-distribution",
+  "lane": "skin",
+  "verdict": "green",
+  "result": "complete",
+  "behaviors": [],
+  "counts": {
+    "total": 0,
+    "pending": 0,
+    "red": 0,
+    "green": 0,
+    "done": 0
+  },
+  "stopped_at": null,
+  "at": "2026-10-20T23:00:14.136155Z"
+}

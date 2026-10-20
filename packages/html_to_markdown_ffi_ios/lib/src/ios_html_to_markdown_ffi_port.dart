@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:html_to_markdown_ffi/html_to_markdown_ffi.dart';
+import 'package:html_to_markdown_ffi_platform/html_to_markdown_ffi_platform.dart';
 
 import 'ios_html_to_markdown_ffi_channel.dart';
 import 'ios_html_to_markdown_ffi_exception.dart';
@@ -67,19 +67,12 @@ class IosHtmlToMarkdownFfiPort implements HtmlToMarkdownFfiPort {
         recoverable: false,
       );
     }
-    final dataSource = NativeHtmConversionDataSource();
     return conversionResultFromJson(
-      dataSource
-          .convertNow(
-            HtmConversion(
-              id: id,
-              html: html,
-              optionsJson: optionsJsonOf(options),
-              resultJson: '',
-            ),
-            visitor: visitor,
-          )
-          .resultJson,
+      convertWithNativeLibrary(
+        html,
+        optionsJson: optionsJsonOf(options),
+        visitor: visitor,
+      ),
     );
   }
 }

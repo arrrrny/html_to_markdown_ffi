@@ -9,20 +9,22 @@
 //      consumers that never register an adapter.
 // Lifecycle mistakes surface as typed [HtmlToMarkdownFfiException]s before
 // they reach the platform.
+import 'package:html_to_markdown_ffi_platform/html_to_markdown_ffi_platform.dart'
+    show
+        ConversionOptions,
+        ConversionResult,
+        HtmlToMarkdownFfiException,
+        HtmlToMarkdownFfiPort,
+        NativeLibrary,
+        Visitor;
 import 'package:zuraffa/zuraffa.dart';
 
 import 'domain/entities/htm_conversion/htm_conversion.dart';
 import 'htm_conversion_mapping.dart';
-import '../models/conversion_options.dart';
-import '../models/conversion_result.dart';
-import '../visitor.dart';
-import '../native_library.dart';
 import 'data/datasources/htm_conversion/native_htm_conversion_datasource.dart';
 import 'data/repositories/data_htm_conversion_repository.dart';
 import 'domain/repositories/htm_conversion_repository.dart';
 import 'domain/usecases/htm_conversion/get_htm_conversion_usecase.dart';
-import 'html_to_markdown_ffi_exception.dart';
-import 'html_to_markdown_ffi_port.dart';
 
 class HtmlToMarkdownFfiService {
   final HtmlToMarkdownFfiPort? port;

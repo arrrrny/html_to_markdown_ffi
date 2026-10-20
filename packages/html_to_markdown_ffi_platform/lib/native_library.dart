@@ -86,9 +86,7 @@ class NativeLibrary {
   }
 
   factory NativeLibrary() {
-    if (_instance == null) {
-      _instance = NativeLibrary._(_load());
-    }
+    _instance ??= NativeLibrary._(_load());
     return _instance!;
   }
 
@@ -107,13 +105,13 @@ class NativeLibrary {
     //    platforms we ship prebuilt artifacts for (macOS arm64 + x64).
     final bundled = _bundledLibraryPath();
     if (bundled != null && File(bundled).existsSync()) {
-      try { return DynamicLibrary.open(bundled); } on ArgumentError {}
+      try { return DynamicLibrary.open(bundled); } on ArgumentError { /* next resolution step */ }
     }
 
     // 2b. Resolver seam: adapters (and tests) contribute binary paths.
     final viaResolver = HtmNativeLibraries.resolve();
     if (viaResolver != null) {
-      try { return DynamicLibrary.open(viaResolver); } on ArgumentError {}
+      try { return DynamicLibrary.open(viaResolver); } on ArgumentError { /* next resolution step */ }
     }
 
     // 2c. Development monorepo probe: sibling federated adapter packages
@@ -121,25 +119,25 @@ class NativeLibrary {
     // consumer's tree does not have these siblings).
     final viaSibling = _siblingAdapterLibraryPath();
     if (viaSibling != null) {
-      try { return DynamicLibrary.open(viaSibling); } on ArgumentError {}
+      try { return DynamicLibrary.open(viaSibling); } on ArgumentError { /* next resolution step */ }
     }
 
     final libName = _platformLibraryName();
     final home = Platform.environment['HOME'] ?? '/tmp';
     final cachePath = '$home/.html_to_markdown_ffi/$libName';
-    try { return DynamicLibrary.open(cachePath); } on ArgumentError {}
+    try { return DynamicLibrary.open(cachePath); } on ArgumentError { /* next resolution step */ }
 
     // Dev fallback: a Cargo workspace checked out next to this package.
     final repoRoot = _findRepoRoot();
     if (repoRoot != null) {
-      try { return DynamicLibrary.open('${repoRoot.path}/target/release/$libName'); } on ArgumentError {}
+      try { return DynamicLibrary.open('${repoRoot.path}/target/release/$libName'); } on ArgumentError { /* next resolution step */ }
     }
 
     // Android: resolves `libhtml_to_markdown_ffi.so` from the app's jniLibs
     // loader path. iOS: resolves symbols statically linked into the app.
-    try { return DynamicLibrary.open(libName); } on ArgumentError {}
-    try { return DynamicLibrary.process(); } on ArgumentError {}
-    try { return DynamicLibrary.executable(); } on ArgumentError {}
+    try { return DynamicLibrary.open(libName); } on ArgumentError { /* next resolution step */ }
+    try { return DynamicLibrary.process(); } on ArgumentError { /* next resolution step */ }
+    try { return DynamicLibrary.executable(); } on ArgumentError { /* next resolution step */ }
 
     throw StateError(
       'Failed to load $libName. Call NativeLibrary.downloadIfNeeded() first, '

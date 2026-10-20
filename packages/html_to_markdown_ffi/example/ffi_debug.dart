@@ -1,7 +1,7 @@
 import 'dart:ffi';
 import 'package:ffi/ffi.dart';
 
-import 'package:html_to_markdown_ffi/native_library.dart';
+import 'package:html_to_markdown_ffi_platform/native_library.dart';
 
 /// Simple FFI debug tool for inspecting the native library symbol table.
 void main(List<String> args) {

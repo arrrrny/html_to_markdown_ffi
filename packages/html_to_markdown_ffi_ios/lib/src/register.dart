@@ -1,4 +1,4 @@
-import 'package:html_to_markdown_ffi/html_to_markdown_ffi.dart';
+import 'package:html_to_markdown_ffi_platform/html_to_markdown_ffi_platform.dart';
 import 'package:zuraffa/zuraffa.dart';
 
 import 'ios_html_to_markdown_ffi_channel.dart';
@@ -10,9 +10,9 @@ import 'ios_html_to_markdown_ffi_port.dart';
 /// channel. Without a channel every call surfaces the typed
 /// `channel_not_wired` failure; pass
 /// `IosHtmlToMarkdownFfiChannel.native()` for the real in-process
-/// conversion. The native library itself is resolved by the app package's
-/// preserved loading chain (bundled, resolver seam, sibling probe, cache,
-/// download, loader path) — this registration only wires the port.
+/// conversion. The native library itself is resolved by the platform
+/// package's preserved loading chain (bundled, resolver seam, sibling probe,
+/// cache, download, loader path) — this registration only wires the port.
 void registerIosHtmlToMarkdownFfiDependencies(
   GetIt getIt, {
   IosHtmlToMarkdownFfiChannel? channel,

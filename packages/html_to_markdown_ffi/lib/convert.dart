@@ -3,11 +3,10 @@
 // [HtmlToMarkdownFfiService] — adapter port when one is registered, the
 // in-package datasource wrapping the preserved dart:ffi bridge otherwise
 // (FR-004). Behavior, signature, and exception surface are unchanged.
-import 'exceptions.dart';
-import 'models/conversion_options.dart';
-import 'models/conversion_result.dart';
+import 'package:html_to_markdown_ffi_platform/html_to_markdown_ffi_platform.dart'
+    show ConversionErrorException, ConversionOptions, ConversionResult, Visitor;
+
 import 'src/html_to_markdown_ffi_service.dart';
-import 'visitor.dart';
 
 /// The service instance backing the top-level [convert] function: the
 /// datasource path (in-process native bridge). Federated consumers that

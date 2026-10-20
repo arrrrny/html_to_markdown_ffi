@@ -7,7 +7,7 @@ import 'dart:io' show Platform;
 
 import 'package:test/test.dart';
 import 'package:zuraffa/zuraffa.dart';
-import 'package:html_to_markdown_ffi/html_to_markdown_ffi.dart';
+import 'package:html_to_markdown_ffi_platform/html_to_markdown_ffi_platform.dart';
 import 'package:html_to_markdown_ffi_macos/html_to_markdown_ffi_macos.dart';
 
 void main() {

@@ -1,0 +1,34 @@
+{
+  "feature": "001-zero-touch-native-distribution",
+  "split_at": "2026-10-20T22:59:46.699925Z",
+  "source": "tdd/test-list.md",
+  "rows": 5,
+  "spec_hash": "bb67889f338de830fe298a203e838dcb1bfaee5ac37267ff941e3fe78ad363c2",
+  "spec_mtime": "2026-10-20T22:26:38.457753Z",
+  "classification": {
+    "A1": "CORE",
+    "A2": "CORE",
+    "A3": "CORE",
+    "A4": "CORE",
+    "A5": "CORE"
+  },
+  "classification_source": {
+    "A1": "heuristic",
+    "A2": "heuristic",
+    "A3": "heuristic",
+    "A4": "heuristic",
+    "A5": "heuristic"
+  },
+  "adaptive_slots": [],
+  "golden_ids": [],
+  "files": [
+    "tdd/04-ENGINE.md",
+    "tdd/04-SKIN.md",
+    "tdd/04-CONTRACT.md",
+    "tdd/test-list.md (meta-index)"
+  ],
+  "engine_flutter_references": 0,
+  "refreshed_at": "2026-10-20T23:00:48.857045Z",
+  "refreshed_by": "zfa tdd plan",
+  "refreshed_rows": 5
+}
