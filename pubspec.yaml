@@ -1,0 +1,49 @@
+name: html_to_markdown_ffi_workspace
+description: >-
+  Monorepo workspace for the html_to_markdown_ffi federated plugin family
+  (app-facing package, shared platform envelope core, and the android/ios/macos
+  adapters).
+publish_to: none
+version: 1.2.3
+
+environment:
+  sdk: ^3.11.0
+
+workspace:
+  - packages/html_to_markdown_ffi
+  - packages/html_to_markdown_ffi_platform
+  - packages/html_to_markdown_ffi_android
+  - packages/html_to_markdown_ffi_ios
+  - packages/html_to_markdown_ffi_macos
+
+dev_dependencies:
+  lints: ^4.0.0
+  test: ^1.25.0
+
+  build_runner: ^2.4.0
+  json_serializable: ^6.7.0
+  coverage: ^1.15.1
+  mocktail: ^1.0.5
+  mutation_test: ^1.8.1
+
+dependencies:
+  # The family members are reachable from the workspace root, so the
+  # scenarios can assert the family's public contract at runtime instead of
+  # reading its source text.
+  zuraffa: ^7.2.0
+  zorphy_annotation: ^2.4.3
+  zuraffa_ffi: ^0.2.0
+  zuraffa_ffi_platform: ^0.2.0
+  html_to_markdown_ffi: ^1.2.3
+  html_to_markdown_ffi_platform: ^1.2.3
+
+dependency_overrides:
+  # Local development only — resolve the in-family siblings to this
+  # checkout. A pub workspace takes the in-family siblings from the
+  # workspace itself, so only the out-of-repo family needs an override.
+  # Stripped on publish.
+  zuraffa_ffi:
+    path: ../zuraffa_ffi/packages/zuraffa_ffi
+  zuraffa_ffi_platform:
+    path: ../zuraffa_ffi/packages/zuraffa_ffi_platform
+

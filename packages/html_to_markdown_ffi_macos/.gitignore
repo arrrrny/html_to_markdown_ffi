@@ -1,0 +1,7 @@
+# Swift Package Manager build products.
+# `dart pub publish` only reads the .gitignore at the package root, so the
+# repository-level .gitignore does not keep these out of the published
+# archive — and a 140 MB .build tree would push the package over pub.dev's
+# size limit.
+.build/
+.swiftpm/

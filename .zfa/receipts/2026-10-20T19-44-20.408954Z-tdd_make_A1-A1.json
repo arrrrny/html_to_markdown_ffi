@@ -1,0 +1,34 @@
+{
+  "schema": "proof.v1",
+  "command": "tdd make A1",
+  "target": "A1",
+  "repro": "zfa tdd make A1",
+  "at": "2026-10-20T19:44:20.408954Z",
+  "generator_version": "7.2.0",
+  "input": {
+    "sanctioned": true,
+    "hand_delta": true,
+    "transition": "skip",
+    "behavior": "A1",
+    "feature": "001-zero-touch-native-distribution"
+  },
+  "files": [
+    {
+      "path": "test/tdd/001-zero-touch-native-distribution/a1_test.dart",
+      "action": "update",
+      "sha256": "8f53b479939c6e79998a2186147bb460c199ff616a0c446cef933bf78cd78f9d",
+      "bytes": 1821,
+      "snapshot": "// GENERATED TEST — `zfa tdd gen A1` (spec 044-test-tdd-generation).\n//\n// behavior_id: A1\n// source_criterion: AC-1\n// kind: acceptance\n// description: the Rust native library is linked into the app by the macOS adapter package's own Swift package (a `binaryTarget` over the shipped xcframework), and the consumer's project files contain no reference to the native library.\n//\n// This test asserts the observable behavior described above. It is\n// \"honest red\" on first execution: the paired subject at\n// `package:html_to_markdown_ffi_workspace/tdd/001-zero-touch-native-distribution/a1_subject.dart` is unimplemented, so the test fails through an\n// assertion (not an uncaught error, compile/load error, skip, or\n// placeholder). Replace the subject's\n// stub body with real implementation to make this test pass.\n// zfa:tdd: A1:hand — hand step completed before first red certification (issue #1411)\nlibrary;\n\nimport 'package:test/test.dart';\nimport 'package:html_to_markdown_ffi_workspace/tdd/001-zero-touch-native-distribution/a1_subject.dart' as subject;\n\nvoid main() {\n  group('A1 (AC-1)', () {\n    test('A1 — the Rust native library is linked into the app by the macOS adapter package\\'s own Swift package (a `binaryTarget` over the shipped xcframework), and the consumer\\'s project files contain no reference to the native library.', () {\n      final Object? result = (() {\n        try {\n          subject.subject_a1();\n          return null;\n        } on UnimplementedError catch (error) {\n          return error;\n        }\n      })();\n      expect(result, isNot(isA<UnimplementedError>()));\n      // The observable outcome of the scenario: the macOS adapter links the native library from its own Swift package — no consumer project change.\n      expect(subject.subject_a1(), isEmpty);\n    });\n  });\n}\n"
+    },
+    {
+      "path": "lib/tdd/001-zero-touch-native-distribution/a1_subject.dart",
+      "action": "update",
+      "sha256": "e714988d93029c05a137617cf2a7b6c17276d31756246efd093601802675b4a5",
+      "bytes": 3415,
+      "snapshot": "// HAND-IMPLEMENTED SUBJECT — behavior A1 (zfa:tdd: A1:hand).\n//\n// behavior_id: A1\n// source_criterion: AC-1\n// description: the Rust native library is linked into the app by the macOS adapter package's own Swift package (a `binaryTarget` over the shipped xcframework), and the consumer's project files contain no reference to the native library.\n//\n// ignore_for_file: non_constant_identifier_names\nlibrary;\n\nimport 'dart:io';\n\nimport 'family_layout.dart';\n\n/// Scenario runner for behavior A1.\n///\n/// Returns the violations found; an empty list means the scenario holds.\nList<String> subject_a1() {\n  final violations = <String>[];\n\n  const package = 'html_to_markdown_ffi_macos';\n  const spmDir = 'packages/$package/macos/$package';\n\n  // 1. The adapter ships its own Swift package with a binaryTarget over the\n  //    xcframework that carries the Rust static archive.\n  final manifest = readText('$spmDir/Package.swift');\n  if (manifest == null) {\n    violations.add('The macOS adapter ships no Swift package manifest.');\n  } else {\n    if (!manifest.contains('.binaryTarget(')) {\n      violations.add('The macOS Swift package declares no binaryTarget.');\n    }\n    if (!manifest.contains('libhtml_to_markdown_ffi')) {\n      violations.add(\n        'The macOS Swift package does not reference the native library.',\n      );\n    }\n    if (!manifest.contains('Frameworks/libhtml_to_markdown_ffi.xcframework')) {\n      violations.add(\n        'The macOS Swift package does not point at the shipped xcframework.',\n      );\n    }\n  }\n\n  // 2. The xcframework the binaryTarget points at is actually shipped, with\n  //    a real static archive inside it.\n  const xcframework = '$spmDir/Frameworks/libhtml_to_markdown_ffi.xcframework';\n  if (!Directory('${repositoryRoot().path}/$xcframework').existsSync()) {\n    violations.add('The macOS adapter ships no xcframework.');\n  } else {\n    final archives = Directory('${repositoryRoot().path}/$xcframework')\n        .listSync(recursive: true)\n        .whereType<File>()\n        .where((file) => file.path.endsWith('.a'))\n        .toList();\n    if (archives.isEmpty) {\n      violations.add('The macOS xcframework carries no static archive.');\n    }\n    for (final archive in archives) {\n      if (!hasMagic(archive, arMagic) && !hasMagic(archive, fatMagic)) {\n        violations.add(\n          'The macOS xcframework archive ${archive.path} is not a static '\n          'archive.',\n        );\n      }\n      if (!exportsSymbol(archive, ffiEntryPoint)) {\n        violations.add(\n          'The macOS xcframework archive ${archive.path} does not export '\n          '$ffiEntryPoint.',\n        );\n      }\n    }\n    final info = readText('$xcframework/Info.plist');\n    if (info == null || !info.contains('macos')) {\n      violations.add('The macOS xcframework declares no macOS library.');\n    }\n  }\n\n  // 3. The plugin declares itself an FFI plugin for macOS, so Flutter links\n  //    the native library without any consumer-side wiring.\n  final pubspec = memberPubspec(package);\n  if (!RegExp('macos:\\\\s*\\n\\\\s*ffiPlugin:\\\\s*true').hasMatch(pubspec)) {\n    violations.add('The macOS adapter does not declare `ffiPlugin: true`.');\n  }\n\n  // 4. Nothing in the family asks the consumer to change its own project\n  //    files.\n  for (final wiring in consumerWiringFiles()) {\n    violations.add('The family ships consumer project wiring: $wiring');\n  }\n\n  return violations;\n}\n"
+    }
+  ],
+  "receipt_version": 1,
+  "min_core_version": "6.0.0",
+  "generated_against_core": "7.2.0"
+}

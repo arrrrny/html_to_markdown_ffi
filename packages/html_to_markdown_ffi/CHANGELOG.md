@@ -1,3 +1,12 @@
+## 1.2.3 - 2026-10-20
+
+- The platform envelope is now the shared `zuraffa_ffi_platform` envelope:
+  `PlatformHtmlToMarkdownFfiEnvelope` is an alias of `PlatformFfiEnvelope`
+  instead of a byte-identical copy of it. The public name is unchanged, so
+  every existing import and call site keeps working.
+- `zuraffa` widened to `^7.2.0`, `zorphy_annotation` to `^2.4.3`.
+- The family resolves through one pub workspace with one shared lockfile.
+
 ## 1.2.1 - 2026-09-23
 
 - Widened the `zuraffa` constraint from `^6.2.2` to `^7.0.0` across all five

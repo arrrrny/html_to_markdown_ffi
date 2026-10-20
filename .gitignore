@@ -27,3 +27,7 @@ doc/api/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+
+# Swift Package Manager build products of the plugin packages
+.build/
+.swiftpm/

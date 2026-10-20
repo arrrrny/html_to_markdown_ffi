@@ -1,0 +1,23 @@
+{
+  "schema": "proof.v1",
+  "command": "tdd verify-red",
+  "target": "A2",
+  "repro": "zfa tdd verify-red",
+  "at": "2026-10-20T19:33:57.087038Z",
+  "generator_version": "7.2.0",
+  "input": {
+    "feature": "001-zero-touch-native-distribution"
+  },
+  "files": [
+    {
+      "path": "specs/001-zero-touch-native-distribution/tdd/cycle-log.md",
+      "action": "update",
+      "sha256": "89ab4e8d34a397c8d84af52f5a45529146bf8f1c362a4a26f5772cae3133999f",
+      "bytes": 2896,
+      "snapshot": "# Cycle Log\n\nAppend only. Newest last. Every entry's `red` block is the evidence that the test existed and failed before the implementation.\n\n## Cycle: A1 (red)\n\n- behavior: A1\n- kind: red\n- classification: assertionFailure\n- subject-hash: 61ea2ebe4f5e8f86febeb9048d59e79a497321822a54b319fd9294f188c25cf2\n- criterion: AC-1\n- test: /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a1_test.dart\n- command: `dart test --concurrency=2 /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a1_test.dart /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a2_test.dart /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a3_test.dart /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a4_test.dart /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a5_test.dart`\n- exit: 1\n- at: 2026-10-20T19:33:57.050311Z\n- output:\n```\nExpected: not <Instance of 'UnimplementedError'>\n    Actual: UnimplementedError:<UnimplementedError: subject_a1 not implemented>\n  \n  package:matcher                                                expect\n  test/tdd/001-zero-touch-native-distribution/a1_test.dart 37:7  main.<fn>.<fn>\n  \n\n(batched red — one runner invocation for 5 behavior(s), spec 069 T002)\n```\n\n- schema: 1\n- prev-hash: genesis\n- hash: 4a12cb585b8dc460c8521314db6b01a5e19e7f7a6e5718f4a6363208293e184e\n\n## Cycle: A2 (red)\n\n- behavior: A2\n- kind: red\n- classification: assertionFailure\n- subject-hash: e836c8bf2b23714cab30d662364a9aa55bcf4565d3e1132b638c2877ee387bb4\n- criterion: AC-2\n- test: /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a2_test.dart\n- command: `dart test --concurrency=2 /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a1_test.dart /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a2_test.dart /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a3_test.dart /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a4_test.dart /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a5_test.dart`\n- exit: 1\n- at: 2026-10-20T19:33:57.078549Z\n- output:\n```\nExpected: not <Instance of 'UnimplementedError'>\n    Actual: UnimplementedError:<UnimplementedError: subject_a2 not implemented>\n  \n  package:matcher                                                expect\n  test/tdd/001-zero-touch-native-distribution/a2_test.dart 37:7  main.<fn>.<fn>\n  \n\n(batched red — one runner invocation for 5 behavior(s), spec 069 T002)\n```\n\n- schema: 1\n- prev-hash: genesis\n- hash: fb5b8de0d202c6dc5340a4584b0ce88fe06fcba496c478f24c7fbbc576732b38\n\n"
+    }
+  ],
+  "receipt_version": 1,
+  "min_core_version": "6.0.0",
+  "generated_against_core": "7.2.0"
+}

@@ -1,0 +1,30 @@
+{
+  "schema": "proof.v1",
+  "command": "tdd gen",
+  "target": "A5",
+  "repro": "zfa tdd gen",
+  "at": "2026-10-20T19:32:51.777279Z",
+  "generator_version": "7.2.0",
+  "input": {
+    "feature": "001-zero-touch-native-distribution"
+  },
+  "files": [
+    {
+      "path": "test/tdd/001-zero-touch-native-distribution/a5_test.dart",
+      "action": "create",
+      "sha256": "6740e224921064c5828fa9b71c32df1dd9a145939b79cabd0d955909136cc2ea",
+      "bytes": 1863,
+      "snapshot": "// GENERATED TEST — `zfa tdd gen A5` (spec 044-test-tdd-generation).\n//\n// behavior_id: A5\n// source_criterion: AC-5\n// kind: acceptance\n// description: all five family packages resolve through one pub workspace on the latest zuraffa release, and every member carries the same release version.\n//\n// This test asserts the observable behavior described above. It is\n// \"honest red\" on first execution: the paired subject at\n// `package:html_to_markdown_ffi_workspace/tdd/001-zero-touch-native-distribution/a5_subject.dart` is unimplemented, so the test fails through an\n// assertion (not an uncaught error, compile/load error, skip, or\n// placeholder). Replace the subject's\n// stub body with real implementation to make this test pass.\nlibrary;\n\nimport 'package:test/test.dart';\nimport 'package:html_to_markdown_ffi_workspace/tdd/001-zero-touch-native-distribution/a5_subject.dart' as subject;\n\nvoid main() {\n  group('A5 (AC-5)', () {\n    test('A5 — all five family packages resolve through one pub workspace on the latest zuraffa release, and every member carries the same release version.', () {\n      final Object? result = (() {\n        try {\n          subject.subject_a5();\n          return null;\n        } on UnimplementedError catch (error) {\n          return error;\n        }\n      })();\n      // zfa:tdd: acceptance-guard (issue #1512): the acceptance lane's\n      // assertion set is the UnimplementedError guard ONLY. The acceptance\n      // subject is a parameterless `void` scenario runner and the declared\n      // outcome is asserted through the composition lane (`zfa tdd compose\n      // <id> --feature <f>`), not in this test — so this is the\n      // fallback-routed gap, NOT the traced hand-delta seam, and the\n      // vacuous-guard marker is deliberately absent.\n      expect(result, isNot(isA<UnimplementedError>()));\n    });\n  });\n}\n"
+    },
+    {
+      "path": "lib/tdd/001-zero-touch-native-distribution/a5_subject.dart",
+      "action": "create",
+      "sha256": "53feb55193845f17670eefb27d13ad83cd40d2ed17198aec08e7e81adbfd3e5e",
+      "bytes": 1225,
+      "snapshot": "// GENERATED STUB — `zfa tdd gen A5` (spec 044-test-tdd-generation).\n//\n// behavior_id: A5\n// source_criterion: AC-5\n// description: all five family packages resolve through one pub workspace on the latest zuraffa release, and every member carries the same release version.\n//\n// This is a MINIMAL COMPILABLE acceptance-scenario stub. It compiles\n// cleanly (FR-011) but does NOT satisfy the behavior described above —\n// the paired test will fail on first execution with an assertion-level\n// failure (honest red). The acceptance subject intentionally does NOT\n// reference any entity/use case/repository (FR-004): it stands alone.\n// Replace this stub body with real implementation to make the test pass.\n//\n// The subject name is derived from the behavior id (`subject_a1`) and is\n// deliberately snake_cased — the generator KNOWS the name it emits, so\n// the lint its shape provably trips is suppressed here rather than\n// renaming the contract surface (issue #1035).\n// ignore_for_file: non_constant_identifier_names\nlibrary;\n\n/// Scenario runner for behavior A5.\n///\n/// Throws [UnimplementedError] until the real implementation lands.\nvoid subject_a5() => throw UnimplementedError('subject_a5 not implemented');\n"
+    }
+  ],
+  "receipt_version": 1,
+  "min_core_version": "6.0.0",
+  "generated_against_core": "7.2.0"
+}
