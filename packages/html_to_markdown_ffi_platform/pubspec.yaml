@@ -9,7 +9,7 @@ environment:
   sdk: ^3.11.0
 
 dependencies:
-  zuraffa: ^7.0.0
+  zuraffa: ^7.1.0
   html_to_markdown_ffi: ^1.2.1
 
 dev_dependencies:
