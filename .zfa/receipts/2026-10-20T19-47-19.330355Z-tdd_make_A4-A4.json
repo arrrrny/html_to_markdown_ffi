@@ -1,0 +1,34 @@
+{
+  "schema": "proof.v1",
+  "command": "tdd make A4",
+  "target": "A4",
+  "repro": "zfa tdd make A4",
+  "at": "2026-10-20T19:47:19.330355Z",
+  "generator_version": "7.2.0",
+  "input": {
+    "sanctioned": true,
+    "hand_delta": true,
+    "transition": "skip",
+    "behavior": "A4",
+    "feature": "001-zero-touch-native-distribution"
+  },
+  "files": [
+    {
+      "path": "test/tdd/001-zero-touch-native-distribution/a4_test.dart",
+      "action": "update",
+      "sha256": "5f0165939c07a79319557695692d97da1372623000256c0d7814a76ff1f72be2",
+      "bytes": 1629,
+      "snapshot": "// GENERATED TEST — `zfa tdd gen A4` (spec 044-test-tdd-generation).\n//\n// behavior_id: A4\n// source_criterion: AC-4\n// kind: acceptance\n// description: the conversion goes through the shared `zuraffa_ffi_platform` envelope, and the adapter declares no envelope of its own.\n//\n// This test asserts the observable behavior described above. It is\n// \"honest red\" on first execution: the paired subject at\n// `package:html_to_markdown_ffi_workspace/tdd/001-zero-touch-native-distribution/a4_subject.dart` is unimplemented, so the test fails through an\n// assertion (not an uncaught error, compile/load error, skip, or\n// placeholder). Replace the subject's\n// stub body with real implementation to make this test pass.\n// zfa:tdd: A4:hand — hand step completed before first red certification (issue #1411)\nlibrary;\n\nimport 'package:test/test.dart';\nimport 'package:html_to_markdown_ffi_workspace/tdd/001-zero-touch-native-distribution/a4_subject.dart' as subject;\n\nvoid main() {\n  group('A4 (AC-4)', () {\n    test('A4 — the conversion goes through the shared `zuraffa_ffi_platform` envelope, and the adapter declares no envelope of its own.', () {\n      final Object? result = (() {\n        try {\n          subject.subject_a4();\n          return null;\n        } on UnimplementedError catch (error) {\n          return error;\n        }\n      })();\n      expect(result, isNot(isA<UnimplementedError>()));\n      // The observable outcome of the scenario: the conversion runs on the shared `zuraffa_ffi_platform` envelope — the family declares no envelope of its own.\n      expect(subject.subject_a4(), isEmpty);\n    });\n  });\n}\n"
+    },
+    {
+      "path": "lib/tdd/001-zero-touch-native-distribution/a4_subject.dart",
+      "action": "update",
+      "sha256": "03f3b5509ad97bfc9d95037111ba2a1bdc202d508383324a0fe49f61cd87cc3e",
+      "bytes": 2456,
+      "snapshot": "// HAND-IMPLEMENTED SUBJECT — behavior A4 (zfa:tdd: A4:hand).\n//\n// behavior_id: A4\n// source_criterion: AC-4\n// description: the conversion goes through the shared `zuraffa_ffi_platform` envelope, and the adapter declares no envelope of its own.\n//\n// The scenario reaches the envelope through the public entry points of both\n// families, so a family that grows its own envelope again — or that stops\n// re-exporting the shared one — fails the scenario.\n//\n// ignore_for_file: non_constant_identifier_names\nlibrary;\n\nimport 'package:html_to_markdown_ffi_platform/html_to_markdown_ffi_platform.dart'\n    as html_platform;\nimport 'package:zuraffa_ffi_platform/zuraffa_ffi_platform.dart' as shared;\n\nimport 'family_layout.dart';\n\n/// Scenario runner for behavior A4.\n///\n/// Returns the violations found; an empty list means the scenario holds.\nList<String> subject_a4() {\n  final violations = <String>[];\n\n  // 1. The html family's envelope IS the shared envelope: the alias and the\n  //    shared type are the same type, not two look-alikes.\n  if (html_platform.PlatformHtmlToMarkdownFfiEnvelope !=\n      shared.PlatformFfiEnvelope) {\n    violations.add(\n      'The html family envelope is not the shared zuraffa_ffi_platform '\n      'envelope.',\n    );\n  }\n\n  // 2. The family declares no envelope of its own: the alias is a typedef,\n  //    not a class declaration.\n  const envelopeSource =\n      'packages/html_to_markdown_ffi_platform/lib/src/'\n      'platform_html_to_markdown_ffi_envelope.dart';\n  final source = readText(envelopeSource);\n  if (source == null) {\n    violations.add('The html family ships no envelope source.');\n  } else {\n    if (source.contains('class PlatformHtmlToMarkdownFfiEnvelope')) {\n      violations.add('The html family declares an envelope class of its own.');\n    }\n    if (!source.contains(\n      'typedef PlatformHtmlToMarkdownFfiEnvelope = PlatformFfiEnvelope;',\n    )) {\n      violations.add(\n        'The html family envelope is not an alias of the shared envelope.',\n      );\n    }\n  }\n\n  // 3. The shared envelope core is a real dependency, not a vendored copy.\n  final constraint = declaredConstraint(\n    'html_to_markdown_ffi_platform',\n    'zuraffa_ffi_platform',\n  );\n  if (!constraintAdmits(constraint, '0.2.0')) {\n    violations.add(\n      'The html platform package does not depend on a shared envelope core '\n      'that carries 0.2.0 (constraint: $constraint).',\n    );\n  }\n\n  return violations;\n}\n"
+    }
+  ],
+  "receipt_version": 1,
+  "min_core_version": "6.0.0",
+  "generated_against_core": "7.2.0"
+}

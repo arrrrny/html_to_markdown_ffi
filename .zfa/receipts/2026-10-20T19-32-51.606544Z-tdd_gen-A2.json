@@ -1,0 +1,30 @@
+{
+  "schema": "proof.v1",
+  "command": "tdd gen",
+  "target": "A2",
+  "repro": "zfa tdd gen",
+  "at": "2026-10-20T19:32:51.606544Z",
+  "generator_version": "7.2.0",
+  "input": {
+    "feature": "001-zero-touch-native-distribution"
+  },
+  "files": [
+    {
+      "path": "test/tdd/001-zero-touch-native-distribution/a2_test.dart",
+      "action": "create",
+      "sha256": "1d7357b8c30e6dc6897d2a4908e0bdfe4c68632cd7fa52f14204f3a79c06564e",
+      "bytes": 1935,
+      "snapshot": "// GENERATED TEST — `zfa tdd gen A2` (spec 044-test-tdd-generation).\n//\n// behavior_id: A2\n// source_criterion: AC-2\n// kind: acceptance\n// description: the Rust native library is packaged into the app from the Android adapter package's own `jniLibs`, and the consumer's project files contain no reference to the native library.\n//\n// This test asserts the observable behavior described above. It is\n// \"honest red\" on first execution: the paired subject at\n// `package:html_to_markdown_ffi_workspace/tdd/001-zero-touch-native-distribution/a2_subject.dart` is unimplemented, so the test fails through an\n// assertion (not an uncaught error, compile/load error, skip, or\n// placeholder). Replace the subject's\n// stub body with real implementation to make this test pass.\nlibrary;\n\nimport 'package:test/test.dart';\nimport 'package:html_to_markdown_ffi_workspace/tdd/001-zero-touch-native-distribution/a2_subject.dart' as subject;\n\nvoid main() {\n  group('A2 (AC-2)', () {\n    test('A2 — the Rust native library is packaged into the app from the Android adapter package\\'s own `jniLibs`, and the consumer\\'s project files contain no reference to the native library.', () {\n      final Object? result = (() {\n        try {\n          subject.subject_a2();\n          return null;\n        } on UnimplementedError catch (error) {\n          return error;\n        }\n      })();\n      // zfa:tdd: acceptance-guard (issue #1512): the acceptance lane's\n      // assertion set is the UnimplementedError guard ONLY. The acceptance\n      // subject is a parameterless `void` scenario runner and the declared\n      // outcome is asserted through the composition lane (`zfa tdd compose\n      // <id> --feature <f>`), not in this test — so this is the\n      // fallback-routed gap, NOT the traced hand-delta seam, and the\n      // vacuous-guard marker is deliberately absent.\n      expect(result, isNot(isA<UnimplementedError>()));\n    });\n  });\n}\n"
+    },
+    {
+      "path": "lib/tdd/001-zero-touch-native-distribution/a2_subject.dart",
+      "action": "create",
+      "sha256": "e836c8bf2b23714cab30d662364a9aa55bcf4565d3e1132b638c2877ee387bb4",
+      "bytes": 1260,
+      "snapshot": "// GENERATED STUB — `zfa tdd gen A2` (spec 044-test-tdd-generation).\n//\n// behavior_id: A2\n// source_criterion: AC-2\n// description: the Rust native library is packaged into the app from the Android adapter package's own `jniLibs`, and the consumer's project files contain no reference to the native library.\n//\n// This is a MINIMAL COMPILABLE acceptance-scenario stub. It compiles\n// cleanly (FR-011) but does NOT satisfy the behavior described above —\n// the paired test will fail on first execution with an assertion-level\n// failure (honest red). The acceptance subject intentionally does NOT\n// reference any entity/use case/repository (FR-004): it stands alone.\n// Replace this stub body with real implementation to make the test pass.\n//\n// The subject name is derived from the behavior id (`subject_a1`) and is\n// deliberately snake_cased — the generator KNOWS the name it emits, so\n// the lint its shape provably trips is suppressed here rather than\n// renaming the contract surface (issue #1035).\n// ignore_for_file: non_constant_identifier_names\nlibrary;\n\n/// Scenario runner for behavior A2.\n///\n/// Throws [UnimplementedError] until the real implementation lands.\nvoid subject_a2() => throw UnimplementedError('subject_a2 not implemented');\n"
+    }
+  ],
+  "receipt_version": 1,
+  "min_core_version": "6.0.0",
+  "generated_against_core": "7.2.0"
+}

@@ -203,8 +203,8 @@ class NativeLibrary {
             '${Platform.version.contains('arm64') ? 'macos-arm64' : 'macos-x64'}/'
           '$libName',
       if (Platform.isAndroid || Platform.isLinux)
-        ...['arm64-v8a', 'armeabi-v7a', 'x86_64'].map((abi) =>
-            'html_to_markdown_ffi_android/native/android/$abi/'
+        ...['arm64-v8a', 'armeabi-v7a', 'x86_64', 'x86'].map((abi) =>
+            'html_to_markdown_ffi_android/android/src/main/jniLibs/$abi/'
                 '${Platform.isAndroid ? libName : 'libhtml_to_markdown_ffi.so'}'),
     ];
     for (final rel in candidates) {

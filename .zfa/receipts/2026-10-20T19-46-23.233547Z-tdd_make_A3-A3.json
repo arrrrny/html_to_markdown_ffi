@@ -1,0 +1,34 @@
+{
+  "schema": "proof.v1",
+  "command": "tdd make A3",
+  "target": "A3",
+  "repro": "zfa tdd make A3",
+  "at": "2026-10-20T19:46:23.233547Z",
+  "generator_version": "7.2.0",
+  "input": {
+    "sanctioned": true,
+    "hand_delta": true,
+    "transition": "skip",
+    "behavior": "A3",
+    "feature": "001-zero-touch-native-distribution"
+  },
+  "files": [
+    {
+      "path": "test/tdd/001-zero-touch-native-distribution/a3_test.dart",
+      "action": "update",
+      "sha256": "d6e44cd0913042a3d6691d60cff29493104818adaed0b470f85d7159f8f60b0f",
+      "bytes": 1635,
+      "snapshot": "// GENERATED TEST — `zfa tdd gen A3` (spec 044-test-tdd-generation).\n//\n// behavior_id: A3\n// source_criterion: AC-3\n// kind: acceptance\n// description: the Rust native library is linked into the app by the iOS adapter package's own Swift package, exactly as the macOS adapter does.\n//\n// This test asserts the observable behavior described above. It is\n// \"honest red\" on first execution: the paired subject at\n// `package:html_to_markdown_ffi_workspace/tdd/001-zero-touch-native-distribution/a3_subject.dart` is unimplemented, so the test fails through an\n// assertion (not an uncaught error, compile/load error, skip, or\n// placeholder). Replace the subject's\n// stub body with real implementation to make this test pass.\n// zfa:tdd: A3:hand — hand step completed before first red certification (issue #1411)\nlibrary;\n\nimport 'package:test/test.dart';\nimport 'package:html_to_markdown_ffi_workspace/tdd/001-zero-touch-native-distribution/a3_subject.dart' as subject;\n\nvoid main() {\n  group('A3 (AC-3)', () {\n    test('A3 — the Rust native library is linked into the app by the iOS adapter package\\'s own Swift package, exactly as the macOS adapter does.', () {\n      final Object? result = (() {\n        try {\n          subject.subject_a3();\n          return null;\n        } on UnimplementedError catch (error) {\n          return error;\n        }\n      })();\n      expect(result, isNot(isA<UnimplementedError>()));\n      // The observable outcome of the scenario: the iOS adapter links the native library from its own Swift package, exactly like the macOS adapter.\n      expect(subject.subject_a3(), isEmpty);\n    });\n  });\n}\n"
+    },
+    {
+      "path": "lib/tdd/001-zero-touch-native-distribution/a3_subject.dart",
+      "action": "update",
+      "sha256": "09a8ffee923e406ab014b7c37ac6001f5434b9dc1bcd056c1f6bc10a6f17038b",
+      "bytes": 3785,
+      "snapshot": "// HAND-IMPLEMENTED SUBJECT — behavior A3 (zfa:tdd: A3:hand).\n//\n// behavior_id: A3\n// source_criterion: AC-3\n// description: the Rust native library is linked into the app by the iOS adapter package's own Swift package, exactly as the macOS adapter does.\n//\n// ignore_for_file: non_constant_identifier_names\nlibrary;\n\nimport 'dart:io';\n\nimport 'family_layout.dart';\n\n/// Scenario runner for behavior A3.\n///\n/// Returns the violations found; an empty list means the scenario holds.\nList<String> subject_a3() {\n  final violations = <String>[];\n\n  const iosPackage = 'html_to_markdown_ffi_ios';\n  const macosPackage = 'html_to_markdown_ffi_macos';\n\n  // 1. The iOS adapter ships its own Swift package with a binaryTarget over\n  //    the xcframework that carries the Rust static archive.\n  final manifest = readText(\n    'packages/$iosPackage/ios/$iosPackage/Package.swift',\n  );\n  if (manifest == null) {\n    violations.add('The iOS adapter ships no Swift package manifest.');\n  } else {\n    if (!manifest.contains('.binaryTarget(')) {\n      violations.add('The iOS Swift package declares no binaryTarget.');\n    }\n    if (!manifest.contains('libhtml_to_markdown_ffi')) {\n      violations.add(\n        'The iOS Swift package does not reference the native library.',\n      );\n    }\n    if (!manifest.contains('Frameworks/libhtml_to_markdown_ffi.xcframework')) {\n      violations.add(\n        'The iOS Swift package does not point at the shipped xcframework.',\n      );\n    }\n  }\n\n  // 2. The xcframework the binaryTarget points at is actually shipped.\n  const xcframework =\n      'packages/$iosPackage/ios/$iosPackage/Frameworks/'\n      'libhtml_to_markdown_ffi.xcframework';\n  if (!Directory('${repositoryRoot().path}/$xcframework').existsSync()) {\n    violations.add('The iOS adapter ships no xcframework.');\n  } else {\n    final archives = Directory('${repositoryRoot().path}/$xcframework')\n        .listSync(recursive: true)\n        .whereType<File>()\n        .where((file) => file.path.endsWith('.a'))\n        .toList();\n    if (archives.isEmpty) {\n      violations.add('The iOS xcframework carries no static archive.');\n    }\n    for (final archive in archives) {\n      if (!hasMagic(archive, arMagic) && !hasMagic(archive, fatMagic)) {\n        violations.add(\n          'The iOS xcframework archive ${archive.path} is not a static '\n          'archive.',\n        );\n      }\n      if (!exportsSymbol(archive, ffiEntryPoint)) {\n        violations.add(\n          'The iOS xcframework archive ${archive.path} does not export '\n          '$ffiEntryPoint.',\n        );\n      }\n    }\n  }\n\n  // 3. The plugin declares itself an FFI plugin for iOS.\n  final pubspec = memberPubspec(iosPackage);\n  if (!RegExp('ios:\\\\s*\\n\\\\s*ffiPlugin:\\\\s*true').hasMatch(pubspec)) {\n    violations.add('The iOS adapter does not declare `ffiPlugin: true`.');\n  }\n\n  // 4. The iOS adapter uses the same distribution shape as the macOS one:\n  //    Swift package + binaryTarget + xcframework + `ffiPlugin: true`.\n  final macosManifest = readText(\n    'packages/$macosPackage/macos/$macosPackage/Package.swift',\n  );\n  if (macosManifest == null) {\n    violations.add('The macOS adapter ships no Swift package manifest.');\n  } else if (manifest == null) {\n    // The missing iOS manifest is already reported above.\n  } else {\n    for (final marker in <String>[\n      '.binaryTarget(',\n      'libhtml_to_markdown_ffi',\n      'Frameworks/libhtml_to_markdown_ffi.xcframework',\n    ]) {\n      if (!manifest.contains(marker)) {\n        violations.add(\n          'The iOS Swift package differs from the macOS one: $marker',\n        );\n      }\n      if (!macosManifest.contains(marker)) {\n        violations.add('The macOS Swift package differs from the iOS one: $marker');\n      }\n    }\n  }\n\n  return violations;\n}\n"
+    }
+  ],
+  "receipt_version": 1,
+  "min_core_version": "6.0.0",
+  "generated_against_core": "7.2.0"
+}

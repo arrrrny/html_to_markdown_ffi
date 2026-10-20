@@ -1,0 +1,5 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- The adapter ships no platform channel: the Rust library is loaded
+         in-process through dart:ffi. The manifest exists so the library
+         module is a valid Android library project. -->
+</manifest>

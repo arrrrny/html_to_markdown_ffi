@@ -1,5 +1,30 @@
 # Changelog
 
+## 1.2.3 - 2026-10-20
+
+- **Zero-touch native distribution** (spec `001-zero-touch-native-distribution`):
+  the macOS and Android adapters now ship the Rust native library inside the
+  plugin package, so a consumer app adds the dependency and nothing else —
+  no Podfile entry, no xcconfig, no `-force_load` flag, no `jniLibs` copy in
+  the app project, no Gradle edit.
+  - **macOS** mirrors the iOS 1.2.2 arrangement: a Swift package
+    (`macos/html_to_markdown_ffi_macos/Package.swift`) with a `binaryTarget`
+    over `Frameworks/libhtml_to_markdown_ffi.xcframework` (universal
+    `arm64` + `x86_64` static archive exporting the `htm_*` C API), plus
+    `ffiPlugin: true`. The symbols reach Dart through
+    `DynamicLibrary.process()`.
+  - **Android** ships `libhtml_to_markdown_ffi.so` for `armeabi-v7a`,
+    `arm64-v8a` and `x86_64` under `android/src/main/jniLibs/<abi>/`, with a
+    Gradle module that packages those `jniLibs`, plus `ffiPlugin: true`.
+- **Shared envelope**: `html_to_markdown_ffi_platform` now depends on
+  `zuraffa_ffi_platform` and its envelope is an alias of the shared
+  `PlatformFfiEnvelope` instead of a byte-identical copy of it. The public
+  name `PlatformHtmlToMarkdownFfiEnvelope` is preserved.
+- **Dependencies**: `zuraffa` widened to `^7.2.0`, `zorphy_annotation` to
+  `^2.4.3`.
+- **Workspace**: the five packages resolve through one pub workspace with
+  one shared lockfile.
+
 ## 1.2.1 - 2026-09-23
 
 - Widened the `zuraffa` constraint from `^6.2.2` to `^7.0.0` across all five
