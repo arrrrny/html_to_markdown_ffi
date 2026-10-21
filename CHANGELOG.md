@@ -35,9 +35,12 @@
   names.
 
 - The workspace now resolves `zuraffa_ffi` and `zuraffa_ffi_platform` from
-  pub.dev (`^0.2.0`) instead of a local path override, so the scenarios
+  pub.dev (`^0.2.1`) instead of a local path override, so the scenarios
   assert against the published package — the same artifact a consumer
-  resolves.
+  resolves. `zuraffa_ffi` 0.2.1 is itself the one-dependency release: the
+  app-facing package pulls the platform core and the three platform
+  adapters in, so nothing in this family pulls a second copy of the shared
+  FFI stack.
 
 ## 1.2.3 - 2026-10-20
 

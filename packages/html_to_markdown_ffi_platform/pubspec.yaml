@@ -17,7 +17,7 @@ dependencies:
   http: ^1.4.0
   # The channel envelope is shared with the rest of the Zuraffa FFI family
   # instead of being re-implemented per family.
-  zuraffa_ffi_platform: ^0.2.0
+  zuraffa_ffi_platform: ^0.2.1
 
 dev_dependencies:
   lints: ^4.0.0

@@ -24,7 +24,7 @@ for pkg in "${PACKAGES_IN_ORDER[@]}"; do
     # fail to resolve the in-family dependency even though the version is
     # already up. Retry until the solver catches up.
     dry_run_ok=0
-    for i in $(seq 1 20); do
+    for i in $(seq 1 40); do
         if dart pub publish --dry-run; then dry_run_ok=1; break; fi
         echo -e "${YELLOW}Dry-run for $pkg cannot resolve yet - waiting for pub.dev propagation.${NC}"
         sleep 30

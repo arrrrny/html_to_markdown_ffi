@@ -32,8 +32,8 @@ dependencies:
   # reading its source text.
   zuraffa: ^7.2.0
   zorphy_annotation: ^2.4.3
-  zuraffa_ffi: ^0.2.0
-  zuraffa_ffi_platform: ^0.2.0
+  zuraffa_ffi: ^0.2.1
+  zuraffa_ffi_platform: ^0.2.1
   html_to_markdown_ffi: ^1.2.3
   html_to_markdown_ffi_platform: ^1.2.3
 
