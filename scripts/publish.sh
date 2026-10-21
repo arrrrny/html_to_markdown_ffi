@@ -4,7 +4,7 @@ set -e
 # dependency order (the shared core first: the adapters and the app-facing
 # umbrella declare it as a hosted dependency). Needs flutter/dart on PATH.
 
-GREEN='\033[0;32m'; BLUE='\033[0;34m'; RED='\033[0;31m'; NC='\033[0m'
+GREEN='\033[0;32m'; BLUE='\033[0;34m'; YELLOW='\033[1;33m'; RED='\033[0;31m'; NC='\033[0m'
 
 PACKAGES_IN_ORDER=("html_to_markdown_ffi_platform" "html_to_markdown_ffi_android" "html_to_markdown_ffi_ios" "html_to_markdown_ffi_macos" "html_to_markdown_ffi")
 ROOT_DIR="$(cd "$(dirname "$0")/.." >/dev/null 2>&1; pwd -P)"
@@ -18,7 +18,19 @@ for pkg in "${PACKAGES_IN_ORDER[@]}"; do
     fi
 
     cd "$ROOT_DIR/packages/$pkg"
-    dart pub publish --dry-run || { echo -e "${RED}Dry-run failed for $pkg${NC}"; exit 1; }
+
+    # pub.dev serves a freshly published version to the *solver* a few
+    # minutes after the API starts listing it, so a dependent's dry-run can
+    # fail to resolve the in-family dependency even though the version is
+    # already up. Retry until the solver catches up.
+    dry_run_ok=0
+    for i in $(seq 1 20); do
+        if dart pub publish --dry-run; then dry_run_ok=1; break; fi
+        echo -e "${YELLOW}Dry-run for $pkg cannot resolve yet - waiting for pub.dev propagation.${NC}"
+        sleep 30
+    done
+    [ "$dry_run_ok" = 1 ] || { echo -e "${RED}Dry-run failed for $pkg${NC}"; exit 1; }
+
     dart pub publish --force || { echo -e "${RED}Publish failed for $pkg${NC}"; exit 1; }
 
     # Wait for propagation before the dependents publish.
