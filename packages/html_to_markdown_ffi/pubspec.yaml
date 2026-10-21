@@ -43,3 +43,5 @@ flutter:
         default_package: html_to_markdown_ffi_macos
 
 
+
+resolution: workspace
