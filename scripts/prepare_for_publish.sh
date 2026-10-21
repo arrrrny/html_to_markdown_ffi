@@ -31,6 +31,9 @@ for pkg in "html_to_markdown_ffi" "html_to_markdown_ffi_platform" "html_to_markd
     sed -i.bak -E "s/^version: .*/version: $VERSION/" "$pubspec" && rm -f "$pubspec.bak"
     sed -i.bak -E "/^( *html_to_markdown_ffi: \^)/s|.*|  html_to_markdown_ffi: ^$VERSION|" "$pubspec" && rm -f "$pubspec.bak"
     sed -i.bak -E "/^( *html_to_markdown_ffi_platform: \^)/s|.*|  html_to_markdown_ffi_platform: ^$VERSION|" "$pubspec" && rm -f "$pubspec.bak"
+    sed -i.bak -E "/^( *html_to_markdown_ffi_android: \^)/s|.*|  html_to_markdown_ffi_android: ^$VERSION|" "$pubspec" && rm -f "$pubspec.bak"
+    sed -i.bak -E "/^( *html_to_markdown_ffi_ios: \^)/s|.*|  html_to_markdown_ffi_ios: ^$VERSION|" "$pubspec" && rm -f "$pubspec.bak"
+    sed -i.bak -E "/^( *html_to_markdown_ffi_macos: \^)/s|.*|  html_to_markdown_ffi_macos: ^$VERSION|" "$pubspec" && rm -f "$pubspec.bak"
     # The repository is a pub workspace, so every member carries
     # `resolution: workspace`. That field is only meaningful inside the
     # repository — a published package must not carry it, or a consumer

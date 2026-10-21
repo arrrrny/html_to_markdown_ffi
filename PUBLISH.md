@@ -5,13 +5,13 @@
 ## Package Manager
 
 - **Type**: `pub.dev`
-- **Packages** (in publish order — the app package first; the platform core
-  and the federated adapters declare their in-family dependencies hosted):
-1. `html_to_markdown_ffi`
-2. `html_to_markdown_ffi_platform`
-3. `html_to_markdown_ffi_android`
-4. `html_to_markdown_ffi_ios`
-5. `html_to_markdown_ffi_macos`
+- **Packages** (in publish order — the shared core first; the adapters and
+  the app-facing umbrella declare their in-family dependencies hosted):
+1. `html_to_markdown_ffi_platform`
+2. `html_to_markdown_ffi_android`
+3. `html_to_markdown_ffi_ios`
+4. `html_to_markdown_ffi_macos`
+5. `html_to_markdown_ffi`
 - **All packages are public**
 
 ## Scripts
