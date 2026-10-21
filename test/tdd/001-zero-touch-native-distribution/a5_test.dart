@@ -3,7 +3,7 @@
 // behavior_id: A5
 // source_criterion: AC-5
 // kind: acceptance
-// description: all five family packages resolve through one pub workspace on the latest zuraffa release, and every member carries the same release version.
+// description: all six family packages resolve through one pub workspace on the latest zuraffa release, and every member carries the same release version.
 //
 // This test asserts the observable behavior described above. It is
 // "honest red" on first execution: the paired subject at
@@ -22,7 +22,7 @@ import 'fixtures.dart';
 
 void main() {
   group('A5 (AC-5)', () {
-    test('A5 — all five family packages resolve through one pub workspace on the latest zuraffa release, and every member carries the same release version.', () {
+    test('A5 — all six family packages resolve through one pub workspace on the latest zuraffa release, and every member carries the same release version.', () {
       final Object? result = (() {
         try {
           subject.subject_a5();

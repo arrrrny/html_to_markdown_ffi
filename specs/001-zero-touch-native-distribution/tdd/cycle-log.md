@@ -790,3 +790,38 @@ Expected: not <Instance of 'UnimplementedError'>
 - prev-hash: 49853741363a018b4f8e1eb43d6e9952f4e6b1cc8f8f8e31245e039835af4e1f
 - hash: 43a2f71c51ed138b08cfa1fee677333c5bd67bfa40518fb8605bdd7df8f2725e
 
+## Cycle: A5 (green)
+
+- behavior: A5
+- kind: green
+- evidence: issue #1162 re-certification — the subject was hand-implemented after the certified red; this green evidence binds the NEW subject shape with the passing transcript
+- subject-hash: 67ed00f14c2b67c41aacc58c239334d8f5fd6f54894f47bab21e23c3f942f9f1
+- criterion: AC-5
+- test: /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a5_test.dart
+- command: `dart test --concurrency=2 /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a5_test.dart --plain-name "all six family packages resolve through one pub workspace on the latest zuraffa release, and every member carries the same release version."`
+- exit: 0
+- at: 2026-10-21T19:38:42.109863Z
+- output:
+```
+00:00 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a5_test.dart                                                                               
+00:01 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a5_test.dart                                                                               
+00:02 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a5_test.dart                                                                               
+00:03 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a5_test.dart                                                                               
+00:04 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a5_test.dart                                                                               
+00:05 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a5_test.dart                                                                               
+00:06 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a5_test.dart                                                                               
+00:07 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a5_test.dart                                                                               
+00:08 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a5_test.dart                                                                               
+00:08 +0: A5 (AC-5) A5 — all six family packages resolve through one pub workspace on the latest zuraffa release, and every member carries the same release version.                                   
+00:09 +0: A5 (AC-5) A5 — all six family packages resolve through one pub workspace on the latest zuraffa release, and every member carries the same release version.                                   
+00:09 +1: A5 (AC-5) A5 — all six family packages resolve through one pub workspace on the latest zuraffa release, and every member carries the same release version.                                   
+00:09 +1: All tests passed!
+```
+- generation:
+  (none)
+- suite: baseline=0 guard=0 new=(none)
+
+- schema: 1
+- prev-hash: 43a2f71c51ed138b08cfa1fee677333c5bd67bfa40518fb8605bdd7df8f2725e
+- hash: 043d8d6ab46bde7a3183bdc7d6f8a6bbaf6a01a5b4cd67d5c92ed2fc1b8bc384
+

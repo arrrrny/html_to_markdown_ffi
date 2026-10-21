@@ -22,5 +22,5 @@ project-file change on either side:
 
 1. **Given** a consumer that is not a Flutter app **When** it declares only the shared `html_to_markdown_ffi_platform` package **Then** the resolution succeeds — that package asks for no Flutter SDK, neither as an `environment: flutter:` constraint nor as a `flutter: sdk: flutter` dependency — and its public entry point offers the conversion, so the consumer needs no second dependency and no project-file change.
    **Type**: acceptance
-2. **Given** a consumer app that depends on the app-facing `html_to_markdown_ffi` package **When** the app-facing package's manifest is read **Then** it still names the Android, iOS, and macOS adapter packages as the `default_package` for their platform, and still carries the Flutter SDK constraint that a plugin manifest requires — so the zero-touch distribution of `001-zero-touch-native-distribution` survives.
+2. **Given** a consumer app that depends on the `html_to_markdown_ffi_flutter` package **When** the plugin package's manifest is read **Then** it still names the Android, iOS, and macOS adapter packages as the `default_package` for their platform, and still carries the Flutter SDK constraint that a plugin manifest requires — so the zero-touch distribution of `001-zero-touch-native-distribution` survives.
    **Type**: acceptance

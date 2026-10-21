@@ -2,7 +2,7 @@
 //
 // behavior_id: A5
 // source_criterion: AC-5
-// description: all five family packages resolve through one pub workspace on the latest zuraffa release, and every member carries the same release version.
+// description: all six family packages resolve through one pub workspace on the latest zuraffa release, and every member carries the same release version.
 //
 // ignore_for_file: non_constant_identifier_names
 library;

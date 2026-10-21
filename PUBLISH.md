@@ -5,13 +5,16 @@
 ## Package Manager
 
 - **Type**: `pub.dev`
-- **Packages** (in publish order — the shared core first; the adapters and
-  the app-facing umbrella declare their in-family dependencies hosted):
+- **Packages** (in publish order — the shared core first; the adapters, the
+  pure-Dart engine and the Flutter plugin declare their in-family
+  dependencies hosted):
 1. `html_to_markdown_ffi_platform`
 2. `html_to_markdown_ffi_android`
 3. `html_to_markdown_ffi_ios`
 4. `html_to_markdown_ffi_macos`
-5. `html_to_markdown_ffi`
+5. `html_to_markdown_ffi` — the pure-Dart engine
+6. `html_to_markdown_ffi_flutter` — the Flutter plugin (last: it depends on
+   the engine and on all three adapters)
 - **All packages are public**
 
 ## Scripts

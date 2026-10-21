@@ -50,6 +50,28 @@ Set<String> familyDependencies(String pubspec) {
   return dependencies;
 }
 
+/// Every family package [start] reaches, directly or through another
+/// member.
+///
+/// A member that comes along transitively comes along just as much as one
+/// that is a direct dependency: what the consumer resolves is the closure,
+/// not the edge list.
+Set<String> transitiveDependencies(
+  Map<String, Set<String>> edges,
+  String start,
+) {
+  final reached = <String>{};
+  final pending = <String>[start];
+  while (pending.isNotEmpty) {
+    final current = pending.removeLast();
+    for (final next in edges[current] ?? const <String>{}) {
+      if (!reached.add(next)) continue;
+      pending.add(next);
+    }
+  }
+  return reached;
+}
+
 /// The dependency cycles in [edges], each cycle naming the members it
 /// walks through.
 List<List<String>> findDependencyCycles(Map<String, Set<String>> edges) {

@@ -5,9 +5,15 @@
 // description: the shared conversion contract and all three platform adapters — the Android, iOS, and macOS registration helpers — are reachable from that one entry point.
 //
 // The scenario imports the family through its public entry point
-// (`package:html_to_markdown_ffi/html_to_markdown_ffi.dart`) and uses every
-// part of it, so a symbol that stops being exported breaks the scenario at
-// compile time.
+// (`package:html_to_markdown_ffi_flutter/html_to_markdown_ffi_flutter.dart`)
+// and uses every part of it, so a symbol that stops being exported breaks
+// the scenario at compile time.
+//
+// The entry point is the Flutter plugin package: it is the one a Flutter
+// app declares, and it is where the app-facing API and the three platform
+// adapters meet. The engine package behind it (`html_to_markdown_ffi`) is
+// pure Dart and cannot name the adapters — each of them asks for the
+// Flutter SDK.
 //
 // The scenario observes the entry point through an [UmbrellaProbe] and turns
 // the observation into violations. Both steps are injectable, so a test can
@@ -17,7 +23,7 @@
 // ignore_for_file: non_constant_identifier_names
 library;
 
-import 'package:html_to_markdown_ffi/html_to_markdown_ffi.dart';
+import 'package:html_to_markdown_ffi_flutter/html_to_markdown_ffi_flutter.dart';
 import 'package:zuraffa/zuraffa.dart';
 
 /// A minimal port: the scenario only proves the contract is reachable, not

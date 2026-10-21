@@ -34,17 +34,34 @@ final service = getIt<HtmlToMarkdownFfiService>();
 
 ## Platform adapters
 
-You do not have to declare an adapter yourself: this package declares
-`default_package` for android, ios and macos, so depending on
-`html_to_markdown_ffi` alone is enough — Flutter resolves the adapter for
-the platform you build for, and the adapter bundles the prebuilt native
-binary and registers the port.
+This package is **pure Dart**: it asks for no Flutter SDK, so a consumer that
+is not a Flutter app — a CLI, a server, a background worker — can resolve it
+with a plain Dart SDK and no project-file change:
 
-The adapters are also re-exported here, so their registration helpers are
-reachable from this one import:
+```yaml
+dependencies:
+  html_to_markdown_ffi: ^1.2.7
+```
+
+The native library comes along two ways. On a host where it is not bundled,
+`NativeLibrary.downloadIfNeeded()` fetches it from the project's GitHub
+releases into `~/.html_to_markdown_ffi/`:
 
 ```dart
-import 'package:html_to_markdown_ffi/html_to_markdown_ffi.dart';
+import 'package:html_to_markdown_ffi/html_to_markdown.dart';
+
+await NativeLibrary.downloadIfNeeded();
+final md = convert('<h1>Title</h1>');
+```
+
+A **Flutter app** depends on
+[`html_to_markdown_ffi_flutter`](https://pub.dev/packages/html_to_markdown_ffi_flutter)
+instead. That package is the plugin: it names the three adapters as their
+platform's `default_package`, so the prebuilt native binary is linked into
+the app, and it re-exports this package's API under one name:
+
+```dart
+import 'package:html_to_markdown_ffi_flutter/html_to_markdown_ffi_flutter.dart';
 
 registerMacosHtmlToMarkdownFfiDependencies(
   getIt,
@@ -52,6 +69,7 @@ registerMacosHtmlToMarkdownFfiDependencies(
 );
 ```
 
+- [`html_to_markdown_ffi_flutter`](https://pub.dev/packages/html_to_markdown_ffi_flutter) — the Flutter plugin
 - [`html_to_markdown_ffi_android`](https://pub.dev/packages/html_to_markdown_ffi_android)
 - [`html_to_markdown_ffi_ios`](https://pub.dev/packages/html_to_markdown_ffi_ios)
 - [`html_to_markdown_ffi_macos`](https://pub.dev/packages/html_to_markdown_ffi_macos)

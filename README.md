@@ -100,42 +100,52 @@ app.
 
 | Consumer | Declare | Flutter SDK |
 | -------- | ------- | ----------- |
-| A Flutter app | `html_to_markdown_ffi: ^1.2.5` | required |
-| A CLI, server or worker | `html_to_markdown_ffi_platform: ^1.2.5` | **not** required |
+| A Flutter app | `html_to_markdown_ffi_flutter: ^1.2.7` | required |
+| A CLI, server or worker | `html_to_markdown_ffi: ^1.2.7` | **not** required |
 
 ```yaml
 # Flutter app — the native library is linked in by the family itself.
 dependencies:
-  html_to_markdown_ffi: ^1.2.5
+  html_to_markdown_ffi_flutter: ^1.2.7
 ```
 
 ```yaml
 # Pure Dart — no Flutter SDK in sight.
 dependencies:
-  html_to_markdown_ffi_platform: ^1.2.5
+  html_to_markdown_ffi: ^1.2.7
 ```
 
 ```dart
-import 'package:html_to_markdown_ffi_platform/html_to_markdown_ffi_platform.dart';
+import 'package:html_to_markdown_ffi/html_to_markdown.dart';
 
 final md = convert('<h1>Title</h1>');
 ```
 
-The two run the same in-process `dart:ffi` bridge. The app-facing package's
-`convert()` additionally prefers a registered platform adapter over the
-direct bridge, which a pure-Dart consumer has no way to register.
+The engine — `html_to_markdown_ffi` — is pure Dart and carries the whole
+app-facing API: the conversion, the service facade, the DI registration. The
+plugin — `html_to_markdown_ffi_flutter` — is the Flutter-specific wrapper.
+It names the three platform adapters as their platform's `default_package`
+and re-exports the engine's API under one name, so a Flutter app writes
+
+```dart
+import 'package:html_to_markdown_ffi_flutter/html_to_markdown_ffi_flutter.dart';
+```
+
+and gets the same conversion plus the native library the family linked in.
 
 A package that carries a `flutter: plugin:` manifest requires the Flutter
 SDK — pub.dev will not publish it without an `environment: flutter:`
 constraint, and *any* value of that constraint makes it unresolvable for a
 standalone Dart SDK. That is why the family ships two entry points rather
-than one.
+than one, and why the plugin lives in its own package: the engine has to
+stay resolvable for a consumer that is not a Flutter app, and a dependency
+on any adapter would make it ask for the Flutter SDK all the same.
 
 ## Zuraffa stack
 
 ```dart
 import 'package:zuraffa/zuraffa.dart';
-import 'package:html_to_markdown_ffi/html_to_markdown_ffi.dart';
+import 'package:html_to_markdown_ffi_flutter/html_to_markdown_ffi_flutter.dart';
 
 final getIt = GetIt.instance;
 registerHtmlToMarkdownFfiDependencies(getIt); // app runtime module

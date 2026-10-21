@@ -6,7 +6,7 @@ set -e
 
 GREEN='\033[0;32m'; BLUE='\033[0;34m'; YELLOW='\033[1;33m'; RED='\033[0;31m'; NC='\033[0m'
 
-PACKAGES_IN_ORDER=("html_to_markdown_ffi_platform" "html_to_markdown_ffi_android" "html_to_markdown_ffi_ios" "html_to_markdown_ffi_macos" "html_to_markdown_ffi")
+PACKAGES_IN_ORDER=("html_to_markdown_ffi_platform" "html_to_markdown_ffi_android" "html_to_markdown_ffi_ios" "html_to_markdown_ffi_macos" "html_to_markdown_ffi" "html_to_markdown_ffi_flutter")
 ROOT_DIR="$(cd "$(dirname "$0")/.." >/dev/null 2>&1; pwd -P)"
 
 for pkg in "${PACKAGES_IN_ORDER[@]}"; do

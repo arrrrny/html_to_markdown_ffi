@@ -214,6 +214,7 @@ String goodRootPubspec({
     buffer.writeln('workspace:');
     for (final packageName in const <String>[
       'html_to_markdown_ffi',
+      'html_to_markdown_ffi_flutter',
       'html_to_markdown_ffi_platform',
       'html_to_markdown_ffi_android',
       'html_to_markdown_ffi_ios',
@@ -237,6 +238,10 @@ void buildHealthyFamily(Fixture fixture) {
   fixture.write(
     'packages/html_to_markdown_ffi/pubspec.yaml',
     goodMemberPubspec('html_to_markdown_ffi'),
+  );
+  fixture.write(
+    'packages/html_to_markdown_ffi_flutter/pubspec.yaml',
+    goodMemberPubspec('html_to_markdown_ffi_flutter'),
   );
   fixture.write(
     'packages/html_to_markdown_ffi_platform/pubspec.yaml',

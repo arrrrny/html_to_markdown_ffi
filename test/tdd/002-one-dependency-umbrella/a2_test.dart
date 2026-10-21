@@ -10,7 +10,7 @@
 // `package:html_to_markdown_ffi_workspace/tdd/002-one-dependency-umbrella/a2_subject.dart` is unimplemented, so the test fails through an
 // assertion (not an uncaught error, compile/load error, skip, or
 // placeholder). Replace the subject's
-// stub body with real implementation to make this test pass.
+// stub body with real implementation to make the test pass.
 //
 // zfa:tdd: A2:hand — hand step completed before first red certification (issue #1411)
 library;
@@ -19,12 +19,13 @@ import 'package:test/test.dart';
 import 'package:html_to_markdown_ffi_workspace/tdd/002-one-dependency-umbrella/a2_subject.dart' as subject;
 
 Map<String, Set<String>> _healthyGraph() => <String, Set<String>>{
-      'html_to_markdown_ffi': <String>{
-        'html_to_markdown_ffi_platform',
+      'html_to_markdown_ffi_flutter': <String>{
+        'html_to_markdown_ffi',
         'html_to_markdown_ffi_android',
         'html_to_markdown_ffi_ios',
         'html_to_markdown_ffi_macos',
       },
+      'html_to_markdown_ffi': <String>{'html_to_markdown_ffi_platform'},
       'html_to_markdown_ffi_platform': <String>{},
       'html_to_markdown_ffi_android': <String>{'html_to_markdown_ffi_platform'},
       'html_to_markdown_ffi_ios': <String>{'html_to_markdown_ffi_platform'},
@@ -50,29 +51,44 @@ void main() {
 
     test('A2 — a member missing from the app-facing package is reported', () {
       final graph = _healthyGraph();
-      graph['html_to_markdown_ffi'] = <String>{
-        'html_to_markdown_ffi_platform',
+      graph['html_to_markdown_ffi_flutter'] = <String>{
+        'html_to_markdown_ffi',
         'html_to_markdown_ffi_android',
       };
       final violations = subject.subject_a2(graph: graph);
       expect(violations, <String>[
-        'The app-facing package does not depend on html_to_markdown_ffi_ios — '
-            'a consumer of `html_to_markdown_ffi` alone would not get it.',
-        'The app-facing package does not depend on html_to_markdown_ffi_macos — '
-            'a consumer of `html_to_markdown_ffi` alone would not get it.',
+        'The app-facing package does not bring html_to_markdown_ffi_ios along '
+            '— a consumer of `html_to_markdown_ffi_flutter` alone would not '
+            'get it.',
+        'The app-facing package does not bring html_to_markdown_ffi_macos along '
+            '— a consumer of `html_to_markdown_ffi_flutter` alone would not '
+            'get it.',
       ]);
+    });
+
+    test('A2 — a member that comes along only transitively counts', () {
+      final graph = _healthyGraph();
+      graph['html_to_markdown_ffi_flutter'] = <String>{
+        'html_to_markdown_ffi',
+        'html_to_markdown_ffi_android',
+        'html_to_markdown_ffi_ios',
+        'html_to_markdown_ffi_macos',
+      };
+      graph['html_to_markdown_ffi'] = <String>{'html_to_markdown_ffi_platform'};
+
+      expect(subject.subject_a2(graph: graph), isEmpty);
     });
 
     test('A2 — a member that depends back on the app-facing package is reported', () {
       final graph = _healthyGraph();
-      graph['html_to_markdown_ffi_platform'] = <String>{'html_to_markdown_ffi'};
+      graph['html_to_markdown_ffi_platform'] = <String>{'html_to_markdown_ffi_flutter'};
       final violations = subject.subject_a2(graph: graph);
       expect(violations, <String>[
         'html_to_markdown_ffi_platform depends back on the app-facing package — '
             'the graph would be cyclic.',
         'The family dependency graph is cyclic: '
-            'html_to_markdown_ffi -> html_to_markdown_ffi_platform -> '
-            'html_to_markdown_ffi.',
+            'html_to_markdown_ffi_flutter -> html_to_markdown_ffi -> '
+            'html_to_markdown_ffi_platform -> html_to_markdown_ffi_flutter.',
       ]);
     });
 

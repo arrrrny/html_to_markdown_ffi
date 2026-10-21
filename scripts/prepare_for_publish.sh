@@ -26,10 +26,11 @@ echo -e "${GREEN}Created branch $BRANCH${NC}"
 # Bump every package version and align in-family constraints to ^VERSION.
 # -i.bak is the in-place form BSD and GNU sed both accept (bare -i '' is
 # macOS-only; GNU sed dies on it).
-for pkg in "html_to_markdown_ffi" "html_to_markdown_ffi_platform" "html_to_markdown_ffi_android" "html_to_markdown_ffi_ios" "html_to_markdown_ffi_macos"; do
+for pkg in "html_to_markdown_ffi" "html_to_markdown_ffi_flutter" "html_to_markdown_ffi_platform" "html_to_markdown_ffi_android" "html_to_markdown_ffi_ios" "html_to_markdown_ffi_macos"; do
     pubspec="packages/$pkg/pubspec.yaml"
     sed -i.bak -E "s/^version: .*/version: $VERSION/" "$pubspec" && rm -f "$pubspec.bak"
     sed -i.bak -E "/^( *html_to_markdown_ffi: \^)/s|.*|  html_to_markdown_ffi: ^$VERSION|" "$pubspec" && rm -f "$pubspec.bak"
+    sed -i.bak -E "/^( *html_to_markdown_ffi_flutter: \^)/s|.*|  html_to_markdown_ffi_flutter: ^$VERSION|" "$pubspec" && rm -f "$pubspec.bak"
     sed -i.bak -E "/^( *html_to_markdown_ffi_platform: \^)/s|.*|  html_to_markdown_ffi_platform: ^$VERSION|" "$pubspec" && rm -f "$pubspec.bak"
     sed -i.bak -E "/^( *html_to_markdown_ffi_android: \^)/s|.*|  html_to_markdown_ffi_android: ^$VERSION|" "$pubspec" && rm -f "$pubspec.bak"
     sed -i.bak -E "/^( *html_to_markdown_ffi_ios: \^)/s|.*|  html_to_markdown_ffi_ios: ^$VERSION|" "$pubspec" && rm -f "$pubspec.bak"
@@ -54,7 +55,7 @@ if [ -z "$ENTRY" ]; then
 
 - $LAST_SUBJECT"
 fi
-for pkg in "html_to_markdown_ffi" "html_to_markdown_ffi_platform" "html_to_markdown_ffi_android" "html_to_markdown_ffi_ios" "html_to_markdown_ffi_macos"; do
+for pkg in "html_to_markdown_ffi" "html_to_markdown_ffi_flutter" "html_to_markdown_ffi_platform" "html_to_markdown_ffi_android" "html_to_markdown_ffi_ios" "html_to_markdown_ffi_macos"; do
     f="packages/$pkg/CHANGELOG.md"
     grep -q "^## $VERSION" "$f" && continue
     printf '%s\n\n' "$ENTRY" | cat - "$f" > "$f.tmp" && mv "$f.tmp" "$f"

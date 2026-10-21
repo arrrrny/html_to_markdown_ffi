@@ -12,7 +12,7 @@ GREEN='\033[0;32m'; BLUE='\033[0;34m'; RED='\033[0;31m'; NC='\033[0m'
 ROOT_DIR="$(cd "$(dirname "$0")/.." >/dev/null 2>&1; pwd -P)"
 cd "$ROOT_DIR"
 
-for pkg in "html_to_markdown_ffi" "html_to_markdown_ffi_platform" "html_to_markdown_ffi_android" "html_to_markdown_ffi_ios" "html_to_markdown_ffi_macos"; do
+for pkg in "html_to_markdown_ffi" "html_to_markdown_ffi_flutter" "html_to_markdown_ffi_platform" "html_to_markdown_ffi_android" "html_to_markdown_ffi_ios" "html_to_markdown_ffi_macos"; do
     pubspec="packages/$pkg/pubspec.yaml"
     grep -q "^resolution: workspace$" "$pubspec" && continue
     printf '\nresolution: workspace\n' >> "$pubspec"

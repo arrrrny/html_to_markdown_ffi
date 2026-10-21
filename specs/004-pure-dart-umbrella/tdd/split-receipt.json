@@ -1,0 +1,25 @@
+{
+  "feature": "004-pure-dart-umbrella",
+  "split_at": "2026-10-21T18:53:30.743685Z",
+  "source": "tdd/test-list.md",
+  "rows": 2,
+  "spec_hash": "610e39bdf20897c38808ae9ba3677c33f62c67a26a4a97caf4cb349c8d7935de",
+  "spec_mtime": "2026-10-21T18:52:13.013117Z",
+  "classification": {
+    "A1": "CORE",
+    "A2": "CORE"
+  },
+  "classification_source": {
+    "A1": "heuristic",
+    "A2": "heuristic"
+  },
+  "adaptive_slots": [],
+  "golden_ids": [],
+  "files": [
+    "tdd/04-ENGINE.md",
+    "tdd/04-SKIN.md",
+    "tdd/04-CONTRACT.md",
+    "tdd/test-list.md (meta-index)"
+  ],
+  "engine_flutter_references": 0
+}

@@ -14,6 +14,10 @@
 // it to resolve the adapter. The Flutter SDK constraint beside it *is* a
 // pub requirement — pub.dev refuses a plugin manifest without one.
 //
+// The plugin manifest lives in the Flutter plugin package, not in the pure
+// Dart engine package: an engine package that carried one would ask for
+// the Flutter SDK and lock a CLI out of the family.
+//
 // The [layout] seam lets a test drive the scenario with a deliberately
 // broken family, so the failure paths are covered too and not only the
 // happy path.
@@ -23,8 +27,6 @@ library;
 
 import 'package:html_to_markdown_ffi_workspace/tdd/001-zero-touch-native-distribution/family_layout.dart';
 
-import 'a1_subject.dart';
-
 /// The platform each adapter is the `default_package` for.
 const Map<String, String> expectedDefaultPackages = <String, String>{
   'android': 'html_to_markdown_ffi_android',
@@ -32,24 +34,24 @@ const Map<String, String> expectedDefaultPackages = <String, String>{
   'macos': 'html_to_markdown_ffi_macos',
 };
 
+/// The package that carries the plugin manifest.
+const String pluginPackage = 'html_to_markdown_ffi_flutter';
+
 /// The packages that carry a plugin manifest and therefore require the
 /// Flutter SDK.
 const List<String> pluginPackages = <String>[
-  'html_to_markdown_ffi',
+  'html_to_markdown_ffi_flutter',
   'html_to_markdown_ffi_android',
   'html_to_markdown_ffi_ios',
   'html_to_markdown_ffi_macos',
 ];
 
-/// Whether the app-facing manifest names [adapter] as the `default_package`
-/// for [platform].
+/// Whether the manifest names [adapter] as the `default_package` for
+/// [platform].
 bool declaresDefaultPackage(String pubspec, String platform, String adapter) {
-  final pattern = RegExp(
-    '^\\s*$platform:\\s*\$'
-    '\\s*default_package:\\s*$adapter\\s*\$',
-    multiLine: true,
-  );
-  return pattern.hasMatch(pubspec);
+  final manifest = Pubspec.parse(pubspec);
+  if (manifest == null) return false;
+  return manifest.defaultPackageFor(platform) == adapter;
 }
 
 /// Scenario runner for behavior A2.
@@ -61,18 +63,27 @@ List<String> subject_a2({RepoLayout? layout}) {
   final repo = layout ?? RepoLayout.repository();
   final violations = <String>[];
 
-  final source = repo.memberPubspecOrNull('html_to_markdown_ffi');
+  final source = repo.memberPubspecOrNull(pluginPackage);
   if (source == null) {
-    violations.add('The app-facing package ships no pubspec.');
+    violations.add('The plugin package ships no pubspec.');
+    return violations;
+  }
+
+  final manifest = Pubspec.parse(source);
+  if (manifest == null) {
+    violations.add(
+      '$pluginPackage ships a manifest that is not readable YAML — what it '
+      'asks of a consumer cannot be read.',
+    );
     return violations;
   }
 
   for (final entry in expectedDefaultPackages.entries) {
-    if (!declaresDefaultPackage(source, entry.key, entry.value)) {
+    if (manifest.defaultPackageFor(entry.key) != entry.value) {
       violations.add(
-        'The app-facing package does not name ${entry.value} as the '
+        'The plugin package does not name ${entry.value} as the '
         '`default_package` for ${entry.key} — a consumer that depends on '
-        '`html_to_markdown_ffi` alone would not get the ${entry.key} adapter.',
+        '`$pluginPackage` alone would not get the ${entry.key} adapter.',
       );
     }
   }
@@ -85,15 +96,15 @@ List<String> subject_a2({RepoLayout? layout}) {
       violations.add('$packageName ships no pubspec.');
       continue;
     }
-    final manifest = Pubspec.parse(manifestSource);
-    if (manifest == null) {
+    final packageManifest = Pubspec.parse(manifestSource);
+    if (packageManifest == null) {
       violations.add(
         '$packageName ships a manifest that is not readable YAML — what it '
         'asks of a consumer cannot be read.',
       );
       continue;
     }
-    if (!manifest.constrainsFlutterSdk) {
+    if (!packageManifest.constrainsFlutterSdk) {
       violations.add(
         '$packageName carries a plugin manifest but declares no Flutter SDK '
         'constraint in its `environment:` — pub.dev refuses to publish it.',

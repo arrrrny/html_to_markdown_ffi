@@ -214,3 +214,104 @@ Expected: not <Instance of 'UnimplementedError'>
 - prev-hash: 45726ca4abce4267f81347ec9363a418fe26d402d4ba1f1fd6360ac38fb0156f
 - hash: 3dd3c7d92f6452c76e9853a1e65a5f960138bb66b273294a5233a3149513697e
 
+## Cycle: A2 (green)
+
+- behavior: A2
+- kind: green
+- evidence: issue #1162 re-certification — the subject was hand-implemented after the certified red; this green evidence binds the NEW subject shape with the passing transcript
+- subject-hash: f99a1dc3778752b53aaf508b38d37d8daf9ee650d6a852042857eeed32d2a681
+- criterion: AC-2
+- test: /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a2_test.dart
+- command: `dart test --concurrency=2 /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a2_test.dart --plain-name "it still names the Android, iOS, and macOS adapter packages as the `default_package` for their platform, and still carries the Flutter SDK constraint that a plugin manifest requires — so the zero-touch distribution of `001-zero-touch-native-distribution` survives."`
+- exit: 0
+- at: 2026-10-21T19:33:11.027104Z
+- output:
+```
+00:00 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a2_test.dart                                                                              
+00:01 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a2_test.dart                                                                              
+00:02 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a2_test.dart                                                                              
+00:03 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a2_test.dart                                                                              
+00:04 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a2_test.dart                                                                              
+00:05 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a2_test.dart                                                                              
+00:06 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a2_test.dart                                                                              
+00:07 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a2_test.dart                                                                              
+00:08 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a2_test.dart                                                                              
+00:09 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a2_test.dart                                                                              
+00:09 +0: A2 ... for their platform, and still carries the Flutter SDK constraint that a plugin manifest requires — so the zero-touch distribution of `001-zero-touch-native-distribution` survives.   
+00:10 +0: A2 ... for their platform, and still carries the Flutter SDK constraint that a plugin manifest requires — so the zero-touch distribution of `001-zero-touch-native-distribution` survives.   
+00:11 +0: A2 ... for their platform, and still carries the Flutter SDK constraint that a plugin manifest requires — so the zero-touch distribution of `001-zero-touch-native-distribution` survives.   
+00:11 +1: A2 ... for their platform, and still carries the Flutter SDK constraint that a plugin manifest requires — so the zero-touch distribution of `001-zero-touch-native-distribution` survives.   
+00:11 +1: All tests passed!
+```
+- generation:
+  (none)
+- suite: baseline=0 guard=0 new=(none)
+
+- schema: 1
+- prev-hash: 3dd3c7d92f6452c76e9853a1e65a5f960138bb66b273294a5233a3149513697e
+- hash: 73dd09ae3416f562c5cd0ebb71bae138126c9879b8bbf5d8cd5315f104e2263e
+
+## Cycle: A1 (green)
+
+- behavior: A1
+- kind: green
+- evidence: issue #1162 re-certification — the subject was hand-implemented after the certified red; this green evidence binds the NEW subject shape with the passing transcript
+- subject-hash: 18b89cf07d6d1508b306ddd393aa5540b1703f3da9a4f0b8b123ecab5c37693f
+- criterion: AC-1
+- test: /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart
+- command: `dart test --concurrency=2 /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart --plain-name "the resolution succeeds — that package asks for no Flutter SDK, neither as an `environment: flutter:` constraint nor as a `flutter: sdk: flutter` dependency — and its public entry point offers the conversion, so the consumer needs no second dependency and no project-file change."`
+- exit: 0
+- at: 2026-10-21T19:46:49.511496Z
+- output:
+```
+00:00 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:01 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:02 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:03 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:04 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:05 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:06 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:07 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:08 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:09 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:10 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:11 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:12 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:13 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:14 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:15 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:16 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:17 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:18 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:19 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:20 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:21 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:22 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:23 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:24 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:25 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:26 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:27 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:28 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:29 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:30 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:31 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:32 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:33 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:34 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:35 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:36 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart                                                                              
+00:36 +0: A1 ... constraint nor as a `flutter: sdk: flutter` dependency — and its public entry point offers the conversion, so the consumer needs no second dependency and no project-file change.     
+00:37 +0: A1 ... constraint nor as a `flutter: sdk: flutter` dependency — and its public entry point offers the conversion, so the consumer needs no second dependency and no project-file change.     
+00:38 +0: A1 ... constraint nor as a `flutter: sdk: flutter` dependency — and its public entry point offers the conversion, so the consumer needs no second dependency and no project-file change.     
+00:38 +1: A1 ... constraint nor as a `flutter: sdk: flutter` dependency — and its public entry point offers the conversion, so the consumer needs no second dependency and no project-file change.     
+00:39 +1: All tests passed!
+```
+- generation:
+  (none)
+- suite: baseline=0 guard=0 new=(none)
+
+- schema: 1
+- prev-hash: 38bc173ca0d7bf972fd6389f841876856cb84a36c068eef4e96796bb93992c4b
+- hash: 0c11fb439e1245809fd44c928da745f333b2f8781f0c5b11485f0359f404bfe1
+

@@ -20,6 +20,7 @@ export 'package:html_to_markdown_ffi_platform/html_to_markdown_ffi_platform.dart
         ImageMetadata,
         InvalidInputException,
         LinkMetadata,
+        NativeLibrary,
         NodeContext,
         PreprocessingOptions,
         ProcessingWarning,

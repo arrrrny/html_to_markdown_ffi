@@ -11,6 +11,7 @@ environment:
 
 workspace:
   - packages/html_to_markdown_ffi
+  - packages/html_to_markdown_ffi_flutter
   - packages/html_to_markdown_ffi_platform
   - packages/html_to_markdown_ffi_android
   - packages/html_to_markdown_ffi_ios
@@ -37,5 +38,6 @@ dependencies:
   zuraffa_ffi: ^0.2.1
   zuraffa_ffi_platform: ^0.2.1
   html_to_markdown_ffi: ^1.2.3
+  html_to_markdown_ffi_flutter: ^1.2.3
   html_to_markdown_ffi_platform: ^1.2.3
 

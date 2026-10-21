@@ -24,17 +24,18 @@ import '../001-zero-touch-native-distribution/fixtures.dart';
 /// A manifest with all three `default_package` entries and the Flutter SDK
 /// constraint.
 const String completeManifest = '''
-name: html_to_markdown_ffi
-version: 1.2.5
+name: html_to_markdown_ffi_flutter
+version: 1.2.7
 
 environment:
   sdk: ^3.11.0
   flutter: ">=3.27.0"
 
 dependencies:
-  html_to_markdown_ffi_android: ^1.2.5
-  html_to_markdown_ffi_ios: ^1.2.5
-  html_to_markdown_ffi_macos: ^1.2.5
+  html_to_markdown_ffi: ^1.2.7
+  html_to_markdown_ffi_android: ^1.2.7
+  html_to_markdown_ffi_ios: ^1.2.7
+  html_to_markdown_ffi_macos: ^1.2.7
 
 flutter:
   plugin:
@@ -47,10 +48,10 @@ flutter:
         default_package: html_to_markdown_ffi_macos
 ''';
 
-/// The app-facing manifest with the macOS entry dropped.
+/// The plugin manifest with the macOS entry dropped.
 const String manifestWithoutMacos = '''
-name: html_to_markdown_ffi
-version: 1.2.5
+name: html_to_markdown_ffi_flutter
+version: 1.2.7
 
 environment:
   sdk: ^3.11.0
@@ -67,8 +68,8 @@ flutter:
 
 /// A manifest that names the wrong adapter for Android.
 const String manifestWithWrongAdapter = '''
-name: html_to_markdown_ffi
-version: 1.2.5
+name: html_to_markdown_ffi_flutter
+version: 1.2.7
 
 environment:
   sdk: ^3.11.0
@@ -87,8 +88,8 @@ flutter:
 
 /// A manifest that carries a plugin manifest but no Flutter SDK constraint.
 const String manifestWithoutFlutterConstraint = '''
-name: html_to_markdown_ffi
-version: 1.2.5
+name: html_to_markdown_ffi_flutter
+version: 1.2.7
 
 environment:
   sdk: ^3.11.0
@@ -132,7 +133,7 @@ void main() {
         fixture.write('packages/$packageName/pubspec.yaml', completeManifest);
       }
       fixture.write(
-        'packages/html_to_markdown_ffi/pubspec.yaml',
+        'packages/html_to_markdown_ffi_flutter/pubspec.yaml',
         manifestWithoutMacos,
       );
 
@@ -143,9 +144,10 @@ void main() {
       expect(violations, hasLength(1));
       expect(
         violations.single,
-        'The app-facing package does not name html_to_markdown_ffi_macos as '
+        'The plugin package does not name html_to_markdown_ffi_macos as '
         'the `default_package` for macos — a consumer that depends on '
-        '`html_to_markdown_ffi` alone would not get the macos adapter.',
+        '`html_to_markdown_ffi_flutter` alone would not get the macos '
+        'adapter.',
       );
     });
 
@@ -156,7 +158,7 @@ void main() {
         fixture.write('packages/$packageName/pubspec.yaml', completeManifest);
       }
       fixture.write(
-        'packages/html_to_markdown_ffi/pubspec.yaml',
+        'packages/html_to_markdown_ffi_flutter/pubspec.yaml',
         manifestWithWrongAdapter,
       );
 
@@ -167,9 +169,10 @@ void main() {
       expect(violations, hasLength(1));
       expect(
         violations.single,
-        'The app-facing package does not name html_to_markdown_ffi_android as '
+        'The plugin package does not name html_to_markdown_ffi_android as '
         'the `default_package` for android — a consumer that depends on '
-        '`html_to_markdown_ffi` alone would not get the android adapter.',
+        '`html_to_markdown_ffi_flutter` alone would not get the android '
+        'adapter.',
       );
     });
 
@@ -197,11 +200,11 @@ void main() {
       );
     });
 
-    test('A2 — an app-facing package with no pubspec is reported', () {
+    test('A2 — a plugin package with no pubspec is reported', () {
       final fixture = Fixture.create();
       addTearDown(fixture.dispose);
       for (final packageName in familyPackages) {
-        if (packageName == 'html_to_markdown_ffi') continue;
+        if (packageName == subject.pluginPackage) continue;
         fixture.write('packages/$packageName/pubspec.yaml', completeManifest);
       }
 
@@ -210,10 +213,10 @@ void main() {
       );
 
       expect(violations, hasLength(1));
-      expect(violations.single, 'The app-facing package ships no pubspec.');
+      expect(violations.single, 'The plugin package ships no pubspec.');
     });
 
-    test('A2 — a plugin package with no pubspec is reported', () {
+    test('A2 — an adapter with no pubspec is reported', () {
       final fixture = Fixture.create();
       addTearDown(fixture.dispose);
       for (final packageName in familyPackages) {
@@ -270,15 +273,21 @@ void main() {
       }
     });
 
-    test('A2 — every plugin package is checked for the constraint', () {
+    test('A2 — the engine package is not a plugin package', () {
       expect(
         subject.pluginPackages.toSet(),
         <String>{
-          'html_to_markdown_ffi',
+          'html_to_markdown_ffi_flutter',
           'html_to_markdown_ffi_android',
           'html_to_markdown_ffi_ios',
           'html_to_markdown_ffi_macos',
         },
+      );
+      expect(
+        subject.pluginPackages,
+        isNot(contains('html_to_markdown_ffi')),
+        reason: 'the engine package must stay resolvable without the Flutter '
+            'SDK',
       );
     });
   });

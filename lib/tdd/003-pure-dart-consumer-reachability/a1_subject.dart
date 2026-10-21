@@ -26,58 +26,16 @@ library;
 import 'package:html_to_markdown_ffi_platform/html_to_markdown_ffi_platform.dart'
     as platform;
 import 'package:html_to_markdown_ffi_workspace/tdd/001-zero-touch-native-distribution/family_layout.dart';
-import 'package:yaml/yaml.dart';
+
+// The manifest parser lives in the shared helper module: every scenario that
+// reads a shipped manifest reads it the same way. It is re-exported here so
+// the behavior's surface stays where the behavior lives.
+export 'package:html_to_markdown_ffi_workspace/tdd/001-zero-touch-native-distribution/family_layout.dart'
+    show Pubspec;
 
 /// The family's Flutter-free entry point: the package a consumer that is
 /// not a Flutter app depends on.
 const String pureDartEntryPoint = 'html_to_markdown_ffi_platform';
-
-/// A parsed pubspec.
-class Pubspec {
-  /// The manifest's top-level map.
-  final Map<dynamic, dynamic> document;
-
-  const Pubspec(this.document);
-
-  /// Parses a manifest, or returns null when it is not readable YAML.
-  static Pubspec? parse(String source) {
-    try {
-      final parsed = loadYaml(source);
-      if (parsed is! Map) return null;
-      return Pubspec(Map<dynamic, dynamic>.from(parsed));
-    } on YamlException {
-      return null;
-    }
-  }
-
-  /// The manifest's `environment:` block.
-  Map<dynamic, dynamic> get environment {
-    final block = document['environment'];
-    if (block is Map) return Map<dynamic, dynamic>.from(block);
-    return const <dynamic, dynamic>{};
-  }
-
-  /// The manifest's `dependencies:` block.
-  Map<dynamic, dynamic> get dependencies {
-    final block = document['dependencies'];
-    if (block is Map) return Map<dynamic, dynamic>.from(block);
-    return const <dynamic, dynamic>{};
-  }
-
-  /// Whether the manifest constrains the Flutter SDK in `environment:`.
-  bool get constrainsFlutterSdk => environment.containsKey('flutter');
-
-  /// Whether the manifest depends on the Flutter SDK.
-  ///
-  /// A dependency that names the Flutter SDK is the map
-  /// `{sdk: flutter}`. A dependency that merely *carries* the name — the
-  /// hosted package `flutter` — is a different thing and does not count.
-  bool get dependsOnFlutterSdk {
-    final dependency = dependencies['flutter'];
-    if (dependency is! Map) return false;
-    return dependency['sdk'] == 'flutter';
-  }
-}
 
 /// Whether a package asks for the Flutter SDK at all.
 bool asksForFlutterSdk(Pubspec manifest) =>

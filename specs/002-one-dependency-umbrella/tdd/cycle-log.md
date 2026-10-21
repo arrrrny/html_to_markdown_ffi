@@ -132,3 +132,106 @@ For example, 'dart test --chain-stack-traces'.
 - prev-hash: fd362099096c8624e93181e4c8f2932cd91ced8f3437745f6ccaf02d55a9d0b3
 - hash: d62c32699ddc2c34976bf5442692a125355806a9c72c374f9899a8dde4b9df3a
 
+## Cycle: A1 (green)
+
+- behavior: A1
+- kind: green
+- evidence: issue #1162 re-certification — the subject was hand-implemented after the certified red; this green evidence binds the NEW subject shape with the passing transcript
+- subject-hash: 227f13cbaf8b3a7c04fb11cecd15e477ca1296ad83207758cf599ecf81b907d3
+- criterion: AC-1
+- test: /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart
+- command: `dart test --concurrency=2 /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart --plain-name "the shared conversion contract and all three platform adapters — the Android, iOS, and macOS registration helpers — are reachable from that one entry point."`
+- exit: 0
+- at: 2026-10-21T19:27:49.481715Z
+- output:
+```
+00:00 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:01 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:02 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:03 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:04 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:05 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:06 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:07 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:08 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:09 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:10 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:11 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:12 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:13 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:14 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:15 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:16 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:17 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:18 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:19 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:20 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:21 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:22 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:23 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:24 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:25 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a1_test.dart                                                                                      
+00:25 +0: A1 (AC-1) A1 — the shared conversion contract and all three platform adapters — the Android, iOS, and macOS registration helpers — are reachable from that one entry point.                  
+00:26 +0: A1 (AC-1) A1 — the shared conversion contract and all three platform adapters — the Android, iOS, and macOS registration helpers — are reachable from that one entry point.                  
+00:26 +1: A1 (AC-1) A1 — the shared conversion contract and all three platform adapters — the Android, iOS, and macOS registration helpers — are reachable from that one entry point.                  
+00:27 +1: All tests passed!
+```
+- generation:
+  (none)
+- suite: baseline=0 guard=0 new=(none)
+
+- schema: 1
+- prev-hash: a727401b0320d529e85e9cd4d8b2a9ba355c0d94641f2b8387e34a01b9d43114
+- hash: 82f31fa6a81e5ff312d8200f91d8605ea6c22ce88786ca53bc0d873bf7d2ad29
+
+## Cycle: A2 (green)
+
+- behavior: A2
+- kind: green
+- evidence: issue #1162 re-certification — the subject was hand-implemented after the certified red; this green evidence binds the NEW subject shape with the passing transcript
+- subject-hash: deace876f396f5129a1269e1ff487f71dfa45d9a0b96597eb057fc98dcda7cb1
+- criterion: AC-2
+- test: /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart
+- command: `dart test --concurrency=2 /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart --plain-name "the shared platform package and the three adapters come along with it, and no family member depends back on the app-facing package, so the graph stays acyclic."`
+- exit: 0
+- at: 2026-10-21T19:28:33.675951Z
+- output:
+```
+00:00 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart                                                                                      
+00:01 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart                                                                                      
+00:02 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart                                                                                      
+00:03 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart                                                                                      
+00:04 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart                                                                                      
+00:05 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart                                                                                      
+00:06 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart                                                                                      
+00:07 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart                                                                                      
+00:08 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart                                                                                      
+00:09 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart                                                                                      
+00:10 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart                                                                                      
+00:11 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart                                                                                      
+00:12 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart                                                                                      
+00:13 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart                                                                                      
+00:14 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart                                                                                      
+00:15 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart                                                                                      
+00:16 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart                                                                                      
+00:17 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart                                                                                      
+00:18 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart                                                                                      
+00:19 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart                                                                                      
+00:20 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart                                                                                      
+00:21 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart                                                                                      
+00:22 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart                                                                                      
+00:23 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart                                                                                      
+00:24 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/002-one-dependency-umbrella/a2_test.dart                                                                                      
+00:24 +0: A2 (AC-2) A2 — the shared platform package and the three adapters come along with it, and no family member depends back on the app-facing package, so the graph stays acyclic.               
+00:25 +0: A2 (AC-2) A2 — the shared platform package and the three adapters come along with it, and no family member depends back on the app-facing package, so the graph stays acyclic.               
+00:25 +1: A2 (AC-2) A2 — the shared platform package and the three adapters come along with it, and no family member depends back on the app-facing package, so the graph stays acyclic.               
+00:25 +1: All tests passed!
+```
+- generation:
+  (none)
+- suite: baseline=0 guard=0 new=(none)
+
+- schema: 1
+- prev-hash: d62c32699ddc2c34976bf5442692a125355806a9c72c374f9899a8dde4b9df3a
+- hash: ddd38ce485f5c672ad5bef7e018a1a9e4aa314bd728a1271757332b2de66bad3
+

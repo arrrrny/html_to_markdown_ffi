@@ -6,9 +6,12 @@ library;
 
 import 'dart:io';
 
-/// The five members of the `html_to_markdown_ffi` family, in publish order.
+import 'package:yaml/yaml.dart';
+
+/// The six members of the `html_to_markdown_ffi` family, in publish order.
 const List<String> familyPackages = <String>[
   'html_to_markdown_ffi',
+  'html_to_markdown_ffi_flutter',
   'html_to_markdown_ffi_platform',
   'html_to_markdown_ffi_android',
   'html_to_markdown_ffi_ios',
@@ -202,6 +205,88 @@ int _compare(List<int> a, List<int> b) {
 /// its own project files: a CocoaPods podspec, an xcconfig, or a vendored
 /// consumer project directory.
 List<String> consumerWiringFiles() => RepoLayout.repository().consumerWiringFiles();
+
+/// A parsed pubspec.
+///
+/// The manifest is read as YAML, so the answer does not depend on how the
+/// manifest is indented or on which other keys it carries.
+class Pubspec {
+  /// The manifest's top-level map.
+  final Map<dynamic, dynamic> document;
+
+  const Pubspec(this.document);
+
+  /// Parses a manifest, or returns null when it is not readable YAML.
+  static Pubspec? parse(String source) {
+    try {
+      final parsed = loadYaml(source);
+      if (parsed is! Map) return null;
+      return Pubspec(Map<dynamic, dynamic>.from(parsed));
+    } on YamlException {
+      return null;
+    }
+  }
+
+  /// The manifest's `environment:` block.
+  Map<dynamic, dynamic> get environment {
+    final block = document['environment'];
+    if (block is Map) return Map<dynamic, dynamic>.from(block);
+    return const <dynamic, dynamic>{};
+  }
+
+  /// The manifest's `dependencies:` block.
+  Map<dynamic, dynamic> get dependencies {
+    final block = document['dependencies'];
+    if (block is Map) return Map<dynamic, dynamic>.from(block);
+    return const <dynamic, dynamic>{};
+  }
+
+  /// Whether the manifest constrains the Flutter SDK in `environment:`.
+  bool get constrainsFlutterSdk => environment.containsKey('flutter');
+
+  /// Whether the manifest depends on the Flutter SDK.
+  ///
+  /// A dependency that names the Flutter SDK is the map
+  /// `{sdk: flutter}`. A dependency that merely *carries* the name — the
+  /// hosted package `flutter` — is a different thing and does not count.
+  bool get dependsOnFlutterSdk {
+    final dependency = dependencies['flutter'];
+    if (dependency is! Map) return false;
+    return dependency['sdk'] == 'flutter';
+  }
+
+  /// The manifest's `flutter: plugin: platforms:` block.
+  Map<dynamic, dynamic> get pluginPlatforms {
+    final flutter = document['flutter'];
+    if (flutter is! Map) return const <dynamic, dynamic>{};
+    final plugin = flutter['plugin'];
+    if (plugin is! Map) return const <dynamic, dynamic>{};
+    final platforms = plugin['platforms'];
+    if (platforms is! Map) return const <dynamic, dynamic>{};
+    return Map<dynamic, dynamic>.from(platforms);
+  }
+
+  /// Whether the manifest carries a plugin manifest at all.
+  bool get carriesPluginManifest {
+    final flutter = document['flutter'];
+    if (flutter is! Map) return false;
+    return flutter['plugin'] is Map;
+  }
+
+  /// The package the manifest names as the `default_package` for
+  /// [platform], or null when it names none.
+  String? defaultPackageFor(String platform) {
+    final entry = pluginPlatforms[platform];
+    if (entry is! Map) return null;
+    final value = entry['default_package'];
+    if (value is! String) return null;
+    return value;
+  }
+
+  /// Whether the manifest declares a dependency on [packageName].
+  bool declaresDependency(String packageName) =>
+      dependencies.containsKey(packageName);
+}
 
 /// Whether the bytes of [file] start with [magic].
 bool hasMagic(File file, List<int> magic) {

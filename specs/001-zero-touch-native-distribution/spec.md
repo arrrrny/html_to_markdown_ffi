@@ -12,5 +12,5 @@
    **Type**: acceptance
 4. **Given** a platform adapter package **When** its channel converts a native call **Then** the conversion goes through the shared `zuraffa_ffi_platform` envelope, and the adapter declares no envelope of its own.
    **Type**: acceptance
-5. **Given** a fresh clone of the repository **When** the developer resolves the dependencies once at the repository root **Then** all five family packages resolve through one pub workspace on the latest zuraffa release, and every member carries the same release version.
+5. **Given** a fresh clone of the repository **When** the developer resolves the dependencies once at the repository root **Then** all six family packages resolve through one pub workspace on the latest zuraffa release, and every member carries the same release version.
    **Type**: acceptance
