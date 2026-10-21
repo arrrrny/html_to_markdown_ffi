@@ -31,7 +31,18 @@ for pkg in "${PACKAGES_IN_ORDER[@]}"; do
     done
     [ "$dry_run_ok" = 1 ] || { echo -e "${RED}Dry-run failed for $pkg${NC}"; exit 1; }
 
-    dart pub publish --force || { echo -e "${RED}Publish failed for $pkg${NC}"; exit 1; }
+    # The version may already be on pub.dev while its API listing still lags
+    # behind — the server then refuses the upload with "already exists".
+    # That is a success, not a failure.
+    publish_out=$(dart pub publish --force 2>&1) || {
+        if echo "$publish_out" | grep -q "already exists"; then
+            echo -e "${YELLOW}$pkg $version is already on pub.dev.${NC}"
+        else
+            echo "$publish_out"
+            echo -e "${RED}Publish failed for $pkg${NC}"
+            exit 1
+        fi
+    }
 
     # Wait for propagation before the dependents publish.
     for i in $(seq 1 30); do
