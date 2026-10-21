@@ -41,4 +41,3 @@ topics:
 # this one. A CLI, a server, or a worker depends on this one alone.
 
 
-resolution: workspace
