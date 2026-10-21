@@ -1,0 +1,63 @@
+{
+  "schema": 1,
+  "feature": "002-one-dependency-umbrella",
+  "entries": [
+    {
+      "feature": "002-one-dependency-umbrella",
+      "cycle": "engine",
+      "phase": "drive",
+      "started_at": "2026-10-21T07:40:17.470843Z",
+      "finished_at": "2026-10-21T07:40:17.476904Z",
+      "gate_state": "green",
+      "receipts": [
+        "tdd/04-engine-receipt.json"
+      ],
+      "violations": [],
+      "refs": {
+        "engine_receipt": "tdd/04-engine-receipt.json",
+        "skin_receipt": null,
+        "contract_schema": null
+      },
+      "result": "complete",
+      "behaviors": [
+        "A1",
+        "A2"
+      ],
+      "counts": {
+        "total": 2,
+        "pending": 0,
+        "red": 0,
+        "green": 0,
+        "done": 2
+      },
+      "stopped_at": null
+    },
+    {
+      "feature": "002-one-dependency-umbrella",
+      "cycle": "skin",
+      "phase": "drive",
+      "started_at": "2026-10-21T07:40:26.765268Z",
+      "finished_at": "2026-10-21T07:40:26.774104Z",
+      "gate_state": "green",
+      "receipts": [
+        "tdd/04-skin-receipt.json"
+      ],
+      "violations": [],
+      "refs": {
+        "engine_receipt": "tdd/04-engine-receipt.json",
+        "skin_receipt": "tdd/04-skin-receipt.json",
+        "contract_schema": null
+      },
+      "result": "complete",
+      "behaviors": [],
+      "counts": {
+        "total": 0,
+        "pending": 0,
+        "red": 0,
+        "green": 0,
+        "done": 0
+      },
+      "stopped_at": null
+    }
+  ]
+}

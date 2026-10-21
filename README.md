@@ -48,6 +48,11 @@ flutter:
 Before 1.2.4 the app-facing package was a plain Dart package, so a consumer
 had to declare the adapters itself — four dependencies instead of one.
 
+The app-facing package also re-exports the three adapters, so the whole
+family's API — the conversion contract, the facade, and the Android, iOS
+and macOS registration helpers — is reachable from
+`package:html_to_markdown_ffi/html_to_markdown_ffi.dart` alone.
+
 How each platform gets the library in place:
 
 - **iOS / macOS** — the adapter ships a Swift package with a `binaryTarget`
@@ -80,18 +85,18 @@ print(md.content); // # Title\n\nHello **world**
 ```
 
 `convert()` keeps its pre-migration signature and semantics, including
-`ConversionOptions`, `Visitor`, and the typed exception family. The one
-deployment change since 1.1.0: the native binaries live in the federated
-adapters, so add the adapter for each platform you ship (the loader chain
-also still honors `HTML_TO_MARKDOWN_FFI_LIB_PATH`, the legacy `native/`
-bundle, the `~/.html_to_markdown_ffi` cache, and GitHub release downloads).
+`ConversionOptions`, `Visitor`, and the typed exception family. Since
+1.2.4 the native binaries live in the federated adapters and the app-facing
+package pulls them in, so there is nothing left to add per platform (the
+loader chain also still honors `HTML_TO_MARKDOWN_FFI_LIB_PATH`, the legacy
+`native/` bundle, the `~/.html_to_markdown_ffi` cache, and GitHub release
+downloads).
 
 ## Zuraffa stack
 
 ```dart
 import 'package:zuraffa/zuraffa.dart';
 import 'package:html_to_markdown_ffi/html_to_markdown_ffi.dart';
-import 'package:html_to_markdown_ffi_macos/html_to_markdown_ffi_macos.dart';
 
 final getIt = GetIt.instance;
 registerHtmlToMarkdownFfiDependencies(getIt); // app runtime module

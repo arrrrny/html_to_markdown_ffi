@@ -1,0 +1,8 @@
+{
+  "feature": "002-one-dependency-umbrella",
+  "behavior_states": {
+    "A1": "done",
+    "A2": "done"
+  },
+  "dropped": []
+}

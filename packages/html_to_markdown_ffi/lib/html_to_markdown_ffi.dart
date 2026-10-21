@@ -8,6 +8,11 @@
 /// `html_to_markdown_ffi_platform`.
 /// The preserved pre-migration public API remains import-compatible via
 /// `package:html_to_markdown_ffi/html_to_markdown.dart`.
+///
+/// The three platform adapters are reachable from this one entry point, so
+/// depending on `html_to_markdown_ffi` alone is enough: they are
+/// re-exported here instead of being separate dependencies the consumer has
+/// to add by hand.
 library;
 
 export 'src/data/datasources/htm_conversion/native_htm_conversion_datasource.dart';
@@ -16,6 +21,9 @@ export 'src/htm_conversion_mapping.dart';
 export 'src/domain/entities/htm_conversion/htm_conversion.dart';
 export 'src/domain/repositories/htm_conversion_repository.dart';
 export 'src/domain/usecases/htm_conversion/get_htm_conversion_usecase.dart';
+export 'package:html_to_markdown_ffi_android/html_to_markdown_ffi_android.dart';
+export 'package:html_to_markdown_ffi_ios/html_to_markdown_ffi_ios.dart';
+export 'package:html_to_markdown_ffi_macos/html_to_markdown_ffi_macos.dart';
 export 'package:html_to_markdown_ffi_platform/html_to_markdown_ffi_platform.dart'
     show
         ConversionOptions,

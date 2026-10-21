@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "feature": "002-one-dependency-umbrella",
+  "lane": "skin",
+  "verdict": "green",
+  "result": "complete",
+  "behaviors": [],
+  "counts": {
+    "total": 0,
+    "pending": 0,
+    "red": 0,
+    "green": 0,
+    "done": 0
+  },
+  "stopped_at": null,
+  "at": "2026-10-21T07:40:26.772551Z"
+}

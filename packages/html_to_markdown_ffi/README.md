@@ -34,8 +34,23 @@ final service = getIt<HtmlToMarkdownFfiService>();
 
 ## Platform adapters
 
-Ship the adapter for each platform you target — it bundles the prebuilt
-native binary and registers the port:
+You do not have to declare an adapter yourself: this package declares
+`default_package` for android, ios and macos, so depending on
+`html_to_markdown_ffi` alone is enough — Flutter resolves the adapter for
+the platform you build for, and the adapter bundles the prebuilt native
+binary and registers the port.
+
+The adapters are also re-exported here, so their registration helpers are
+reachable from this one import:
+
+```dart
+import 'package:html_to_markdown_ffi/html_to_markdown_ffi.dart';
+
+registerMacosHtmlToMarkdownFfiDependencies(
+  getIt,
+  channel: MacosHtmlToMarkdownFfiChannel.native(),
+);
+```
 
 - [`html_to_markdown_ffi_android`](https://pub.dev/packages/html_to_markdown_ffi_android)
 - [`html_to_markdown_ffi_ios`](https://pub.dev/packages/html_to_markdown_ffi_ios)

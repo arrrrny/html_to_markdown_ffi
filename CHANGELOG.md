@@ -48,6 +48,28 @@
   ^0.2.1` — the release that carries the port contract, and therefore the
   one the family's envelope alias resolves against.
 
+- **One dependency really is one dependency** (spec
+  `002-one-dependency-umbrella`). The app-facing package now re-exports the
+  three adapters, so the whole family's public API — the conversion
+  contract, the facade, and the Android, iOS and macOS registration
+  helpers — is reachable from `package:html_to_markdown_ffi/
+  html_to_markdown_ffi.dart` alone:
+
+  ```dart
+  import 'package:html_to_markdown_ffi/html_to_markdown_ffi.dart';
+
+  registerMacosHtmlToMarkdownFfiDependencies(
+    getIt,
+    channel: MacosHtmlToMarkdownFfiChannel.native(),
+  );
+  ```
+
+  Before this release that call needed a second dependency on
+  `html_to_markdown_ffi_macos` (and a different one per platform). The
+  adapters were already in the dependency graph, so this only surfaces
+  what the consumer already had; it adds no new edge and keeps the graph
+  acyclic.
+
 ## 1.2.3 - 2026-10-20
 
 - **Zero-touch native distribution** (spec `001-zero-touch-native-distribution`):

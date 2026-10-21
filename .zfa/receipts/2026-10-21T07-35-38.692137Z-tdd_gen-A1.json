@@ -1,0 +1,29 @@
+{
+  "schema": "proof.v1",
+  "command": "tdd gen",
+  "target": "A1",
+  "repro": "zfa tdd gen",
+  "at": "2026-10-21T07:35:38.692137Z",
+  "generator_version": "7.2.0",
+  "input": {
+    "feature": "002-one-dependency-umbrella"
+  },
+  "files": [
+    {
+      "path": "test/tdd/002-one-dependency-umbrella/a1_test.dart",
+      "action": "create",
+      "sha256": "119c17400e8fa373a5085c969d346cd1d557c45f8411a76f4470b395dc153458",
+      "bytes": 1889
+    },
+    {
+      "path": "lib/tdd/002-one-dependency-umbrella/a1_subject.dart",
+      "action": "create",
+      "sha256": "c4b72155accb9665f64ce53a25cd05a0aeb3a570da2a86ed0b0c7e46fdf26317",
+      "bytes": 1245,
+      "snapshot": "// GENERATED STUB — `zfa tdd gen A1` (spec 044-test-tdd-generation).\n//\n// behavior_id: A1\n// source_criterion: AC-1\n// description: the shared conversion contract and all three platform adapters — the Android, iOS, and macOS registration helpers — are reachable from that one entry point.\n//\n// This is a MINIMAL COMPILABLE acceptance-scenario stub. It compiles\n// cleanly (FR-011) but does NOT satisfy the behavior described above —\n// the paired test will fail on first execution with an assertion-level\n// failure (honest red). The acceptance subject intentionally does NOT\n// reference any entity/use case/repository (FR-004): it stands alone.\n// Replace this stub body with real implementation to make the test pass.\n//\n// The subject name is derived from the behavior id (`subject_a1`) and is\n// deliberately snake_cased — the generator KNOWS the name it emits, so\n// the lint its shape provably trips is suppressed here rather than\n// renaming the contract surface (issue #1035).\n// ignore_for_file: non_constant_identifier_names\nlibrary;\n\n/// Scenario runner for behavior A1.\n///\n/// Throws [UnimplementedError] until the real implementation lands.\nvoid subject_a1() => throw UnimplementedError('subject_a1 not implemented');\n"
+    }
+  ],
+  "receipt_version": 1,
+  "min_core_version": "6.0.0",
+  "generated_against_core": "7.2.0"
+}
