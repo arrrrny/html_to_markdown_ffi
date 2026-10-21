@@ -4,7 +4,7 @@ description: >-
   (app-facing package, shared platform envelope core, and the android/ios/macos
   adapters).
 publish_to: none
-version: 1.2.3
+version: 1.2.4
 
 environment:
   sdk: ^3.11.0
