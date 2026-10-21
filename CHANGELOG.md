@@ -1,5 +1,19 @@
 # Changelog
 
+## 1.2.6 - 2026-10-21
+
+- **The pure-Dart entry point carries the conversion.** The
+  `html_to_markdown_ffi_platform` 1.2.5 that reached pub.dev was published
+  from an earlier state of the family and shipped without
+  `lib/convert.dart`, so the entry point it offered had no conversion to
+  call. 1.2.6 carries the intended content: `convert()`,
+  `convertAsync()` and `nativeConverterAvailable`, over the same
+  in-process `dart:ffi` bridge the rest of the family uses.
+
+  A consumer that declares `html_to_markdown_ffi_platform: ^1.2.5` resolves
+  1.2.6 — the constraint admits it — and gets the conversion. The other four
+  members were published correctly at 1.2.5 and are unchanged here.
+
 ## 1.2.5 - 2026-10-21
 
 - **A pure-Dart consumer is no longer locked out of the family** (spec
