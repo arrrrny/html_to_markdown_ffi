@@ -182,7 +182,7 @@ String goodMemberPubspec(
     ..writeln('dependencies:')
     ..writeln('  zuraffa: $zuraffaConstraint');
   if (declaresSharedEnvelope) {
-    buffer.writeln('  zuraffa_ffi_platform: ^0.2.0');
+    buffer.writeln('  zuraffa_ffi_platform: ^0.2.1');
   }
   if (ffiPlatform != null) {
     buffer

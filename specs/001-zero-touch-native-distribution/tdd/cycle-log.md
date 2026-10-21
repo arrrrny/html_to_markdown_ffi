@@ -657,3 +657,136 @@ Expected: not <Instance of 'UnimplementedError'>
 - prev-hash: 05ccb2eb16e7e6cb2153396839204198471a4eacccf11ff09f0c3d7409452c9c
 - hash: 49853741363a018b4f8e1eb43d6e9952f4e6b1cc8f8f8e31245e039835af4e1f
 
+## Cycle: A1 (green)
+
+- behavior: A1
+- kind: green
+- evidence: issue #1162 re-certification — the subject was hand-implemented after the certified red; this green evidence binds the NEW subject shape with the passing transcript
+- subject-hash: 6e9c701742022edbf71059bf8725b32b803c6888d47c83c98f7d5c449c4313a9
+- criterion: AC-1
+- test: /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a1_test.dart
+- command: `dart test --concurrency=2 /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a1_test.dart --plain-name "the Rust native library is linked into the app by the macOS adapter package's own Swift package (a `binaryTarget` over the shipped xcframework), and the consumer's project files contain no reference to the native library."`
+- exit: 0
+- at: 2026-10-21T07:24:09.983220Z
+- output:
+```
+00:00 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a1_test.dart                                                                               
+00:01 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a1_test.dart                                                                               
+00:01 +0: A1 ... the app by the macOS adapter package's own Swift package (a `binaryTarget` over the shipped xcframework), and the consumer's project files contain no reference to the native library.
+00:01 +1: A1 ... the app by the macOS adapter package's own Swift package (a `binaryTarget` over the shipped xcframework), and the consumer's project files contain no reference to the native library.
+00:01 +1: All tests passed!
+```
+- generation:
+  (none)
+- suite: baseline=0 guard=0 new=(none)
+
+- schema: 1
+- prev-hash: 1514ac785eaa9eb12cc78049b8b39ddef0a94785e5f536b0b3869c81fc5c9c74
+- hash: c835dd837fdbf0bbfd65fd0a6e0c9370226b1597539bdd5e078f51ada5745eab
+
+## Cycle: A2 (green)
+
+- behavior: A2
+- kind: green
+- evidence: issue #1162 re-certification — the subject was hand-implemented after the certified red; this green evidence binds the NEW subject shape with the passing transcript
+- subject-hash: 555fe6a48547f88f17d73116c3c48c8acc41ffd25d913a5124d91d7bb373dc14
+- criterion: AC-2
+- test: /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a2_test.dart
+- command: `dart test --concurrency=2 /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a2_test.dart --plain-name "the Rust native library is packaged into the app from the Android adapter package's own `jniLibs`, and the consumer's project files contain no reference to the native library."`
+- exit: 0
+- at: 2026-10-21T07:24:12.768014Z
+- output:
+```
+00:00 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a2_test.dart                                                                               
+00:00 +0: A2 ... A2 — the Rust native library is packaged into the app from the Android adapter package's own `jniLibs`, and the consumer's project files contain no reference to the native library.  
+00:01 +0: A2 ... A2 — the Rust native library is packaged into the app from the Android adapter package's own `jniLibs`, and the consumer's project files contain no reference to the native library.  
+00:01 +1: A2 ... A2 — the Rust native library is packaged into the app from the Android adapter package's own `jniLibs`, and the consumer's project files contain no reference to the native library.  
+00:01 +1: All tests passed!
+```
+- generation:
+  (none)
+- suite: baseline=0 guard=0 new=(none)
+
+- schema: 1
+- prev-hash: f08bc0ed32fa3312ac9c06c80cc89c1154187f6e091c138da5bed945fc77bb00
+- hash: 1d8da91d12dcae3cec531797096058ca8c6418e6655f93508ba412d00d4871d1
+
+## Cycle: A3 (green)
+
+- behavior: A3
+- kind: green
+- evidence: issue #1162 re-certification — the subject was hand-implemented after the certified red; this green evidence binds the NEW subject shape with the passing transcript
+- subject-hash: 49bd815ad78800177a86926e3b48d0aa07c037c251c850a5890184f7a743a110
+- criterion: AC-3
+- test: /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a3_test.dart
+- command: `dart test --concurrency=2 /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a3_test.dart --plain-name "the Rust native library is linked into the app by the iOS adapter package's own Swift package, exactly as the macOS adapter does."`
+- exit: 0
+- at: 2026-10-21T07:24:15.776782Z
+- output:
+```
+00:00 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a3_test.dart                                                                               
+00:00 +0: A3 (AC-3) A3 — the Rust native library is linked into the app by the iOS adapter package's own Swift package, exactly as the macOS adapter does.                                             
+00:01 +0: A3 (AC-3) A3 — the Rust native library is linked into the app by the iOS adapter package's own Swift package, exactly as the macOS adapter does.                                             
+00:01 +1: A3 (AC-3) A3 — the Rust native library is linked into the app by the iOS adapter package's own Swift package, exactly as the macOS adapter does.                                             
+00:01 +1: All tests passed!
+```
+- generation:
+  (none)
+- suite: baseline=0 guard=0 new=(none)
+
+- schema: 1
+- prev-hash: 4adaa1e813f8fa12a1eb0d5a0c71f2bfd65bbd0c7fcd0f560046eef218934498
+- hash: 6e0dece302a7055a36168701975873c485e6e7feddaf81a1199c3ce462f06c85
+
+## Cycle: A4 (green)
+
+- behavior: A4
+- kind: green
+- evidence: issue #1162 re-certification — the subject was hand-implemented after the certified red; this green evidence binds the NEW subject shape with the passing transcript
+- subject-hash: 7e59f9b458e924a556998367ab474c6a9486a23f9c6b720864502b238dbbeaed
+- criterion: AC-4
+- test: /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a4_test.dart
+- command: `dart test --concurrency=2 /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a4_test.dart --plain-name "the conversion goes through the shared `zuraffa_ffi_platform` envelope, and the adapter declares no envelope of its own."`
+- exit: 0
+- at: 2026-10-21T07:24:18.213013Z
+- output:
+```
+00:00 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a4_test.dart                                                                               
+00:00 +0: A4 (AC-4) A4 — the conversion goes through the shared `zuraffa_ffi_platform` envelope, and the adapter declares no envelope of its own.                                                      
+00:00 +1: A4 (AC-4) A4 — the conversion goes through the shared `zuraffa_ffi_platform` envelope, and the adapter declares no envelope of its own.                                                      
+00:01 +1: All tests passed!
+```
+- generation:
+  (none)
+- suite: baseline=0 guard=0 new=(none)
+
+- schema: 1
+- prev-hash: 068380c4b61e935f6668d6d83cb3fb5588f29f79220f0e8b2e767a585cbb8b0e
+- hash: 5341099a1af2dba56b186bb4cc4e821f6b3da8692bf2b26ed75c58ed6340c31f
+
+## Cycle: A5 (green)
+
+- behavior: A5
+- kind: green
+- evidence: issue #1162 re-certification — the subject was hand-implemented after the certified red; this green evidence binds the NEW subject shape with the passing transcript
+- subject-hash: 3929c040449e879d4805777a05a43511ab3f759c12b61daee3a3be2beb1f36f4
+- criterion: AC-5
+- test: /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a5_test.dart
+- command: `dart test --concurrency=2 /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a5_test.dart --plain-name "all five family packages resolve through one pub workspace on the latest zuraffa release, and every member carries the same release version."`
+- exit: 0
+- at: 2026-10-21T07:24:20.577382Z
+- output:
+```
+00:00 +0: loading /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/001-zero-touch-native-distribution/a5_test.dart                                                                               
+00:00 +0: A5 (AC-5) A5 — all five family packages resolve through one pub workspace on the latest zuraffa release, and every member carries the same release version.                                  
+00:00 +1: A5 (AC-5) A5 — all five family packages resolve through one pub workspace on the latest zuraffa release, and every member carries the same release version.                                  
+00:00 +1: All tests passed!
+```
+- generation:
+  (none)
+- suite: baseline=0 guard=0 new=(none)
+
+- schema: 1
+- prev-hash: 49853741363a018b4f8e1eb43d6e9952f4e6b1cc8f8f8e31245e039835af4e1f
+- hash: 43a2f71c51ed138b08cfa1fee677333c5bd67bfa40518fb8605bdd7df8f2725e
+

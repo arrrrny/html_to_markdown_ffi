@@ -92,7 +92,7 @@ void main() {
 
     group('the shared envelope dependency', () {
       test('A4 — a constraint that admits the shared release reports no violation', () {
-        expect(subject.checkSharedConstraint('^0.2.0'), isEmpty);
+        expect(subject.checkSharedConstraint('^0.2.1'), isEmpty);
       });
 
       test('A4 — a missing dependency is reported', () {
@@ -104,13 +104,19 @@ void main() {
         expect(violations, hasLength(1));
       });
 
+      test('A4 — a constraint below the shared release but still admitting it is reported as valid', () {
+        // `^0.2.0` has a lower floor than 0.2.1 but still admits it: pub's
+        // caret in the `0.x` line spans the whole minor.
+        expect(subject.checkSharedConstraint('^0.2.0'), isEmpty);
+      });
+
       test('A4 — a constraint that does not admit the shared release is reported', () {
         final violations = subject.checkSharedConstraint('^0.1.0');
         expect(
           violations,
           contains(
             'The html platform package does not depend on a shared envelope '
-            'core that carries 0.2.0 (constraint: ^0.1.0).',
+            'core that carries 0.2.1 (constraint: ^0.1.0).',
           ),
         );
         expect(violations, hasLength(1));

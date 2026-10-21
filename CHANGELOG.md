@@ -42,6 +42,12 @@
   adapters in, so nothing in this family pulls a second copy of the shared
   FFI stack.
 
+- **Dependencies moved to their latest releases**: `zuraffa` is at `^7.2.0`
+  (the current latest), `zorphy_annotation` and `zorphy` are at `^2.4.4`
+  (was `^2.4.3`), and the shared FFI core is at `zuraffa_ffi_platform
+  ^0.2.1` — the release that carries the port contract, and therefore the
+  one the family's envelope alias resolves against.
+
 ## 1.2.3 - 2026-10-20
 
 - **Zero-touch native distribution** (spec `001-zero-touch-native-distribution`):

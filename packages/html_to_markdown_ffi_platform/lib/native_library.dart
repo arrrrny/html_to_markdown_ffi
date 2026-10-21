@@ -13,11 +13,18 @@ const _defaultVersion = '1.0.0';
 /// null when it does not apply to the running platform.
 typedef HtmNativeLibraryResolver = String? Function();
 
-/// Resolver seam (spec 064): federated adapters register the prebuilt
-/// binaries they bundle here so the preserved loading chain below can find
-/// them without the app package shipping binaries itself. Purely additive —
-/// the pre-migration resolution steps are unchanged and keep precedence as
+/// Resolver seam (spec 064): a host can register a resolver that points at a
+/// prebuilt binary, so the preserved loading chain below can find it without
+/// the app package shipping binaries itself. Purely additive — the
+/// pre-migration resolution steps are unchanged and keep precedence as
 /// documented in [NativeLibrary].
+///
+/// The federated adapters do not register here: in the zero-touch
+/// architecture each platform reaches its binary through its own mechanism
+/// (the macOS and iOS dynamic products are linked into the app, so
+/// `DynamicLibrary.process()` finds the symbols; the Android `jniLibs` entry
+/// is found by `DynamicLibrary.open`). The seam is an extension point for a
+/// host that resolves the library by path instead.
 abstract final class HtmNativeLibraries {
   static final List<HtmNativeLibraryResolver> _resolvers = [];
 
@@ -108,7 +115,7 @@ class NativeLibrary {
       try { return DynamicLibrary.open(bundled); } on ArgumentError { /* next resolution step */ }
     }
 
-    // 2b. Resolver seam: adapters (and tests) contribute binary paths.
+    // 2b. Resolver seam: a host that resolves the library by path.
     final viaResolver = HtmNativeLibraries.resolve();
     if (viaResolver != null) {
       try { return DynamicLibrary.open(viaResolver); } on ArgumentError { /* next resolution step */ }
