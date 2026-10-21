@@ -1,0 +1,25 @@
+{
+  "feature": "003-pure-dart-consumer-reachability",
+  "split_at": "2026-10-21T15:15:11.834806Z",
+  "source": "tdd/test-list.md",
+  "rows": 2,
+  "spec_hash": "4f75360160b32f58c98a5047f6d8e3d9c7bb5f882c831a104dbe84db8262d270",
+  "spec_mtime": "2026-10-21T15:14:58.686445Z",
+  "classification": {
+    "A1": "CORE",
+    "A2": "CORE"
+  },
+  "classification_source": {
+    "A1": "heuristic",
+    "A2": "heuristic"
+  },
+  "adaptive_slots": [],
+  "golden_ids": [],
+  "files": [
+    "tdd/04-ENGINE.md",
+    "tdd/04-SKIN.md",
+    "tdd/04-CONTRACT.md",
+    "tdd/test-list.md (meta-index)"
+  ],
+  "engine_flutter_references": 0
+}

@@ -3,8 +3,14 @@
 /// shared `zuraffa_ffi_platform` envelope), the pure-Dart port contract the
 /// adapters implement, and the native-library / conversion seam adapters use
 /// to contribute their bundled binaries to the preserved loading chain.
+///
+/// This package asks for no Flutter SDK and declares no plugin manifest, so
+/// it is the family's entry point for a consumer that is not a Flutter app:
+/// [convert] converts HTML to Markdown over the in-process native bridge
+/// with nothing else to wire.
 library;
 
+export 'convert.dart';
 export 'exceptions.dart';
 export 'models/conversion_options.dart';
 export 'models/conversion_result.dart';

@@ -92,6 +92,45 @@ loader chain also still honors `HTML_TO_MARKDOWN_FFI_LIB_PATH`, the legacy
 `native/` bundle, the `~/.html_to_markdown_ffi` cache, and GitHub release
 downloads).
 
+## Two entry points
+
+The family has one dependency and no project-file change on either side —
+but which package you declare depends on whether your consumer is a Flutter
+app.
+
+| Consumer | Declare | Flutter SDK |
+| -------- | ------- | ----------- |
+| A Flutter app | `html_to_markdown_ffi: ^1.2.5` | required |
+| A CLI, server or worker | `html_to_markdown_ffi_platform: ^1.2.5` | **not** required |
+
+```yaml
+# Flutter app — the native library is linked in by the family itself.
+dependencies:
+  html_to_markdown_ffi: ^1.2.5
+```
+
+```yaml
+# Pure Dart — no Flutter SDK in sight.
+dependencies:
+  html_to_markdown_ffi_platform: ^1.2.5
+```
+
+```dart
+import 'package:html_to_markdown_ffi_platform/html_to_markdown_ffi_platform.dart';
+
+final md = convert('<h1>Title</h1>');
+```
+
+The two run the same in-process `dart:ffi` bridge. The app-facing package's
+`convert()` additionally prefers a registered platform adapter over the
+direct bridge, which a pure-Dart consumer has no way to register.
+
+A package that carries a `flutter: plugin:` manifest requires the Flutter
+SDK — pub.dev will not publish it without an `environment: flutter:`
+constraint, and *any* value of that constraint makes it unresolvable for a
+standalone Dart SDK. That is why the family ships two entry points rather
+than one.
+
 ## Zuraffa stack
 
 ```dart

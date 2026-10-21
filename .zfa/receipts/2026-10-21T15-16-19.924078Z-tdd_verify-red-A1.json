@@ -1,0 +1,23 @@
+{
+  "schema": "proof.v1",
+  "command": "tdd verify-red",
+  "target": "A1",
+  "repro": "zfa tdd verify-red",
+  "at": "2026-10-21T15:16:19.924078Z",
+  "generator_version": "7.2.0",
+  "input": {
+    "feature": "003-pure-dart-consumer-reachability"
+  },
+  "files": [
+    {
+      "path": "specs/003-pure-dart-consumer-reachability/tdd/cycle-log.md",
+      "action": "update",
+      "sha256": "33384ae2848fcf571de73304300c45a0196ae445f7d53facfe1cda00e988c9e2",
+      "bytes": 1215,
+      "snapshot": "# Cycle Log\n\nAppend only. Newest last. Every entry's `red` block is the evidence that the test existed and failed before the implementation.\n\n## Cycle: A1 (red)\n\n- behavior: A1\n- kind: red\n- classification: assertionFailure\n- subject-hash: 3c371b4fc3507b74f050858a215d9c8e77cb265ed9471dfdbbdb1c980a4cd970\n- criterion: AC-1\n- test: /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart\n- command: `dart test --concurrency=2 /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a1_test.dart /Users/arrrrny/Developer/html_to_markdown_ffi/test/tdd/003-pure-dart-consumer-reachability/a2_test.dart`\n- exit: 1\n- at: 2026-10-21T15:16:19.902955Z\n- output:\n```\nExpected: not <Instance of 'UnimplementedError'>\n    Actual: UnimplementedError:<UnimplementedError: subject_a1 not implemented>\n  \n  package:matcher                                                 expect\n  test/tdd/003-pure-dart-consumer-reachability/a1_test.dart 37:7  main.<fn>.<fn>\n  \n\n(batched red — one runner invocation for 2 behavior(s), spec 069 T002)\n```\n\n- schema: 1\n- prev-hash: genesis\n- hash: f621df6690d522f430db8fa762cbf69e50ac04aa3c24c448a88c138093c2d5c3\n\n"
+    }
+  ],
+  "receipt_version": 1,
+  "min_core_version": "6.0.0",
+  "generated_against_core": "7.2.0"
+}

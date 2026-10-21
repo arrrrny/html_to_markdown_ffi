@@ -1,5 +1,72 @@
 # Changelog
 
+## 1.2.5 - 2026-10-21
+
+- **A pure-Dart consumer is no longer locked out of the family** (spec
+  `003-pure-dart-consumer-reachability`).
+
+  1.2.4 made the app-facing package depend on the Flutter SDK. The cost was
+  real: pub treats an `environment: flutter:` constraint and a
+  `flutter: {sdk: flutter}` dependency as hard requirements, so a consumer
+  with a plain Dart SDK could not resolve the family at all:
+
+      Because html_to_markdown_ffi_macos >=1.2.3 which requires the Flutter
+      SDK, version solving failed.
+
+  A pure-Dart consumer was therefore pinned to 1.2.3 forever — every later
+  release was invisible to it.
+
+  A package cannot be both a Flutter plugin and pure-Dart-resolvable:
+  pub.dev refuses to publish a package that carries a `flutter: plugin:`
+  manifest without an `environment: flutter:` constraint, and *any* value of
+  that constraint — whatever version it names — makes the package
+  unresolvable for a standalone Dart SDK. The two requirements are
+  incompatible.
+
+  So the family grows a second entry point, and both are one dependency with
+  no project-file change:
+
+  - **A Flutter app** depends on `html_to_markdown_ffi`. The native library
+    is linked in by the family itself — unchanged, and still one dependency.
+  - **Everything else** — a CLI, a server, a background worker — depends on
+    `html_to_markdown_ffi_platform`, which asks for no Flutter SDK and
+    declares no plugin manifest.
+
+  The shared package was already the family's Flutter-free core; what it
+  lacked was a way to *use*. It now offers the conversion directly:
+
+  ```dart
+  import 'package:html_to_markdown_ffi_platform/html_to_markdown_ffi_platform.dart';
+
+  final result = convert('<h1>Hello</h1>');
+  ```
+
+  The conversion runs over the same in-process `dart:ffi` bridge the
+  federated adapters and the app-facing package use, so it is the same
+  conversion — not a second implementation. The app-facing package's own
+  `convert()` additionally prefers a registered platform adapter over the
+  direct bridge, which a pure-Dart consumer has no way to register.
+
+  Verified both ways: a consumer with a standalone Dart SDK resolves
+  `html_to_markdown_ffi_platform` alone, analyzes clean, compiles to an
+  executable and converts; a Flutter app resolves the three platform
+  adapters on its own and links the native library into the macOS app
+  bundle, the iOS simulator build and the Android APK.
+
+- **The Flutter SDK floor drops from `>=3.41.0` to `>=3.27.0`** on the four
+  packages that carry a plugin manifest. The old floor was the Flutter
+  version that happened to be installed when the constraint was written, not
+  a requirement the family has. `>=3.27.0` is where Flutter's Swift Package
+  Manager support for plugins landed, and it is what `dart_curl_flutter`
+  already declares in this ecosystem.
+
+- The app-facing package no longer depends on the Flutter SDK. Nothing in
+  the family imports `package:flutter` — the three adapters are pure Dart
+  that ship prebuilt artifacts (an xcframework for iOS and macOS, `jniLibs`
+  for Android).
+
+- The unused `mocktail` dev-dependency is dropped from the workspace root.
+
 ## 1.2.4 - 2026-10-21
 
 - **One dependency is now enough** (spec `001-zero-touch-native-distribution`).
