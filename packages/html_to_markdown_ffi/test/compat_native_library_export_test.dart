@@ -36,6 +36,10 @@ void main() {
       final HtmNativeLibraryResolver resolver = _neverResolve;
       expect(resolver(), isNull);
     });
+
+    test('the NativeLibrary class rides the same import', () {
+      expect(NativeLibrary, isA<Type>());
+    });
   });
 
   group('curated barrels re-export the seam', () {

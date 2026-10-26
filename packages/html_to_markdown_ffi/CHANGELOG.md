@@ -1,3 +1,15 @@
+## 1.2.8 - 2026-10-26
+
+- **Compatibility: restored the pre-migration
+  `package:html_to_markdown_ffi/native_library.dart` URI**
+  (arrrrny/zuraffa#2020).
+
+  `lib/native_library.dart` resolves again and re-exports the loader seam,
+  and both curated barrels (`html_to_markdown.dart`,
+  `html_to_markdown_ffi.dart`) re-export `HtmNativeLibraries`,
+  `HtmNativeLibraryResolver`, and `NativeLibrary` — code written against
+  1.2.1 compiles unchanged inside `^1.2.0`.
+
 ## 1.2.7 - 2026-10-21
 
 - **The app-facing package is pure Dart again** (spec

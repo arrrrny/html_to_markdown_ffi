@@ -32,7 +32,8 @@ pre-migration import path keeps resolving.
 Restore the pre-migration public surface additively: a `lib/native_library.dart`
 compatibility library re-exporting the platform package's `native_library.dart`, plus the
 two seam names added to both curated barrels' `show` clauses. No behavior change, no
-version bump, no generated files.
+generated files. The surface ships under **1.2.8** (CHANGELOG entry added) — the act of
+publishing remains a maintainer decision.
 
 ## Constitution Check
 
