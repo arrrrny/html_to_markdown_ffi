@@ -15,6 +15,8 @@ export 'package:html_to_markdown_ffi_platform/html_to_markdown_ffi_platform.dart
         ConversionErrorException,
         ConversionOptions,
         ConversionResult,
+        HtmNativeLibraries,
+        HtmNativeLibraryResolver,
         HtmlMetadata,
         HtmlToMarkdownException,
         ImageMetadata,
