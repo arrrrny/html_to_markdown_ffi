@@ -1,3 +1,11 @@
+## 1.2.8 - 2026-10-29
+
+### Dependencies
+
+- The whole fleet rides the unified zuraffa family line: `zuraffa` moves from `^7.2.0` to `^7.3.0` in every package, and `html_to_markdown_ffi_platform` takes `zuraffa_ffi_platform: ^7.3.0` (previously `^0.2.1` — the platform-interface package joined the family's unified version line). No code changes.
+
+# Changelog
+
 ## 1.2.7 - 2026-10-21
 
 - **The app-facing package is pure Dart again** (spec
