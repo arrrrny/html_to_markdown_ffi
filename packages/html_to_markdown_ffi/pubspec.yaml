@@ -2,7 +2,7 @@
 name: html_to_markdown_ffi
 description: >-
   Typed HTML to Markdown conversion for the Zuraffa ecosystem: a Rust FFI core behind a pure-Dart converter port with federated native adapters.
-version: 1.2.8
+version: 1.2.9
 homepage: https://zuraffa.com
 
 environment:
@@ -17,7 +17,7 @@ dependencies:
   # loader, and the in-process conversion bridge. It asks for no Flutter
   # SDK, so this package stays resolvable for a consumer that is not a
   # Flutter app.
-  html_to_markdown_ffi_platform: ^1.2.8
+  html_to_markdown_ffi_platform: ^1.2.9
 
 dev_dependencies:
   build_runner: ^2.16.0

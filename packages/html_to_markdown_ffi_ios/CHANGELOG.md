@@ -1,3 +1,7 @@
+## 1.2.9
+
+- Merge publish-1.2.8 into master (changelog: fold native_library restore + family line into the 1.2.9 recovery note)
+
 ## 1.2.8 - 2026-10-29
 
 ### Dependencies
