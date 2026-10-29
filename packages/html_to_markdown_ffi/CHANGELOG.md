@@ -1,4 +1,4 @@
-## 1.2.8 - 2026-10-26
+## 1.2.9 - 2026-10-29
 
 - **Compatibility: restored the pre-migration
   `package:html_to_markdown_ffi/native_library.dart` URI**
@@ -9,6 +9,15 @@
   `html_to_markdown_ffi.dart`) re-export `HtmNativeLibraries`,
   `HtmNativeLibraryResolver`, and `NativeLibrary` — code written against
   1.2.1 compiles unchanged inside `^1.2.0`.
+- The family rides the unified zuraffa line: `zuraffa: ^7.3.0` everywhere,
+  and `html_to_markdown_ffi_platform` takes `zuraffa_ffi_platform: ^7.3.0`
+  (previously `^0.2.1`).
+
+  ⚠️ Release-process note: the 1.2.8 published 2026-10-29 19:25 UTC was cut
+  from a stale master and shipped the zuraffa ^7.3.0 constraint WITHOUT the
+  native_library restore above — code importing the pre-migration URI breaks
+  on 1.2.8. 1.2.9 supersedes it; pin 1.2.9 (or 1.2.7) until upgraded.
+
 
 ## 1.2.7 - 2026-10-21
 

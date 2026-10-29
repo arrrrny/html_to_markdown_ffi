@@ -4,7 +4,7 @@ description: >-
   The Flutter plugin for html_to_markdown_ffi: one dependency gives a Flutter
   app the typed HTML to Markdown conversion and the native library linked in
   by the family itself.
-version: 1.2.7
+version: 1.2.8
 homepage: https://zuraffa.com
 
 environment:
@@ -15,14 +15,14 @@ dependencies:
   # The app-facing API. The package itself is pure Dart — it asks for no
   # Flutter SDK — so the same import path works in a Flutter app and in a
   # CLI.
-  html_to_markdown_ffi: ^1.2.7
-  zuraffa: ^7.2.0
+  html_to_markdown_ffi: ^1.2.8
+  zuraffa: ^7.3.0
   # The three platform adapters. They are named as the `default_package` of
   # their platform below, so the native library is linked in by the family
   # itself and the consumer wires nothing.
-  html_to_markdown_ffi_android: ^1.2.7
-  html_to_markdown_ffi_ios: ^1.2.7
-  html_to_markdown_ffi_macos: ^1.2.7
+  html_to_markdown_ffi_android: ^1.2.8
+  html_to_markdown_ffi_ios: ^1.2.8
+  html_to_markdown_ffi_macos: ^1.2.8
 
 dev_dependencies:
   lints: ^4.0.0
@@ -48,4 +48,3 @@ flutter:
 
 
 
-resolution: workspace
