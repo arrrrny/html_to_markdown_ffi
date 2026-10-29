@@ -12,7 +12,7 @@ dependencies:
   ffi: ^2.1.0
   http: ^1.4.0
   zorphy_annotation: ^2.4.4
-  zuraffa: ^7.2.0
+  zuraffa: ^7.3.0
   # The shared, Flutter-free core: the port contract, the native-library
   # loader, and the in-process conversion bridge. It asks for no Flutter
   # SDK, so this package stays resolvable for a consumer that is not a

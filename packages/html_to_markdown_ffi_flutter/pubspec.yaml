@@ -16,7 +16,7 @@ dependencies:
   # Flutter SDK — so the same import path works in a Flutter app and in a
   # CLI.
   html_to_markdown_ffi: ^1.2.7
-  zuraffa: ^7.2.0
+  zuraffa: ^7.3.0
   # The three platform adapters. They are named as the `default_package` of
   # their platform below, so the native library is linked in by the family
   # itself and the consumer wires nothing.
