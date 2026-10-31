@@ -13,8 +13,14 @@ for pkg in "${PACKAGES_IN_ORDER[@]}"; do
     version=$(grep "^version:" "$ROOT_DIR/packages/$pkg/pubspec.yaml" | sed 's/version: //' | tr -d '[:space:]')
     echo -e "${BLUE}=== Publishing $pkg $version ===${NC}"
 
+    # Duplicate-version guard (arrrrny/html_to_markdown_ffi#5): a version
+    # already on the registry must ABORT the whole run, not be skipped. The
+    # 1.2.8 collision kept going package by package and exited 0, masking a
+    # forked release history behind a green run.
     if curl -s "https://pub.dev/api/packages/$pkg" | grep -q "\"$version\""; then
-        echo -e "${RED}$pkg $version is already on pub.dev - nothing to do.${NC}"; continue
+        echo -e "${RED}$pkg $version is already on pub.dev — aborting.${NC}"
+        echo -e "${RED}Bump the version in every packages/*/pubspec.yaml before publishing.${NC}"
+        exit 1
     fi
 
     cd "$ROOT_DIR/packages/$pkg"
