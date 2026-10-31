@@ -1,3 +1,19 @@
+## Unreleased
+
+- **The raw macOS dylibs are retired** (issue
+  [#6](https://github.com/arrrrny/html_to_markdown_ffi/issues/6)):
+  `native/macos-arm64/libhtml_to_markdown_ffi.dylib` and
+  `native/macos-x64/libhtml_to_markdown_ffi.dylib` no longer ship in this
+  package. The xcframework behind the Swift package's `binaryTarget` is the
+  only macOS delivery surface. Consumers upgrading from a pre-SPM
+  integration: delete any manual embed/codesign build phase (one that copies
+  a raw dylib into `Contents/Frameworks` and re-signs it) — keeping it
+  alongside the SPM integration ships two copies of the same engine and adds
+  a CodeSign step that fails with `errSecInternalComponent` when the login
+  keychain disallows interaction. The static `.a` slices stay: they are the
+  inputs the xcframework is built from, not delivery artifacts. See the new
+  "Migrating to SPM embedding" section in this package's README.
+
 ## 1.2.9
 
 - Merge publish-1.2.8 into master (changelog: fold native_library restore + family line into the 1.2.9 recovery note)

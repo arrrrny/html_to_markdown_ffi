@@ -48,9 +48,28 @@ building a real consumer app rather than by reading the manifest:
   silently. The `html_to_markdown_ffi_macos_anchor` target takes the address
   of `htm_convert`, which creates the undefined reference that keeps it.
 
-The bundled `native/macos-arm64` and `native/macos-x64` dylibs stay in the
-package as the fallback for plain-Dart hosts (e.g. `dart test`); an app build
-uses the xcframework.
+## Migrating to SPM embedding
+
+Since 1.2.9 the xcframework behind the Swift package's `binaryTarget` is the
+**only** macOS delivery surface: the raw `native/macos-arm64` /
+`native/macos-x64` `libhtml_to_markdown_ffi.dylib` copies are retired. If you
+are upgrading from a pre-SPM integration:
+
+- **Delete any manual embed/codesign build phase** from your Xcode project
+  (a phase that copies a `libhtml_to_markdown_ffi.dylib` into
+  `Contents/Frameworks` and re-signs it). Keeping it alongside the SPM
+  integration ships **two copies of the same engine** in the app bundle —
+  the SPM-embedded `html-to-markdown-ffi-macos.framework` and the
+  hand-embedded dylib — and the extra CodeSign step is a common source of
+  build failures (e.g. `errSecInternalComponent` when the login keychain
+  disallows interaction).
+- **Remove the dependency on the raw dylib path** from any script that
+  resolves the library by `native/<rid>/` — set
+  `HTML_TO_MARKDOWN_FFI_LIB_PATH` or register an `HtmNativeLibraries`
+  resolver instead if you load outside a Flutter app build.
+
+An app build embeds and Xcode re-signs the framework automatically; there is
+nothing left to wire by hand.
 
 ```dart
 final getIt = GetIt.instance;
