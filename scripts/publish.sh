@@ -39,10 +39,14 @@ for pkg in "${PACKAGES_IN_ORDER[@]}"; do
 
     # The version may already be on pub.dev while its API listing still lags
     # behind — the server then refuses the upload with "already exists".
-    # That is a success, not a failure.
+    # A duplicate aborts everywhere (arrrrny/html_to_markdown_ffi#5): an
+    # upload refused while the run exits 0 is the same masked collision the
+    # registry guard above kills, one API-lag window later.
     publish_out=$(dart pub publish --force 2>&1) || {
         if echo "$publish_out" | grep -q "already exists"; then
-            echo -e "${YELLOW}$pkg $version is already on pub.dev.${NC}"
+            echo -e "${RED}$pkg $version is already on pub.dev — aborting.${NC}"
+            echo -e "${RED}Bump the version in every packages/*/pubspec.yaml before publishing.${NC}"
+            exit 1
         else
             echo "$publish_out"
             echo -e "${RED}Publish failed for $pkg${NC}"

@@ -28,9 +28,13 @@ git diff --quiet || { echo -e "${RED}Working tree is dirty - commit or stash fir
 # set_release_mode.sh-style flows carry. (An absent origin or an unborn
 # origin/master fails open: CI workbenches and fresh clones must not be
 # blocked by a remote they have not set up yet.)
+BRANCH_NOW="$(git rev-parse --abbrev-ref HEAD)"
+if [ "$BRANCH_NOW" != "master" ]; then
+    echo -e "${RED}Release prep must run on master (currently on $BRANCH_NOW).${NC}"
+    exit 1
+fi
 if git remote get-url origin >/dev/null 2>&1; then
     git fetch origin master
-    HEAD_MASTER="$(git rev-parse HEAD)"
     ORIGIN_MASTER="$(git rev-parse origin/master 2>/dev/null || echo)"
     if [ -n "$ORIGIN_MASTER" ]; then
         MERGE_BASE="$(git merge-base HEAD "$ORIGIN_MASTER")"
