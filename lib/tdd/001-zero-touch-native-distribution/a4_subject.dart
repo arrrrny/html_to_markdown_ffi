@@ -28,7 +28,7 @@ const String a4SharedPackage = 'zuraffa_ffi_platform';
 /// 0.2.1 is the release that carries the port contract in
 /// `zuraffa_ffi_platform`; a family that pins anything below it resolves a
 /// core that has no envelope to share.
-const String a4SharedVersion = '0.2.1';
+const String a4SharedVersion = '7.3.0';
 
 /// Scenario runner for behavior A4.
 ///
