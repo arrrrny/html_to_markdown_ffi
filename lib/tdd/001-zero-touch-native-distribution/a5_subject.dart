@@ -10,7 +10,7 @@ library;
 import 'family_layout.dart';
 
 /// The latest published zuraffa release the family must resolve against.
-const String a5LatestZuraffa = '7.2.0';
+const String a5LatestZuraffa = '7.3.0';
 
 /// Scenario runner for behavior A5.
 ///
