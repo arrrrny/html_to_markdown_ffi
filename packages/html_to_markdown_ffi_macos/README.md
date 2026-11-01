@@ -68,8 +68,14 @@ are upgrading from a pre-SPM integration:
   `HTML_TO_MARKDOWN_FFI_LIB_PATH` or register an `HtmNativeLibraries`
   resolver instead if you load outside a Flutter app build.
 
-An app build embeds and Xcode re-signs the framework automatically; there is
-nothing left to wire by hand.
+The platform loader (`html_to_markdown_ffi_platform`) follows the same
+retirement: its macOS sibling-adapter probe and the legacy bundled-`native/`
+probe are gone, so a plain-Dart macOS host resolves through the env var →
+resolver seam → sibling (Android only) → `~/.html_to_markdown_ffi/` cache →
+`target/release` → GitHub release download chain — with the release assets
+for `_defaultVersion` (v1.0.0) carrying the arm64/x64 dylibs the download
+fallback needs. An app build embeds and Xcode re-signs the framework
+automatically; there is nothing left to wire by hand.
 
 ```dart
 final getIt = GetIt.instance;

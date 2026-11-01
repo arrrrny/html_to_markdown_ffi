@@ -58,12 +58,14 @@ class NativeLibrary {
 
   /// Ensures the native library is available before [NativeLibrary] is used.
   ///
-  /// Returns `true` immediately when a bundled binary ships with the package
-  /// (see `native/`), or when any of the other resolution paths (env var,
-  /// cache, system loader) already provide the library. Otherwise downloads
-  /// the matching GitHub release asset into `~/.html_to_markdown_ffi/`.
+  /// Returns `true` immediately when any of the resolution paths (env var,
+  /// resolver seam, sibling adapter, cache, system loader) already provide
+  /// the library. Otherwise downloads the matching GitHub release asset into
+  /// `~/.html_to_markdown_ffi/`. (The legacy `native/` package bundle was
+  /// retired — issue #6: the SPM xcframework is the only macOS delivery
+  /// surface — so the download fallback is what a plain-Dart macOS host
+  /// ultimately relies on.)
   static Future<bool> downloadIfNeeded() async {
-    if (_bundledLibraryPath() != null) return true;
     final libName = _platformLibraryName();
     final target = _platformTarget();
     final home = Platform.environment['HOME'] ?? '/tmp';
@@ -106,24 +108,18 @@ class NativeLibrary {
       }
     }
 
-    // 2. Bundled native library shipped inside this package
-    //    (`native/<rid>/libhtml_to_markdown_ffi.*`). Resolves the package's
-    //    own directory so the binary "just works" without manual setup on the
-    //    platforms we ship prebuilt artifacts for (macOS arm64 + x64).
-    final bundled = _bundledLibraryPath();
-    if (bundled != null && File(bundled).existsSync()) {
-      try { return DynamicLibrary.open(bundled); } on ArgumentError { /* next resolution step */ }
-    }
-
-    // 2b. Resolver seam: a host that resolves the library by path.
+    // 2. Resolver seam: a host that resolves the library by path.
     final viaResolver = HtmNativeLibraries.resolve();
     if (viaResolver != null) {
       try { return DynamicLibrary.open(viaResolver); } on ArgumentError { /* next resolution step */ }
     }
 
-    // 2c. Development monorepo probe: sibling federated adapter packages
+    // 2b. Development monorepo probe: sibling federated adapter packages
     // checked out next to this package (dev checkouts only; a published
-    // consumer's tree does not have these siblings).
+    // consumer's tree does not have these siblings). macOS is not probed
+    // here any more: the adapter's raw `native/<rid>` dylibs were retired
+    // (issue #6) — the SPM xcframework is the only macOS delivery surface
+    // and an app build loads it through DynamicLibrary.process().
     final viaSibling = _siblingAdapterLibraryPath();
     if (viaSibling != null) {
       try { return DynamicLibrary.open(viaSibling); } on ArgumentError { /* next resolution step */ }
@@ -154,21 +150,6 @@ class NativeLibrary {
     );
   }
 
-  /// Resolves the path of the bundled native library for this platform's
-  /// "runtime identifier" (e.g. `native/macos-x64/libhtml_to_markdown_ffi.dylib`).
-  /// Returns null when the package can't be located or the platform has no
-  /// bundled artifact.
-  static String? _bundledLibraryPath() {
-    final rid = _platformRid();
-    if (rid == null) return null;
-    final packageDir = _resolvePackageDir();
-    if (packageDir == null) return null;
-    final libName = _platformLibraryName();
-    return '$packageDir${Platform.pathSeparator}'
-        'native${Platform.pathSeparator}$rid'
-        '${Platform.pathSeparator}$libName';
-  }
-
   /// Finds this package's root directory. Tries, in order:
   ///  1. the current working directory (works in `dart test` / `flutter test`,
   ///     where CWD is the package dir), and
@@ -197,16 +178,14 @@ class NativeLibrary {
 
   /// Development-only probe: a federated adapter package checked out as a
   /// sibling of this package (monorepo layout) carrying the prebuilt binary
-  /// for the running platform. Returns null everywhere else.
+  /// for the running platform. Returns null everywhere else. macOS is
+  /// deliberately absent: its raw `native/<rid>` dylibs are retired (issue
+  /// #6) — the adapter's SPM xcframework is the only macOS delivery surface.
   static String? _siblingAdapterLibraryPath() {
     final packageDir = _resolvePackageDir();
     if (packageDir == null) return null;
     final libName = _platformLibraryName();
     final candidates = <String>[
-      if (Platform.isMacOS)
-        'html_to_markdown_ffi_macos/native/'
-            '${Platform.version.contains('arm64') ? 'macos-arm64' : 'macos-x64'}/'
-          '$libName',
       if (Platform.isAndroid || Platform.isLinux)
         ...['arm64-v8a', 'armeabi-v7a', 'x86_64', 'x86'].map((abi) =>
             'html_to_markdown_ffi_android/android/src/main/jniLibs/$abi/'
@@ -216,23 +195,6 @@ class NativeLibrary {
       final f = File('$packageDir${Platform.pathSeparator}..'
           '${Platform.pathSeparator}$rel');
       if (f.existsSync()) return f.path;
-    }
-    return null;
-  }
-
-  /// Platform runtime identifier matching the `native/` subdirectory names
-  /// (e.g. `macos-arm64`, `macos-x64`). Null when unsupported.
-  ///
-  /// Android/iOS intentionally return null here: on those platforms the lib
-  /// is NOT dlopen'd from a bundled path.
-  ///   - Android: the app ships `libhtml_to_markdown_ffi.so` in
-  ///     `android/app/src/main/jniLibs/<abi>/`; `DynamicLibrary.open(name)`
-  ///     resolves it from the jniLibs loader path.
-  ///   - iOS: the `.a` is statically linked into the app; `DynamicLibrary
-  ///     .process()` finds the symbols.
-  static String? _platformRid() {
-    if (Platform.isMacOS) {
-      return Platform.version.contains('arm64') ? 'macos-arm64' : 'macos-x64';
     }
     return null;
   }
