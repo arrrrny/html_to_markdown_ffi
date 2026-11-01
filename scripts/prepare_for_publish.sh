@@ -20,6 +20,31 @@ ROOT_DIR="$(pwd)"
 cd "$ROOT_DIR"
 
 git diff --quiet || { echo -e "${RED}Working tree is dirty - commit or stash first.${NC}"; exit 1; }
+
+# Stale-master guard (arrrrny/html_to_markdown_ffi#5): the 1.2.8 release was
+# cut from a master that had not pulled origin/master, and the version
+# collision it produced forked the release history on pub.dev. Refuse to run
+# when the local master is behind origin/master — the same posture the
+# set_release_mode.sh-style flows carry. (An absent origin or an unborn
+# origin/master fails open: CI workbenches and fresh clones must not be
+# blocked by a remote they have not set up yet.)
+BRANCH_NOW="$(git rev-parse --abbrev-ref HEAD)"
+if [ "$BRANCH_NOW" != "master" ]; then
+    echo -e "${RED}Release prep must run on master (currently on $BRANCH_NOW).${NC}"
+    exit 1
+fi
+if git remote get-url origin >/dev/null 2>&1; then
+    git fetch origin master
+    ORIGIN_MASTER="$(git rev-parse origin/master 2>/dev/null || echo)"
+    if [ -n "$ORIGIN_MASTER" ]; then
+        MERGE_BASE="$(git merge-base HEAD "$ORIGIN_MASTER")"
+        if [ "$MERGE_BASE" != "$ORIGIN_MASTER" ]; then
+            echo -e "${RED}Local master is behind origin/master — refusing to prepare a release from a stale tree.${NC}"
+            echo -e "${RED}Pull first: git checkout master && git pull${NC}"
+            exit 1
+        fi
+    fi
+fi
 git checkout -b "$BRANCH" 2>/dev/null || { echo -e "${RED}Branch $BRANCH already exists${NC}"; exit 1; }
 echo -e "${GREEN}Created branch $BRANCH${NC}"
 

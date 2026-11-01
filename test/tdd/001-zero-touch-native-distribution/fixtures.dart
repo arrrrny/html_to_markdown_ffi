@@ -163,7 +163,7 @@ List<int> fakeElfBytes({bool exportsEntryPoint = true}) => <int>[
 String goodMemberPubspec(
   String name, {
   String version = '1.2.3',
-  String zuraffaConstraint = '^7.2.0',
+  String zuraffaConstraint = '^7.3.0',
   String? ffiPlatform,
   bool resolvesThroughWorkspace = true,
   bool declaresSharedEnvelope = false,
@@ -182,7 +182,7 @@ String goodMemberPubspec(
     ..writeln('dependencies:')
     ..writeln('  zuraffa: $zuraffaConstraint');
   if (declaresSharedEnvelope) {
-    buffer.writeln('  zuraffa_ffi_platform: ^0.2.1');
+    buffer.writeln('  zuraffa_ffi_platform: ^7.3.0');
   }
   if (ffiPlatform != null) {
     buffer

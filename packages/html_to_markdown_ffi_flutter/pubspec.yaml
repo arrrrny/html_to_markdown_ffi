@@ -5,6 +5,7 @@ description: >-
   app the typed HTML to Markdown conversion and the native library linked in
   by the family itself.
 version: 1.2.9
+resolution: workspace
 homepage: https://zuraffa.com
 
 environment:
