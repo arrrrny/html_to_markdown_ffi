@@ -116,7 +116,7 @@ void main() {
           violations,
           contains(
             'The html platform package does not depend on a shared envelope '
-            'core that carries 7.3.0 (constraint: ^6.0.0).',
+            'core that carries 7.3.8 (constraint: ^6.0.0).',
           ),
         );
         expect(violations, hasLength(1));
