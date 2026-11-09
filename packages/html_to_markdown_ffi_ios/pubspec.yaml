@@ -11,7 +11,7 @@ environment:
   flutter: ">=3.27.0"
 
 dependencies:
-  zuraffa: ^7.3.0
+  zuraffa: ^7.3.8
   html_to_markdown_ffi_platform: ^1.2.9
 
 dev_dependencies:

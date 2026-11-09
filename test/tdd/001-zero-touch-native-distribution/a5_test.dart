@@ -139,7 +139,7 @@ void main() {
         expect(
           subject.checkZuraffaRelease(RepoLayout(fixture.root)),
           contains(
-            'html_to_markdown_ffi_macos does not admit zuraffa 7.3.0 '
+            'html_to_markdown_ffi_macos does not admit zuraffa 7.3.8 '
             '(constraint: ^6.0.0).',
           ),
         );
@@ -153,7 +153,7 @@ void main() {
           'packages/html_to_markdown_ffi_macos/pubspec.yaml',
           without(
             goodMemberPubspec('html_to_markdown_ffi_macos', ffiPlatform: 'macos'),
-            '  zuraffa: ^7.3.0\n',
+            '  zuraffa: ^7.3.8\n',
           ),
         );
         expect(
@@ -178,7 +178,7 @@ void main() {
           subject.checkZuraffaRelease(RepoLayout(fixture.root)),
           contains(
             'html_to_markdown_ffi_macos declares a different zuraffa '
-            'constraint than the rest of the family (^7.3.1 vs ^7.3.0).',
+            'constraint than the rest of the family (^7.3.1 vs ^7.3.8).',
           ),
         );
       });

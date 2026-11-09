@@ -25,10 +25,11 @@ const String a4SharedPackage = 'zuraffa_ffi_platform';
 
 /// The release of the shared envelope core the family must admit.
 ///
-/// 7.3.0 is the release that carries the port contract in
-/// `zuraffa_ffi_platform`; a family that pins anything below it resolves a
-/// core that has no envelope to share.
-const String a4SharedVersion = '7.3.0';
+/// 7.3.0 is the release that introduced the port contract in
+/// `zuraffa_ffi_platform`; the family's own floor now tracks the registry
+/// latest (7.3.8), so a constraint below it resolves a core older than the
+/// family itself requires.
+const String a4SharedVersion = '7.3.8';
 
 /// Scenario runner for behavior A4.
 ///

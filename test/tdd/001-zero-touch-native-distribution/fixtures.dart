@@ -163,7 +163,7 @@ List<int> fakeElfBytes({bool exportsEntryPoint = true}) => <int>[
 String goodMemberPubspec(
   String name, {
   String version = '1.2.3',
-  String zuraffaConstraint = '^7.3.0',
+  String zuraffaConstraint = '^7.3.8',
   String? ffiPlatform,
   bool resolvesThroughWorkspace = true,
   bool declaresSharedEnvelope = false,
