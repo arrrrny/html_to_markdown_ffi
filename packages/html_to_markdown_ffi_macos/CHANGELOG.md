@@ -1,3 +1,48 @@
+## 1.3.2 - 2026-11-16
+
+### macOS: the per-slice dylibs are back
+
+- `html_to_markdown_ffi_macos` ships
+  `native/macos-arm64/libhtml_to_markdown_ffi.dylib` and
+  `native/macos-x64/libhtml_to_markdown_ffi.dylib` again. 1.3.0 retired them
+  (issue [#6](https://github.com/arrrrny/html_to_markdown_ffi/issues/6)) on
+  the grounds that the xcframework is the only macOS delivery surface —
+  true for an app, false for everything else. An xcframework is an Xcode
+  input: a plain Dart process cannot dlopen one, so a host that resolves the
+  library by path (a widget test, a CLI, a locator chain) had no artifact
+  left to find. Consumers probe these exact paths by name — zuraffa_browser's
+  `NativeLibraryLocator` puts
+  `html_to_markdown_ffi_macos/native/macos-<arch>/libhtml_to_markdown_ffi.dylib`
+  third in its chain — so on a fresh machine every probe missed and the
+  engine threw `MarkdownEngineUnavailableException` instead of ever reaching
+  the download fallback.
+- This is **not** the duplicate-engine problem #6 warned about. That was a
+  *manual* embed + codesign build phase copying a dylib into
+  `Contents/Frameworks` beside the SPM-embedded framework. Nothing here
+  embeds anything: the dylib is only ever opened by path, and the platform
+  loader's chain is unchanged, so an app that links the xcframework keeps
+  reaching the symbols through `DynamicLibrary.process()`.
+- `scripts/build_native.sh` emits both slices and normalises each one —
+  `install_name_tool -id @rpath/…` to replace the build-tree install id
+  cargo bakes in, then an ad-hoc signature, without which arm64 will not
+  dlopen. Rebuild with `./scripts/build_native.sh macos`.
+- The macOS adapter's delivery test now locks the dylibs in rather than
+  asserting their absence.
+- **The same binaries ship in `html_to_markdown_ffi_platform/native/macos-<rid>/`**,
+  which is what a consumer with only `html_to_markdown_ffi` resolves through.
+  The loader probes that copy as step 8 of its chain and
+  `downloadIfNeeded()` short-circuits on it, so a plain-Dart macOS host needs
+  no environment variable, no `~/.html_to_markdown_ffi/` cache and no GitHub
+  download. The probe is correct only because it checks for a real symbol:
+  `DynamicLibrary.process()` and `executable()` open on any process whether
+  or not the symbols exist, so the bundled copy would otherwise be
+  unreachable — and an app that embeds the macOS xcframework keeps using the
+  linked copy instead of loading a second one.
+- `resolution: workspace` is now declared by all six member packages. Without
+  it pub refuses to resolve the workspace, so `dart test` at the repository
+  root aborted before running a single test — and with it, `scripts/
+  test_all.sh` runs its first stage again.
+
 ## 1.3.1 - 2026-11-16
 
 ### Dependencies
