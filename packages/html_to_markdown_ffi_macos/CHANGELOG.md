@@ -9,19 +9,15 @@
 
 ## Unreleased
 
-- **The raw macOS dylibs are retired** (issue
+- **The per-slice dylibs ship again** (reverses the 1.3.0 retirement, issue
   [#6](https://github.com/arrrrny/html_to_markdown_ffi/issues/6)):
   `native/macos-arm64/libhtml_to_markdown_ffi.dylib` and
-  `native/macos-x64/libhtml_to_markdown_ffi.dylib` no longer ship in this
-  package. The xcframework behind the Swift package's `binaryTarget` is the
-  only macOS delivery surface. Consumers upgrading from a pre-SPM
-  integration: delete any manual embed/codesign build phase (one that copies
-  a raw dylib into `Contents/Frameworks` and re-signs it) — keeping it
-  alongside the SPM integration ships two copies of the same engine and adds
-  a CodeSign step that fails with `errSecInternalComponent` when the login
-  keychain disallows interaction. The static `.a` slices stay: they are the
-  inputs the xcframework is built from, not delivery artifacts. See the new
-  "Migrating to SPM embedding" section in this package's README.
+  `native/macos-x64/libhtml_to_markdown_ffi.dylib` are back. The
+  xcframework is the only surface an *app* can use, but a host that loads by
+  path — a widget test, a CLI, a locator chain — cannot dlopen one, and it
+  probes these exact paths by name. Shipping both is not the duplicate-engine
+  problem: nothing embeds the raw dylib, it is only ever opened by path. See
+  "Two delivery surfaces" in this package's README.
 
 ## 1.2.9
 

@@ -43,9 +43,14 @@ dependencies:
   html_to_markdown_ffi: ^1.2.7
 ```
 
-The native library comes along two ways. On a host where it is not bundled,
-`NativeLibrary.downloadIfNeeded()` fetches it from the project's GitHub
-releases into `~/.html_to_markdown_ffi/`:
+The native library ships inside the package for macOS
+(`html_to_markdown_ffi_platform/native/macos-<rid>/`), so a plain-Dart
+consumer resolves it with **no setup at all** — no environment variable, no
+cache, no download, on a machine that has never run a setup step.
+
+On a platform with no bundled artifact (Linux, Windows),
+`NativeLibrary.downloadIfNeeded()` fetches the matching GitHub release asset
+into `~/.html_to_markdown_ffi/`:
 
 ```dart
 import 'package:html_to_markdown_ffi/html_to_markdown.dart';

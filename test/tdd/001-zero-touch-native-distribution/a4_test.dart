@@ -15,26 +15,30 @@
 library;
 
 import 'package:test/test.dart';
-import 'package:html_to_markdown_ffi_workspace/tdd/001-zero-touch-native-distribution/a4_subject.dart' as subject;
+import 'package:html_to_markdown_ffi_workspace/tdd/001-zero-touch-native-distribution/a4_subject.dart'
+    as subject;
 import 'package:html_to_markdown_ffi_workspace/tdd/001-zero-touch-native-distribution/family_layout.dart';
 
 import 'fixtures.dart';
 
 void main() {
   group('A4 (AC-4)', () {
-    test('A4 — the conversion goes through the shared `zuraffa_ffi_platform` envelope, and the adapter declares no envelope of its own.', () {
-      final Object? result = (() {
-        try {
-          subject.subject_a4();
-          return null;
-        } on UnimplementedError catch (error) {
-          return error;
-        }
-      })();
-      expect(result, isNot(isA<UnimplementedError>()));
-      // The observable outcome of the scenario: the conversion runs on the shared `zuraffa_ffi_platform` envelope — the family declares no envelope of its own.
-      expect(subject.subject_a4(), isEmpty);
-    });
+    test(
+      'A4 — the conversion goes through the shared `zuraffa_ffi_platform` envelope, and the adapter declares no envelope of its own.',
+      () {
+        final Object? result = (() {
+          try {
+            subject.subject_a4();
+            return null;
+          } on UnimplementedError catch (error) {
+            return error;
+          }
+        })();
+        expect(result, isNot(isA<UnimplementedError>()));
+        // The observable outcome of the scenario: the conversion runs on the shared `zuraffa_ffi_platform` envelope — the family declares no envelope of its own.
+        expect(subject.subject_a4(), isEmpty);
+      },
+    );
 
     group('the shared envelope', () {
       test('A4 — an envelope that is the shared one reports no violation', () {
@@ -61,7 +65,10 @@ void main() {
 
       test('A4 — a missing envelope source is reported', () {
         final violations = subject.checkEnvelopeSource(null);
-        expect(violations, contains('The html family ships no envelope source.'));
+        expect(
+          violations,
+          contains('The html family ships no envelope source.'),
+        );
         expect(violations, hasLength(1));
       });
 
@@ -72,55 +79,79 @@ void main() {
             'class PlatformHtmlToMarkdownFfiEnvelope {}',
           ),
         );
-        expect(violations, contains('The html family declares an envelope class of its own.'));
-        expect(violations, contains('The html family envelope is not an alias of the shared envelope.'));
-      });
-
-      test('A4 — an envelope that is not an alias of the shared one is reported', () {
-        final violations = subject.checkEnvelopeSource(
-          goodEnvelopeSource.replaceFirst(
-            'typedef PlatformHtmlToMarkdownFfiEnvelope = PlatformFfiEnvelope;',
-            'class PlatformHtmlToMarkdownFfiEnvelope {}',
-          ),
+        expect(
+          violations,
+          contains('The html family declares an envelope class of its own.'),
         );
         expect(
           violations,
-          contains('The html family envelope is not an alias of the shared envelope.'),
+          contains(
+            'The html family envelope is not an alias of the shared envelope.',
+          ),
         );
       });
+
+      test(
+        'A4 — an envelope that is not an alias of the shared one is reported',
+        () {
+          final violations = subject.checkEnvelopeSource(
+            goodEnvelopeSource.replaceFirst(
+              'typedef PlatformHtmlToMarkdownFfiEnvelope = PlatformFfiEnvelope;',
+              'class PlatformHtmlToMarkdownFfiEnvelope {}',
+            ),
+          );
+          expect(
+            violations,
+            contains(
+              'The html family envelope is not an alias of the shared envelope.',
+            ),
+          );
+        },
+      );
     });
 
     group('the shared envelope dependency', () {
-      test('A4 — a constraint that admits the shared release reports no violation', () {
-        expect(subject.checkSharedConstraint('^7.3.0'), isEmpty);
-      });
+      test(
+        'A4 — a constraint that admits the shared release reports no violation',
+        () {
+          expect(subject.checkSharedConstraint('^7.3.0'), isEmpty);
+        },
+      );
 
       test('A4 — a missing dependency is reported', () {
         final violations = subject.checkSharedConstraint(null);
         expect(
           violations,
-          contains('The html platform package declares no `zuraffa_ffi_platform` dependency.'),
-        );
-        expect(violations, hasLength(1));
-      });
-
-      test('A4 — a constraint below the shared release but still admitting it is reported as valid', () {
-        // `^7.2.0` has a lower floor than 7.3.0 but still admits it: pub's
-        // caret in the `7.x` line spans the whole minor.
-        expect(subject.checkSharedConstraint('^7.2.0'), isEmpty);
-      });
-
-      test('A4 — a constraint that does not admit the shared release is reported', () {
-        final violations = subject.checkSharedConstraint('^6.0.0');
-        expect(
-          violations,
           contains(
-            'The html platform package does not depend on a shared envelope '
-            'core that carries 7.3.8 (constraint: ^6.0.0).',
+            'The html platform package declares no `zuraffa_ffi_platform` dependency.',
           ),
         );
         expect(violations, hasLength(1));
       });
+
+      test(
+        'A4 — a constraint below the shared release but still admitting it is reported as valid',
+        () {
+          // `^7.2.0` has a lower floor than 7.3.0 but still admits it: pub's
+          // caret in the `7.x` line spans the whole minor.
+          expect(subject.checkSharedConstraint('^7.2.0'), isEmpty);
+        },
+      );
+
+      test(
+        'A4 — a constraint that does not admit the shared release is reported',
+        () {
+          final violations = subject.checkSharedConstraint('^6.0.0');
+          expect(
+            violations,
+            contains(
+              'The html platform package does not depend on a shared envelope '
+              'core that carries 7.5.0 (constraint: ^6.0.0).',
+            ),
+          );
+          expect(violations, hasLength(1));
+        },
+      );
     });
 
     group('the scenario over a broken family', () {
@@ -131,19 +162,24 @@ void main() {
         expect(subject.subject_a4(layout: RepoLayout(fixture.root)), isEmpty);
       });
 
-      test('A4 — a family that dropped the shared envelope dependency is reported', () {
-        final fixture = Fixture.create();
-        addTearDown(fixture.dispose);
-        buildHealthyFamily(fixture);
-        fixture.write(
-          'packages/html_to_markdown_ffi_platform/pubspec.yaml',
-          goodMemberPubspec('html_to_markdown_ffi_platform'),
-        );
-        expect(
-          subject.subject_a4(layout: RepoLayout(fixture.root)),
-          contains('The html platform package declares no `zuraffa_ffi_platform` dependency.'),
-        );
-      });
+      test(
+        'A4 — a family that dropped the shared envelope dependency is reported',
+        () {
+          final fixture = Fixture.create();
+          addTearDown(fixture.dispose);
+          buildHealthyFamily(fixture);
+          fixture.write(
+            'packages/html_to_markdown_ffi_platform/pubspec.yaml',
+            goodMemberPubspec('html_to_markdown_ffi_platform'),
+          );
+          expect(
+            subject.subject_a4(layout: RepoLayout(fixture.root)),
+            contains(
+              'The html platform package declares no `zuraffa_ffi_platform` dependency.',
+            ),
+          );
+        },
+      );
 
       test('A4 — a family that re-implements the envelope is reported', () {
         final fixture = Fixture.create();

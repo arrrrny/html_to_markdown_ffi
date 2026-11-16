@@ -58,7 +58,7 @@ List<String> checkSharedEnvelope(bool isSharedEnvelope) {
   if (isSharedEnvelope) return const <String>[];
   return <String>[
     'The html family envelope is not the shared zuraffa_ffi_platform '
-    'envelope.',
+        'envelope.',
   ];
 }
 
@@ -96,7 +96,7 @@ List<String> checkSharedConstraint(String? constraint) {
   if (!constraintAdmits(constraint, a4SharedVersion)) {
     return <String>[
       'The html platform package does not depend on a shared envelope core '
-      'that carries $a4SharedVersion (constraint: $constraint).',
+          'that carries $a4SharedVersion (constraint: $constraint).',
     ];
   }
   return const <String>[];

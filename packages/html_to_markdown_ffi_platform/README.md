@@ -55,6 +55,24 @@ way to register.
 
 ## The native library
 
-The loader chain still honors `HTML_TO_MARKDOWN_FFI_LIB_PATH`, the legacy
-`native/` bundle, the `~/.html_to_markdown_ffi` cache, and GitHub release
-downloads.
+The loader chain, in order:
+
+1. `HTML_TO_MARKDOWN_FFI_LIB_PATH`
+2. a resolver registered through `HtmNativeLibraries`
+3. a sibling adapter in a monorepo checkout (Android/Linux only)
+4. the `~/.html_to_markdown_ffi` cache
+5. a Cargo `target/release` beside this package
+6. the platform loader path (Android `jniLibs`)
+7. the process handle — accepted only if `htm_convert` actually resolves,
+   because `DynamicLibrary.process()` opens on any process whether or not the
+   symbols are there
+8. **the copy that ships inside this package** (`native/macos-<rid>/`) — the
+   zero-setup path
+9. `NativeLibrary.downloadIfNeeded()`, which fetches the matching GitHub
+   release asset into `~/.html_to_markdown_ffi/`
+
+Step 8 is what makes a macOS consumer self-sufficient: no environment
+variable, no cache, no download. It is probed *before* the process handle is
+accepted, so an app that links the macOS xcframework still uses the linked
+copy and never loads a second one. Step 9 is the last resort, for a platform
+that ships no bundled artifact (Linux, Windows) or a host that has lost it.

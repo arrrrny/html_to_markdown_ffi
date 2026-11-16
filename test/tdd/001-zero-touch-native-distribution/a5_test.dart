@@ -15,26 +15,30 @@
 library;
 
 import 'package:test/test.dart';
-import 'package:html_to_markdown_ffi_workspace/tdd/001-zero-touch-native-distribution/a5_subject.dart' as subject;
+import 'package:html_to_markdown_ffi_workspace/tdd/001-zero-touch-native-distribution/a5_subject.dart'
+    as subject;
 import 'package:html_to_markdown_ffi_workspace/tdd/001-zero-touch-native-distribution/family_layout.dart';
 
 import 'fixtures.dart';
 
 void main() {
   group('A5 (AC-5)', () {
-    test('A5 — all six family packages resolve through one pub workspace on the latest zuraffa release, and every member carries the same release version.', () {
-      final Object? result = (() {
-        try {
-          subject.subject_a5();
-          return null;
-        } on UnimplementedError catch (error) {
-          return error;
-        }
-      })();
-      expect(result, isNot(isA<UnimplementedError>()));
-      // The observable outcome of the scenario: the family resolves through one workspace on the latest zuraffa release, at one release version.
-      expect(subject.subject_a5(), isEmpty);
-    });
+    test(
+      'A5 — all six family packages resolve through one pub workspace on the latest zuraffa release, and every member carries the same release version.',
+      () {
+        final Object? result = (() {
+          try {
+            subject.subject_a5();
+            return null;
+          } on UnimplementedError catch (error) {
+            return error;
+          }
+        })();
+        expect(result, isNot(isA<UnimplementedError>()));
+        // The observable outcome of the scenario: the family resolves through one workspace on the latest zuraffa release, at one release version.
+        expect(subject.subject_a5(), isEmpty);
+      },
+    );
 
     group('the workspace root', () {
       test('A5 — a healthy root pubspec reports no violation', () {
@@ -51,18 +55,27 @@ void main() {
         final violations = subject.checkWorkspaceRoot(
           goodRootPubspec(declaresWorkspace: false),
         );
-        expect(violations, contains('The repository root declares no pub workspace.'));
-      });
-
-      test('A5 — a root that leaves a member out of the workspace is reported', () {
-        final violations = subject.checkWorkspaceRoot(
-          without(goodRootPubspec(), '  - packages/html_to_markdown_ffi_macos\n'),
-        );
         expect(
           violations,
-          contains('The workspace does not list html_to_markdown_ffi_macos.'),
+          contains('The repository root declares no pub workspace.'),
         );
       });
+
+      test(
+        'A5 — a root that leaves a member out of the workspace is reported',
+        () {
+          final violations = subject.checkWorkspaceRoot(
+            without(
+              goodRootPubspec(),
+              '  - packages/html_to_markdown_ffi_macos\n',
+            ),
+          );
+          expect(
+            violations,
+            contains('The workspace does not list html_to_markdown_ffi_macos.'),
+          );
+        },
+      );
 
       test('A5 — a publishable root is reported', () {
         final violations = subject.checkWorkspaceRoot(
@@ -97,7 +110,9 @@ void main() {
         );
         expect(
           subject.checkMemberResolution(RepoLayout(fixture.root)),
-          contains('html_to_markdown_ffi_macos does not resolve through the workspace.'),
+          contains(
+            'html_to_markdown_ffi_macos does not resolve through the workspace.',
+          ),
         );
       });
 
@@ -118,32 +133,32 @@ void main() {
         final fixture = Fixture.create();
         addTearDown(fixture.dispose);
         buildHealthyFamily(fixture);
-        expect(
-          subject.checkZuraffaRelease(RepoLayout(fixture.root)),
-          isEmpty,
-        );
+        expect(subject.checkZuraffaRelease(RepoLayout(fixture.root)), isEmpty);
       });
 
-      test('A5 — a member that does not admit the latest zuraffa is reported', () {
-        final fixture = Fixture.create();
-        addTearDown(fixture.dispose);
-        buildHealthyFamily(fixture);
-        fixture.write(
-          'packages/html_to_markdown_ffi_macos/pubspec.yaml',
-          goodMemberPubspec(
-            'html_to_markdown_ffi_macos',
-            ffiPlatform: 'macos',
-            zuraffaConstraint: '^6.0.0',
-          ),
-        );
-        expect(
-          subject.checkZuraffaRelease(RepoLayout(fixture.root)),
-          contains(
-            'html_to_markdown_ffi_macos does not admit zuraffa 7.3.8 '
-            '(constraint: ^6.0.0).',
-          ),
-        );
-      });
+      test(
+        'A5 — a member that does not admit the latest zuraffa is reported',
+        () {
+          final fixture = Fixture.create();
+          addTearDown(fixture.dispose);
+          buildHealthyFamily(fixture);
+          fixture.write(
+            'packages/html_to_markdown_ffi_macos/pubspec.yaml',
+            goodMemberPubspec(
+              'html_to_markdown_ffi_macos',
+              ffiPlatform: 'macos',
+              zuraffaConstraint: '^6.0.0',
+            ),
+          );
+          expect(
+            subject.checkZuraffaRelease(RepoLayout(fixture.root)),
+            contains(
+              'html_to_markdown_ffi_macos does not admit zuraffa 7.5.0 '
+              '(constraint: ^6.0.0).',
+            ),
+          );
+        },
+      );
 
       test('A5 — a member that declares no zuraffa dependency is reported', () {
         final fixture = Fixture.create();
@@ -152,13 +167,18 @@ void main() {
         fixture.write(
           'packages/html_to_markdown_ffi_macos/pubspec.yaml',
           without(
-            goodMemberPubspec('html_to_markdown_ffi_macos', ffiPlatform: 'macos'),
-            '  zuraffa: ^7.3.8\n',
+            goodMemberPubspec(
+              'html_to_markdown_ffi_macos',
+              ffiPlatform: 'macos',
+            ),
+            '  zuraffa: ^7.5.0\n',
           ),
         );
         expect(
           subject.checkZuraffaRelease(RepoLayout(fixture.root)),
-          contains('html_to_markdown_ffi_macos declares no zuraffa dependency.'),
+          contains(
+            'html_to_markdown_ffi_macos declares no zuraffa dependency.',
+          ),
         );
       });
 
@@ -178,7 +198,7 @@ void main() {
           subject.checkZuraffaRelease(RepoLayout(fixture.root)),
           contains(
             'html_to_markdown_ffi_macos declares a different zuraffa '
-            'constraint than the rest of the family (^7.3.1 vs ^7.3.8).',
+            'constraint than the rest of the family (^7.3.1 vs ^7.5.0).',
           ),
         );
       });
@@ -189,10 +209,7 @@ void main() {
         final fixture = Fixture.create();
         addTearDown(fixture.dispose);
         buildHealthyFamily(fixture);
-        expect(
-          subject.checkReleaseVersions(RepoLayout(fixture.root)),
-          isEmpty,
-        );
+        expect(subject.checkReleaseVersions(RepoLayout(fixture.root)), isEmpty);
       });
 
       test('A5 — a member on a different version is reported', () {
@@ -223,7 +240,10 @@ void main() {
         fixture.write(
           'packages/html_to_markdown_ffi_macos/pubspec.yaml',
           without(
-            goodMemberPubspec('html_to_markdown_ffi_macos', ffiPlatform: 'macos'),
+            goodMemberPubspec(
+              'html_to_markdown_ffi_macos',
+              ffiPlatform: 'macos',
+            ),
             'version: 1.2.3\n',
           ),
         );

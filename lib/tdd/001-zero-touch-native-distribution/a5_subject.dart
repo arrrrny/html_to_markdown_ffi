@@ -61,8 +61,10 @@ List<String> checkMemberResolution(RepoLayout repo) {
       violations.add('$packageName ships no pubspec.');
       continue;
     }
-    if (!RegExp('^resolution:\\s*workspace', multiLine: true)
-        .hasMatch(pubspec)) {
+    if (!RegExp(
+      '^resolution:\\s*workspace',
+      multiLine: true,
+    ).hasMatch(pubspec)) {
       violations.add('$packageName does not resolve through the workspace.');
     }
   }

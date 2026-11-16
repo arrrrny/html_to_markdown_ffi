@@ -23,6 +23,11 @@ dependencies:
 
 The symbols reach Dart through `DynamicLibrary.process()`.
 
+A host that loads the library by path instead — a widget test, a CLI, a
+locator chain — cannot use an xcframework at all and reads the per-slice
+dylib under `native/macos-<rid>/`. See
+[Two delivery surfaces](#two-delivery-surfaces) below.
+
 ### How the archive survives the link
 
 Two details of the Swift package are load-bearing, and both were found by
@@ -48,12 +53,31 @@ building a real consumer app rather than by reading the manifest:
   silently. The `html_to_markdown_ffi_macos_anchor` target takes the address
   of `htm_convert`, which creates the undefined reference that keeps it.
 
-## Migrating to SPM embedding
+## Two delivery surfaces
 
-Since 1.2.9 the xcframework behind the Swift package's `binaryTarget` is the
-**only** macOS delivery surface: the raw `native/macos-arm64` /
-`native/macos-x64` `libhtml_to_markdown_ffi.dylib` copies are retired. If you
-are upgrading from a pre-SPM integration:
+macOS has two kinds of consumer, and the adapter ships one artifact for each:
+
+| Consumer | Artifact | How it reaches the symbols |
+| -------- | -------- | -------------------------- |
+| A built app | `Frameworks/libhtml_to_markdown_ffi.xcframework` (universal `arm64` + `x86_64` static archive), linked by the Swift package's `binaryTarget` | `DynamicLibrary.process()` |
+| A host that loads by path — a widget test, a CLI, a locator chain | `native/macos-arm64/` and `native/macos-x64/libhtml_to_markdown_ffi.dylib` | `DynamicLibrary.open(path)` |
+
+The second row is not optional. An xcframework is an Xcode input: a plain
+Dart process cannot dlopen one, so a host that resolves the library by path
+has no use for it. Consumers probe the `native/<rid>/` paths by name — see
+`NativeLibraryLocator` in zuraffa_browser, whose probe order is env var →
+app bundle → adapter `native/<rid>/` → `$HOME` cache. Remove the dylibs and
+every one of those probes misses on a fresh machine, which is what 1.3.0 did
+(issue [#6](https://github.com/arrrrny/html_to_markdown_ffi/issues/6)) and
+what 1.3.2 reverses.
+
+Shipping both is **not** the duplicate-engine problem. That problem is a
+*manual* embed + codesign build phase that copies a dylib into
+`Contents/Frameworks` beside the SPM-embedded framework; nothing in this
+package does that. The raw dylib is only ever opened by path, and never
+embedded in an app bundle.
+
+### If you upgraded from a pre-SPM integration
 
 - **Delete any manual embed/codesign build phase** from your Xcode project
   (a phase that copies a `libhtml_to_markdown_ffi.dylib` into
@@ -63,19 +87,13 @@ are upgrading from a pre-SPM integration:
   hand-embedded dylib — and the extra CodeSign step is a common source of
   build failures (e.g. `errSecInternalComponent` when the login keychain
   disallows interaction).
-- **Remove the dependency on the raw dylib path** from any script that
-  resolves the library by `native/<rid>/` — set
-  `HTML_TO_MARKDOWN_FFI_LIB_PATH` or register an `HtmNativeLibraries`
-  resolver instead if you load outside a Flutter app build.
 
-The platform loader (`html_to_markdown_ffi_platform`) follows the same
-retirement: its macOS sibling-adapter probe and the legacy bundled-`native/`
-probe are gone, so a plain-Dart macOS host resolves through the env var →
-resolver seam → sibling (Android only) → `~/.html_to_markdown_ffi/` cache →
-`target/release` → GitHub release download chain — with the release assets
-for `_defaultVersion` (v1.0.0) carrying the arm64/x64 dylibs the download
-fallback needs. An app build embeds and Xcode re-signs the framework
-automatically; there is nothing left to wire by hand.
+The platform loader (`html_to_markdown_ffi_platform`) is unchanged by this:
+its chain is env var → resolver seam → sibling (Android only) →
+`~/.html_to_markdown_ffi/` cache → `target/release` → GitHub release
+download. It never probes this package's `native/` paths, so an app that
+links the xcframework keeps reaching the symbols through
+`DynamicLibrary.process()` and never loads the second copy.
 
 ```dart
 final getIt = GetIt.instance;

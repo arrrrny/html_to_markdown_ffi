@@ -143,18 +143,25 @@ typedef PlatformHtmlToMarkdownFfiEnvelope = PlatformFfiEnvelope;
 /// A minimal static archive that passes the "is a static archive" and
 /// "exports htm_convert" checks.
 List<int> fakeArchiveBytes({bool exportsEntryPoint = true}) => <int>[
-      ...'!<arch>\n'.codeUnits,
-      if (exportsEntryPoint) ...'htm_convert htm_convert_with_visitor'.codeUnits,
-      ...'other_content'.codeUnits,
-    ];
+  ...'!<arch>\n'.codeUnits,
+  if (exportsEntryPoint) ...'htm_convert htm_convert_with_visitor'.codeUnits,
+  ...'other_content'.codeUnits,
+];
 
 /// A minimal ELF shared object that passes the "is an ELF" and "exports
 /// htm_convert" checks.
 List<int> fakeElfBytes({bool exportsEntryPoint = true}) => <int>[
-      0x7f, 0x45, 0x4c, 0x46, 0x02, 0x01, 0x01, 0x00,
-      if (exportsEntryPoint) ...'htm_convert htm_convert_with_visitor'.codeUnits,
-      ...'other_content'.codeUnits,
-    ];
+  0x7f,
+  0x45,
+  0x4c,
+  0x46,
+  0x02,
+  0x01,
+  0x01,
+  0x00,
+  if (exportsEntryPoint) ...'htm_convert htm_convert_with_visitor'.codeUnits,
+  ...'other_content'.codeUnits,
+];
 
 /// The pubspec a healthy family member ships.
 ///
@@ -163,7 +170,7 @@ List<int> fakeElfBytes({bool exportsEntryPoint = true}) => <int>[
 String goodMemberPubspec(
   String name, {
   String version = '1.2.3',
-  String zuraffaConstraint = '^7.3.8',
+  String zuraffaConstraint = '^7.5.0',
   String? ffiPlatform,
   bool resolvesThroughWorkspace = true,
   bool declaresSharedEnvelope = false,
@@ -182,7 +189,7 @@ String goodMemberPubspec(
     ..writeln('dependencies:')
     ..writeln('  zuraffa: $zuraffaConstraint');
   if (declaresSharedEnvelope) {
-    buffer.writeln('  zuraffa_ffi_platform: ^7.3.0');
+    buffer.writeln('  zuraffa_ffi_platform: ^7.5.0');
   }
   if (ffiPlatform != null) {
     buffer
@@ -262,10 +269,10 @@ void buildHealthyFamily(Fixture fixture) {
   fixture.write(
     'packages/html_to_markdown_ffi_android/android/build.gradle',
     'android {\n'
-    '    sourceSets {\n'
-    '        jniLibs.srcDirs = ["src/main/jniLibs"]\n'
-    '    }\n'
-    '}\n',
+        '    sourceSets {\n'
+        '        jniLibs.srcDirs = ["src/main/jniLibs"]\n'
+        '    }\n'
+        '}\n',
   );
   fixture.write(
     'packages/html_to_markdown_ffi_android/android/src/main/AndroidManifest.xml',
@@ -283,7 +290,8 @@ void buildHealthyFamily(Fixture fixture) {
     'packages/html_to_markdown_ffi_ios/pubspec.yaml',
     goodMemberPubspec('html_to_markdown_ffi_ios', ffiPlatform: 'ios'),
   );
-  const iosSpm = 'packages/html_to_markdown_ffi_ios/ios/html_to_markdown_ffi_ios';
+  const iosSpm =
+      'packages/html_to_markdown_ffi_ios/ios/html_to_markdown_ffi_ios';
   fixture.write('$iosSpm/Package.swift', goodIosManifest);
   fixture.writeBytes(
     '$iosSpm/Frameworks/libhtml_to_markdown_ffi.xcframework/'
@@ -293,8 +301,8 @@ void buildHealthyFamily(Fixture fixture) {
   fixture.write(
     '$iosSpm/Frameworks/libhtml_to_markdown_ffi.xcframework/Info.plist',
     '<plist><dict><key>AvailableLibraries</key><array>'
-    '<dict><key>LibraryIdentifier</key><string>ios-arm64</string></dict>'
-    '</array></dict></plist>\n',
+        '<dict><key>LibraryIdentifier</key><string>ios-arm64</string></dict>'
+        '</array></dict></plist>\n',
   );
 
   fixture.write(
@@ -312,8 +320,8 @@ void buildHealthyFamily(Fixture fixture) {
   fixture.write(
     '$macosSpm/Frameworks/libhtml_to_markdown_ffi.xcframework/Info.plist',
     '<plist><dict><key>AvailableLibraries</key><array>'
-    '<dict><key>LibraryIdentifier</key><string>macos-arm64</string></dict>'
-    '</array></dict></plist>\n',
+        '<dict><key>LibraryIdentifier</key><string>macos-arm64</string></dict>'
+        '</array></dict></plist>\n',
   );
 }
 
