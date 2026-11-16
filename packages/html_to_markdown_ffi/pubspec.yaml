@@ -12,6 +12,10 @@ environment:
 dependencies:
   ffi: ^2.1.0
   http: ^1.4.0
+  # The generated `*.g.dart` parts call `$checkedCreate`/`$checkedConvert`
+  # from this package directly, so json_serializable asks for it as a declared
+  # dependency rather than one reached through zorphy_annotation's re-export.
+  json_annotation: ^4.12.0
   zorphy_annotation: ^2.4.4
   zuraffa: ^7.3.8
   # The shared, Flutter-free core: the port contract, the native-library
@@ -22,6 +26,12 @@ dependencies:
 
 dev_dependencies:
   build_runner: ^2.16.0
+  # `build.yaml` configures the json_serializable builder for this package, so
+  # the generator has to resolve HERE: a builder reached only through another
+  # package's dependencies is `unknown` in this target, and build_runner 2.16+
+  # then deletes the `.g.dart` output it does not know how to produce (issue
+  # #13).
+  json_serializable: ^6.7.0
   lints: ^4.0.0
   test: ^1.25.0
 
