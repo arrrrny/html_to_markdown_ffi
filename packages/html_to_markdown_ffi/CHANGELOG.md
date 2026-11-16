@@ -1,3 +1,12 @@
+## 1.3.1 - 2026-11-16
+
+### Dependencies
+
+- The family rides the unified zuraffa line at `^7.5.0` — `zuraffa`, `zuraffa_ffi`
+  and `zuraffa_ffi_platform` move to `^7.5.0` across every package, aligning the
+  declared constraints to the versions already resolved by the 1.3.0 lockfile.
+  No code changes; the full suite passes unchanged against 7.5.0.
+
 ## 1.2.9 - 2026-10-29
 
 - **Compatibility: restored the pre-migration
