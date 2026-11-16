@@ -1,3 +1,50 @@
+## 1.3.0 - 2026-11-16
+
+### macOS: the raw dylibs are retired
+
+- **The xcframework is now the only macOS delivery surface** (issue
+  [#6](https://github.com/arrrrny/html_to_markdown_ffi/issues/6)). The
+  `native/macos-arm64` and `native/macos-x64` `libhtml_to_markdown_ffi.dylib`
+  copies no longer ship in `html_to_markdown_ffi_macos`; the Swift package's
+  `binaryTarget` over `Frameworks/libhtml_to_markdown_ffi.xcframework` is the
+  sole macOS path. The platform loader (`html_to_markdown_ffi_platform`) drops
+  the bundled-`native/` probe and the macOS sibling-adapter probe to match. A
+  consumer upgrading from a pre-SPM integration should delete any manual
+  embed/codesign build phase that copies a raw dylib into
+  `Contents/Frameworks` and re-signs it — keeping it beside the SPM
+  integration ships two copies of the engine and a CodeSign step that fails
+  with `errSecInternalComponent`. See the macOS package README's new
+  "Migrating to SPM embedding" section.
+
+### Dependencies
+
+- **The family rides the unified zuraffa line at `^7.3.8`** — `zuraffa` and
+  `zuraffa_ffi_platform` move to `^7.3.8` across every package (fleet
+  `zuraffa_*` upgrade sweep).
+- **Toolchain and dev dependencies refreshed to their latest for this
+  release**: `lints` `^4.0.0 → ^6.1.0`, `build_runner` `2.16 → 2.17`, `build`
+  `4 → 5`, `json_serializable` `6.15.2`, `analyzer` `14.7`,
+  `zorphy_annotation` `→ ^2.4.6`, plus `archive`, `crypto`, `hive_ce`,
+  `posix`, `web` and others. None of these ship in a published package — they
+  are dev/build-time only — and the full suite passes unchanged against them.
+  `built_collection` stays at `5.1.2`: `6.0.0` is held back by a transitive
+  parent's constraint, tracked in [#12](https://github.com/arrrrny/html_to_markdown_ffi/issues/12).
+
+### Release tooling
+
+- `scripts/prepare_for_publish.sh` refuses to run from a stale master (behind
+  `origin/master`) or from any branch other than master (issue
+  [#5](https://github.com/arrrrny/html_to_markdown_ffi/issues/5)).
+- `scripts/publish.sh` aborts the whole run when a target version is already
+  on pub.dev, instead of skipping that package and exiting 0 — the behaviour
+  that masked the 1.2.8 release-history fork.
+
+## 1.2.9 - 2026-10-29
+
+- Recovery release. Folds the `native_library` restore and the unified
+  zuraffa family line into a single note after the 1.2.8 publish; no API
+  changes.
+
 ## 1.2.8 - 2026-10-29
 
 ### Dependencies
