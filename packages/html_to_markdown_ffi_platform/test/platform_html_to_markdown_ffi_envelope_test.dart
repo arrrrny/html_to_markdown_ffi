@@ -29,7 +29,7 @@ void main() {
   group('PlatformHtmlToMarkdownFfiEnvelope', () {
     test('decodes success payloads', () async {
       final envelope = PlatformHtmlToMarkdownFfiEnvelope(
-        invoke: (_, __) async => {'supported': true},
+        invoke: (_, _) async => {'supported': true},
         onTyped: typedFactory,
       );
 
@@ -41,7 +41,7 @@ void main() {
 
     test('native error payloads surface through the taxonomy', () async {
       final envelope = PlatformHtmlToMarkdownFfiEnvelope(
-        invoke: (_, __) async => {
+        invoke: (_, _) async => {
           'error': {'code': 'not_supported', 'message': 'no engine'},
         },
         onTyped: typedFactory,
@@ -57,7 +57,7 @@ void main() {
     test('unmapped native codes fall through to the adapter factory',
         () async {
       final envelope = PlatformHtmlToMarkdownFfiEnvelope(
-        invoke: (_, __) async => {
+        invoke: (_, _) async => {
           'error': {'code': 'weird', 'message': 'unexpected'},
         },
         onTyped: typedFactory,
@@ -76,7 +76,7 @@ void main() {
     test('a past-timeout call surfaces as the typed recoverable timeout',
         () async {
       final envelope = PlatformHtmlToMarkdownFfiEnvelope(
-        invoke: (_, __) => Completer<Map<String, Object?>>().future,
+        invoke: (_, _) => Completer<Map<String, Object?>>().future,
         onTyped: typedFactory,
         timeout: const Duration(milliseconds: 20),
       );
@@ -93,7 +93,7 @@ void main() {
 
     test('non-map payloads surface as malformed_response', () async {
       final envelope = PlatformHtmlToMarkdownFfiEnvelope(
-        invoke: (_, __) async => [1, 2, 3],
+        invoke: (_, _) async => [1, 2, 3],
         onTyped: typedFactory,
       );
 
@@ -109,7 +109,7 @@ void main() {
     test('adapter-typed failures thrown by the transport pass through',
         () async {
       final envelope = PlatformHtmlToMarkdownFfiEnvelope(
-        invoke: (_, __) => throw const _Typed('already_typed'),
+        invoke: (_, _) => throw const _Typed('already_typed'),
         onTyped: typedFactory,
         isTypedError: (error) => error is _Typed,
       );

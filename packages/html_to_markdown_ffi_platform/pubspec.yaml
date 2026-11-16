@@ -21,7 +21,7 @@ dependencies:
   zuraffa_ffi_platform: ^7.3.8
 
 dev_dependencies:
-  lints: ^4.0.0
+  lints: ^6.0.0
   test: ^1.25.0
 
 repository: https://github.com/arrrrny/html_to_markdown_ffi
