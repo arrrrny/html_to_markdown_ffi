@@ -29,7 +29,7 @@ const String a4SharedPackage = 'zuraffa_ffi_platform';
 /// `zuraffa_ffi_platform`; the family's own floor now tracks the registry
 /// latest (7.3.8), so a constraint below it resolves a core older than the
 /// family itself requires.
-const String a4SharedVersion = '7.3.8';
+const String a4SharedVersion = '7.5.0';
 
 /// Scenario runner for behavior A4.
 ///
