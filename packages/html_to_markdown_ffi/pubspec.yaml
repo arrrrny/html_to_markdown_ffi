@@ -16,7 +16,7 @@ dependencies:
   # from this package directly, so json_serializable asks for it as a declared
   # dependency rather than one reached through zorphy_annotation's re-export.
   json_annotation: ^4.12.0
-  zorphy_annotation: ^2.4.4
+  zorphy_annotation: ^2.4.6
   zuraffa: ^7.3.8
   # The shared, Flutter-free core: the port contract, the native-library
   # loader, and the in-process conversion bridge. It asks for no Flutter
@@ -32,7 +32,7 @@ dev_dependencies:
   # then deletes the `.g.dart` output it does not know how to produce (issue
   # #13).
   json_serializable: ^6.7.0
-  lints: ^4.0.0
+  lints: ^6.0.0
   test: ^1.25.0
 
 repository: https://github.com/arrrrny/html_to_markdown_ffi

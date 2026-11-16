@@ -20,7 +20,7 @@ void registerMacosHtmlToMarkdownFfiDependencies(
 }) {
   final wired = (channel == null)
       ? MacosHtmlToMarkdownFfiChannel(
-          invoke: (_, __) => throw const MacosHtmlToMarkdownFfiException(
+          invoke: (_, _) => throw const MacosHtmlToMarkdownFfiException(
             'channel_not_wired',
             'No macos channel was injected — pass one to '
             'registerMacosHtmlToMarkdownFfiDependencies (e.g. '

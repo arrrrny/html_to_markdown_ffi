@@ -20,7 +20,7 @@ void registerAndroidHtmlToMarkdownFfiDependencies(
 }) {
   final wired = (channel == null)
       ? AndroidHtmlToMarkdownFfiChannel(
-          invoke: (_, __) => throw const AndroidHtmlToMarkdownFfiException(
+          invoke: (_, _) => throw const AndroidHtmlToMarkdownFfiException(
             'channel_not_wired',
             'No android channel was injected — pass one to '
             'registerAndroidHtmlToMarkdownFfiDependencies (e.g. '
