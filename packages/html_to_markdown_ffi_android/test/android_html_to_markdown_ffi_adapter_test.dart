@@ -14,7 +14,7 @@ void main() {
   group('AndroidHtmlToMarkdownFfiAdapter', () {
     test('isSupported decodes the native payload', () async {
       final channel = AndroidHtmlToMarkdownFfiChannel(
-        invoke: (_, __) async => {'supported': true},
+        invoke: (_, _) async => {'supported': true},
       );
       final port = AndroidHtmlToMarkdownFfiPort(channel: channel);
 
@@ -37,7 +37,7 @@ void main() {
 
     test('native error payloads surface as typed failures', () async {
       final channel = AndroidHtmlToMarkdownFfiChannel(
-        invoke: (_, __) async => {
+        invoke: (_, _) async => {
           'error': {'code': 'not_supported', 'message': 'no engine'},
         },
       );
@@ -54,7 +54,7 @@ void main() {
 
     test('timeout surfaces as the typed recoverable timeout', () async {
       final channel = AndroidHtmlToMarkdownFfiChannel(
-        invoke: (_, __) => Completer<Map<String, Object?>>().future,
+        invoke: (_, _) => Completer<Map<String, Object?>>().future,
         timeout: const Duration(milliseconds: 20),
       );
 
@@ -87,7 +87,7 @@ void main() {
     test('convertSync guard is honest on this host', () {
       final port = AndroidHtmlToMarkdownFfiPort(
         channel: AndroidHtmlToMarkdownFfiChannel(
-          invoke: (_, __) async => {'supported': true},
+          invoke: (_, _) async => {'supported': true},
         ),
       );
       final nativeHost = {

@@ -5,7 +5,7 @@
 /// The value types, the visitor contract, and the exception surface live in
 /// `html_to_markdown_ffi_platform` (the layer the federated adapters also
 /// depend on); this library keeps the consumer-facing import path and names.
-library html_to_markdown;
+library;
 
 // Public API
 export 'convert.dart';

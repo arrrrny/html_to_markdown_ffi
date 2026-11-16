@@ -120,7 +120,7 @@ class HtmlToMarkdownFfiService {
     final done = await useCase.execute(
       QueryParams<HtmConversion>(params: {
         'request': request,
-        if (visitor != null) 'visitor': visitor,
+        'visitor': ?visitor,
       }),
       null,
     );

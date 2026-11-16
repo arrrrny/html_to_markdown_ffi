@@ -20,7 +20,7 @@ void registerIosHtmlToMarkdownFfiDependencies(
 }) {
   final wired = (channel == null)
       ? IosHtmlToMarkdownFfiChannel(
-          invoke: (_, __) => throw const IosHtmlToMarkdownFfiException(
+          invoke: (_, _) => throw const IosHtmlToMarkdownFfiException(
             'channel_not_wired',
             'No ios channel was injected — pass one to '
             'registerIosHtmlToMarkdownFfiDependencies (e.g. '
