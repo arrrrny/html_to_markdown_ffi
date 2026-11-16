@@ -66,8 +66,12 @@ Map<String, Map<String, dynamic>> _resolvedPackages() {
   ], workingDirectory: repoRoot);
   final stdout = result.stdout.toString();
   if (result.exitCode != 0) {
+    // A fresh clone has no resolved `.dart_tool/package_config.json` yet, so
+    // `dart pub deps` fails before it can answer — surface the actionable fix
+    // rather than the raw non-zero exit.
     fail(
-      '`dart pub deps --json` failed (exit ${result.exitCode}):\n'
+      '`dart pub deps --json` failed (exit ${result.exitCode}) — run '
+      '`dart pub get` in $repoRoot first:\n'
       '$stdout\n${result.stderr}',
     );
   }
@@ -104,23 +108,37 @@ Set<String> _closureOf(
   return seen;
 }
 
-/// Every `build.yaml` in the family, keyed by the package directory that owns
-/// it.
+/// Every `build.yaml` in the family, keyed by the owning package's declared
+/// pubspec `name:` — NOT its directory basename. The caller feeds this key
+/// straight into [_closureOf], which looks the package up in the
+/// `dart pub deps --json` map keyed by each package's declared `name:`, so the
+/// two key spaces must agree. A directory whose basename differs from its
+/// `name:` would otherwise resolve an empty closure and report a false
+/// "undeclared builder".
 Map<String, File> _buildConfigs() {
   final packagesDir = Directory('$repoRoot/packages');
   final configs = <String, File>{};
   for (final entry in packagesDir.listSync()) {
     if (entry is! Directory) continue;
     final build = File('${entry.path}/build.yaml');
-    if (build.existsSync()) {
-      final name = entry.uri.pathSegments.where((s) => s.isNotEmpty).last;
-      configs[name] = build;
-    }
+    if (!build.existsSync()) continue;
+    final pubspec = File('${entry.path}/pubspec.yaml');
+    if (!pubspec.existsSync()) continue;
+    final manifest = loadYaml(pubspec.readAsStringSync());
+    if (manifest is! YamlMap) continue;
+    final name = manifest['name'];
+    if (name is! String || name.isEmpty) continue;
+    configs[name] = build;
   }
   return configs;
 }
 
 /// The builder keys a `build.yaml` configures on its default target.
+///
+/// Scope limit: only the `$default` target's `builders` are inspected. Every
+/// `build.yaml` in the family today configures its builders under `$default`,
+/// so a builder configured under a *named* target would be silently skipped by
+/// this guard — a future named-target config is not covered here.
 List<String> _builderKeys(File buildConfig) {
   final config = loadYaml(buildConfig.readAsStringSync());
   if (config is! YamlMap) return const [];
