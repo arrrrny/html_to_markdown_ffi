@@ -11,14 +11,14 @@ environment:
 
 
 dependencies:
-  zuraffa: ^7.3.8
+  zuraffa: ^7.5.0
   # The native-library loader and the shared conversion bridge need dart:ffi
   # and one HTTP client for the download fallback.
   ffi: ^2.1.0
   http: ^1.4.0
   # The channel envelope is shared with the rest of the Zuraffa FFI family
   # instead of being re-implemented per family.
-  zuraffa_ffi_platform: ^7.3.8
+  zuraffa_ffi_platform: ^7.5.0
 
 dev_dependencies:
   lints: ^6.0.0
